@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/HomeView.dart';
+import 'views/GroceriesView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Utils App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
-      home: const HomeView(),
+      home: const GroceriesView(),
     );
   }
 }

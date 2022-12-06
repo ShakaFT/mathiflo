@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:utils_app/views/FavoritesView.dart';
-import 'package:utils_app/views/HomeView.dart';
+import 'package:utils_app/views/GroceriesView.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({super.key});
@@ -19,7 +19,7 @@ class NavigationDrawer extends StatelessWidget {
   }
 
   Widget buildHeader(BuildContext context) => Container(
-        color: Colors.blue.shade700,
+        color: Colors.orange.shade700,
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top,
         ),
@@ -29,17 +29,17 @@ class NavigationDrawer extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text("Home"),
+            title: const Text("Liste de courses"),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeView()),
+                MaterialPageRoute(builder: (context) => const GroceriesView()),
               );
             },
           ),
           ListTile(
             leading: const Icon(Icons.favorite_border),
-            title: const Text("Favorites"),
+            title: const Text("Test"),
             onTap: () {
               Navigator.push(
                 context,
