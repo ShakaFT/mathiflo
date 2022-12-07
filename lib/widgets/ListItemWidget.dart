@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ListItem extends StatelessWidget {
+class ListItemWidget extends StatelessWidget {
   final items = [
     "List 1",
     "List 2",
@@ -15,6 +15,8 @@ class ListItem extends StatelessWidget {
     "List 2",
     "List 3"
   ];
+
+  ListItemWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

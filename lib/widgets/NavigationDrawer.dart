@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/views/FavoritesView.dart';
-import 'package:utils_app/views/GroceriesView.dart';
+import 'package:utils_app/views/Groceries/GroceriesView.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({super.key});
@@ -37,16 +36,6 @@ class NavigationDrawer extends StatelessWidget {
               );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.favorite_border),
-            title: const Text("Test"),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FavoritesView()),
-              );
-            },
-          )
         ],
       );
 }
