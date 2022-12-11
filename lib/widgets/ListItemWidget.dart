@@ -30,14 +30,14 @@ class ListItemWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Text("Item Name"),
-                  Spacer(),
+                  const Text("Item Name"),
+                  const Spacer(),
                   FloatingActionButton(
                     mini: true,
                     onPressed: () {},
-                    child: Icon(Icons.remove),
+                    child: const Icon(Icons.remove),
                   ),
-                  Padding(
+                  const Padding(
                     padding:
                         EdgeInsets.all(15), //apply padding to all four sides
                     child: Text("0"),
@@ -45,7 +45,7 @@ class ListItemWidget extends StatelessWidget {
                   FloatingActionButton(
                     mini: true,
                     onPressed: () {},
-                    child: Icon(Icons.add),
+                    child: const Icon(Icons.add),
                   ),
                 ],
               ),

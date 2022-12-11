@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/utils.dart';
 import 'package:utils_app/widgets/ListItemWidget.dart';
+import 'package:utils_app/widgets/Popup.dart';
 import '../../widgets/NavigationDrawer.dart';
-import 'AddItemView.dart';
 
 class GroceriesView extends StatelessWidget {
   const GroceriesView({super.key});
@@ -33,7 +32,12 @@ class BottomAppBarGroceries extends StatelessWidget {
           foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
         ),
         onPressed: () {
-          navigation(context, const AddItemView());
+          //navigation(context, const AddItemView());
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const AddExercisePopup();
+              });
         },
         child: const Text('Ajouter un article'),
       ),
