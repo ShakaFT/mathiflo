@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:utils_app/data/data.dart';
+
 import 'views/Groceries/GroceriesView.dart';
 
-void main() {
+void main() async {
+  await Data.setDatabases();
   runApp(const MyApp());
 }
 

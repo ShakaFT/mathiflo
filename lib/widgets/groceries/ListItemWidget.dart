@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:utils_app/data/item.dart';
 
 class ListItemWidget extends StatelessWidget {
-  final items = [
-    "List 1",
-    "List 2",
-    "List 3",
-    "List 1",
-    "List 2",
-    "List 3",
-    "List 1",
-    "List 2",
-    "List 3",
-    "List 1",
-    "List 2",
-    "List 3"
-  ];
+  List<Item> items = [];
 
-  ListItemWidget({super.key});
+  ListItemWidget({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +18,17 @@ class ListItemWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  const Text("Item Name"),
+                  Text(items[index].name),
                   const Spacer(),
                   FloatingActionButton(
                     mini: true,
                     onPressed: () {},
                     child: const Icon(Icons.remove),
                   ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.all(15), //apply padding to all four sides
-                    child: Text("0"),
+                  Padding(
+                    padding: const EdgeInsets.all(
+                        15), //apply padding to all four sides
+                    child: Text(items[index].quantity.toString()),
                   ),
                   FloatingActionButton(
                     mini: true,
