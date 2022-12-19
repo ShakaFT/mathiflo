@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
 part 'item.g.dart';
-// To active import, executes the following command line
+// To active import, executes the following command line :
 // flutter packages pub run build_runner build
 
 @HiveType(typeId: 1)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-void navigation(BuildContext context, Widget view) {
-  Navigator.push(
+Future<void> navigation(BuildContext context, Widget view) async {
+  await Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => view),
   );
