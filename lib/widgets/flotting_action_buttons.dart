@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utils_app/constants.dart';
 
 class PlusButton extends StatelessWidget {
   const PlusButton({super.key, required this.onPressed});
@@ -9,6 +10,7 @@ class PlusButton extends StatelessWidget {
   Widget build(BuildContext context) => FloatingActionButton(
         mini: true,
         onPressed: onPressed,
+        foregroundColor: textColor,
         child: const Icon(Icons.add),
       );
 }
@@ -22,6 +24,7 @@ class MinusButton extends StatelessWidget {
   Widget build(BuildContext context) => FloatingActionButton(
         mini: true,
         onPressed: onPressed,
+        foregroundColor: textColor,
         child: const Icon(Icons.remove),
       );
 }

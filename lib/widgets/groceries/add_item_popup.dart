@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utils_app/constants.dart';
 import 'package:utils_app/data/data.dart';
 import 'package:utils_app/data/item.dart';
 import 'package:utils_app/models/groceries_list.dart';
@@ -18,7 +19,8 @@ class AddItemPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) => StatefulBuilder(
         builder: (context, setPopupState) => AlertDialog(
-          title: const Text('Ajouter un article'),
+          title:
+              Text('Ajouter un article', style: TextStyle(color: popupColor)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -44,7 +46,10 @@ class AddItemPopup extends StatelessWidget {
                     padding: const EdgeInsets.all(
                       15,
                     ),
-                    child: Text(quantity),
+                    child: Text(
+                      quantity,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   PlusButton(
                     onPressed: () {
@@ -57,11 +62,16 @@ class AddItemPopup extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
                   onPressed: () async {
-                    await _addItem();
+                    if (await _addItem() == false) {
+                      _updateNameError(
+                        setPopupState,
+                      ); // add error if name is empty
+                      return;
+                    }
                     // ignore: use_build_context_synchronously
                     Navigator.pop(context); // close popup
                   },
-                  child: const Text("Ajouter"),
+                  child: Text("Ajouter", style: TextStyle(color: textColor)),
                 ),
               )
             ],
@@ -69,19 +79,23 @@ class AddItemPopup extends StatelessWidget {
         ),
       );
 
-  Future<void> _addItem() async {
+  Future<bool> _addItem() async {
+    final name = nameController.text.trim().toUpperCase();
+    if (nameError.isNotEmpty || name.isEmpty) return false;
+
     final item = Item(
-      name: nameController.text,
+      name: name,
       quantity: int.parse(quantity),
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
-    if (nameError.isNotEmpty) return;
     // Add in local database
     await groceriesBox.put(
-      nameController.text,
+      name,
       item,
     );
     list.addItem(item);
+
+    return true;
   }
 
   void _decrementQuantity(setPopupState) {
@@ -99,10 +113,11 @@ class AddItemPopup extends StatelessWidget {
   }
 
   void _updateNameError(setPopupState) {
+    final name = nameController.text.trim().toUpperCase();
     setPopupState(() {
-      if (nameController.text.isEmpty) {
+      if (name.isEmpty) {
         nameError = "Vous devez inscrire un nom";
-      } else if (itemExists(nameController.text)) {
+      } else if (itemExists(name)) {
         nameError = "Cet article existe déjà";
       } else {
         nameError = "";

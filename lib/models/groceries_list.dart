@@ -10,6 +10,17 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     _sort();
   }
 
+  void replaceItem(int index, Item item) {
+    state.removeAt(index);
+    state = [...state, item];
+    _sort();
+  }
+
+  void removeItem(int index) {
+    state.removeAt(index);
+    state = [...state];
+  }
+
   void _sort() {
     state.sort((a, b) => a.name.compareTo(b.name));
   }
