@@ -6,6 +6,7 @@ import 'package:utils_app/data/item.dart';
 import 'package:utils_app/models/groceries_list.dart';
 import 'package:utils_app/widgets/confirmation_popup.dart';
 import 'package:utils_app/widgets/flotting_action_buttons.dart';
+import 'package:utils_app/widgets/groceries/item_popups.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
@@ -25,11 +26,16 @@ class ListItemWidget extends HookWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.all(
+                  Padding(
+                    padding: const EdgeInsets.all(
                       15,
                     ),
-                    child: Icon(Icons.edit),
+                    child: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () async {
+                        await _editItem(context, index, items[index]);
+                      },
+                    ),
                   ),
                   Expanded(
                     //width: context.width * 0.9, // we are letting the text to take 90% of screen width
@@ -92,6 +98,13 @@ class ListItemWidget extends HookWidget {
 
     await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
+  }
+
+  Future<void> _editItem(BuildContext context, int index, Item item) async {
+    await showDialog(
+        context: context,
+        builder: (context) =>
+            EditItemPopup(list: list, index: index, item: item));
   }
 
   Future<void> _incrementQuantity(int index, Item oldItem) async {

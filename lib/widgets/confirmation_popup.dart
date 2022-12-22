@@ -28,7 +28,6 @@ class ConfirmationPopup extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(
                     onPressed: () {
-                      confirmation();
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context); // close popup
                     },

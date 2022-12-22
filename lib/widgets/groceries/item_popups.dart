@@ -125,3 +125,111 @@ class AddItemPopup extends StatelessWidget {
     });
   }
 }
+
+class EditItemPopup extends StatefulWidget {
+  const EditItemPopup({
+    super.key,
+    required this.list,
+    required this.index,
+    required this.item,
+  });
+
+  final GroceriesListNotifier list;
+  final int index;
+  final Item item;
+
+  @override
+  State<EditItemPopup> createState() => _EditItemPopupState();
+}
+
+class _EditItemPopupState extends State<EditItemPopup> {
+  late GroceriesListNotifier list;
+  late int index;
+  late Item item;
+  late TextEditingController nameController;
+
+  String nameError = "";
+  String quantity = "1";
+
+  @override
+  void initState() {
+    super.initState();
+    list = widget.list;
+    index = widget.index;
+    item = widget.item;
+    nameController = TextEditingController(text: item.name);
+  }
+
+  @override
+  Widget build(BuildContext context) => StatefulBuilder(
+        builder: (context, setPopupState) => AlertDialog(
+          title: Text(
+            "Modifier l'article ${item.name}",
+            style: TextStyle(color: popupColor),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: nameController,
+                onChanged: (_) {
+                  _updateNameError(setPopupState);
+                },
+                decoration: InputDecoration(
+                  hintText: "Nom de l'article",
+                  errorText: nameError,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (await _editItem(index) == false) {
+                      _updateNameError(
+                        setPopupState,
+                      ); // add error if name is empty
+                      return;
+                    }
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context); // close popup
+                  },
+                  child: Text("Modifier", style: TextStyle(color: textColor)),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+
+  Future<bool> _editItem(int index) async {
+    final name = nameController.text.trim().toUpperCase();
+    if (nameError.isNotEmpty || name.isEmpty) return false;
+
+    final newItem = Item(
+      name: name,
+      quantity: int.parse(quantity),
+      lastUpdate: DateTime.now().millisecondsSinceEpoch,
+    );
+    // Add in local database
+    await groceriesBox.put(
+      name,
+      newItem,
+    );
+    list.replaceItem(index, newItem);
+
+    return true;
+  }
+
+  void _updateNameError(setPopupState) {
+    final name = nameController.text.trim().toUpperCase();
+    setPopupState(() {
+      if (name.isEmpty) {
+        nameError = "Vous devez inscrire un nom";
+      } else if (itemExists(name) && name != item.name) {
+        nameError = "Cet article existe déjà";
+      } else {
+        nameError = "";
+      }
+    });
+  }
+}

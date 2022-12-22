@@ -5,9 +5,15 @@ import 'package:utils_app/data/item.dart';
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
   GroceriesListNotifier() : super(groceriesBox.values.toList().cast<Item>());
 
+  bool get isEmpty => state.isEmpty;
+
   void addItem(Item item) {
     state = [...state, item];
     _sort();
+  }
+
+  void clear() {
+    state = [];
   }
 
   void replaceItem(int index, Item item) {

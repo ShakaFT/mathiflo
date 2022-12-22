@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:utils_app/constants.dart';
+import 'package:utils_app/data/data.dart';
 import 'package:utils_app/models/groceries_list.dart';
 import 'package:utils_app/widgets/app_bar_button.dart';
 import 'package:utils_app/widgets/confirmation_popup.dart';
-import 'package:utils_app/widgets/groceries/add_item_popup.dart';
+import 'package:utils_app/widgets/groceries/item_popups.dart';
 import 'package:utils_app/widgets/groceries/list_item_widget.dart';
 import 'package:utils_app/widgets/navigation_drawer.dart';
 
@@ -23,10 +23,11 @@ class GroceriesView extends HookWidget {
           actions: <Widget>[
             // IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
             IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await _clearList(context);
-                }),
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await _clearList(context);
+              },
+            ),
           ],
         ),
         // --> ListView with groceries list items
@@ -56,12 +57,16 @@ class GroceriesView extends HookWidget {
   }
 
   Future<void> _clearList(BuildContext context) async {
+    if (list.isEmpty) return;
     await showDialog(
       context: context,
       builder: (context) => ConfirmationPopup(
         title: "Vider la liste",
-        text: "Voulez vous vraiment vider la liste de courses ?",
-        confirmation: () {},
+        text: "Voulez-vous vraiment vider la liste de courses ?",
+        confirmation: () {
+          groceriesBox.clear();
+          list.clear();
+        },
       ),
     );
   }
