@@ -1,0 +1,8 @@
+gcloud auth login
+firebase login:use tornicelliflorent@gmail.com
+
+gcloud config set project mathiflo
+python python_deploy/deploy.py
+
+gcloud auth login
+firebase login:use florent@geode.com
