@@ -15,36 +15,39 @@ class GroceriesView extends HookWidget {
   final list = GroceriesListNotifier();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Liste de courses", style: TextStyle(color: textColor)),
-          backgroundColor: mainColor,
-          iconTheme: IconThemeData(color: textColor),
-          actions: <Widget>[
-            // IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
-            IconButton(
-              icon: const Icon(Icons.delete),
+  Widget build(BuildContext context) => WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Liste de courses", style: TextStyle(color: textColor)),
+            backgroundColor: mainColor,
+            iconTheme: IconThemeData(color: textColor),
+            actions: <Widget>[
+              // IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () async {
+                  await _clearList(context);
+                },
+              ),
+            ],
+          ),
+          // --> ListView with groceries list items
+          body: HookBuilder(
+            builder: (context) => ListItemWidget(list: list),
+          ),
+          // --> Button to add item
+          bottomNavigationBar: BottomAppBar(
+            color: mainColor,
+            child: AppBarButton(
+              text: "Ajouter un article",
               onPressed: () async {
-                await _clearList(context);
+                await _addItemClick(context);
               },
             ),
-          ],
-        ),
-        // --> ListView with groceries list items
-        body: HookBuilder(
-          builder: (context) => ListItemWidget(list: list),
-        ),
-        // --> Button to add item
-        bottomNavigationBar: BottomAppBar(
-          color: mainColor,
-          child: AppBarButton(
-            text: "Ajouter un article",
-            onPressed: () async {
-              await _addItemClick(context);
-            },
           ),
+          drawer: const NavigationDrawer(),
         ),
-        drawer: const NavigationDrawer(),
+        onWillPop: () async => false,
       );
 
   Future<void> _addItemClick(BuildContext context) async {
