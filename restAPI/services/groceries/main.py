@@ -1,10 +1,11 @@
 """
 This module contains main endpoints of groceries service.
 """
+from firebase_admin import firestore
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from FirestoreManager import fclient
+from FirestoreClient import db
 
 app = Flask(__name__)
 CORS(app)
@@ -18,45 +19,45 @@ def default():
     return jsonify(success=True)
 
 
-@app.post("/groceries/add")
+@app.get("/groceries")
+def get_groceries():
+    """
+    This endpoint returns groceries list.
+    """
+    return jsonify(db.groceries_list.get().to_dict() or {})
+
+
+@app.post("/groceries/update")
 def add_groceries():
     """
-    This endpoint add items to groceries list.
+    This endpoint updates groceries list.
+    If quandity == 0, the item is removed.
     """
     payload = request.get_json(force=True)
-    new_items = payload.get("new_items")
+    new_items = payload.get("newItems")
 
     if new_items is None:
-        return jsonify(error="missing new_items"), 400
+        return jsonify(error="missing newItems"), 400
 
-    # get current groceries list in database
-    doc = fclient.groceries.document("groceries_list").get()
-    groceries_list = doc.to_dict() if doc.exists else {}
-
-    # add new items to groceries list
-    for item, quantity in new_items.items():
-        if item in groceries_list:
-            groceries_list[item] += quantity
-        else:
-            groceries_list[item] = quantity
-
-        if groceries_list[item] <= 0:
-            # user has remove this item of groceries list
-            groceries_list.pop(item)
+    # remove field if quantity == 0
+    update_dict = {
+        item: quantity or firestore.DELETE_FIELD
+        for item, quantity in new_items.items()
+    }
 
     # store new groceries list to database
-    fclient.groceries.document("groceries_list").set(groceries_list)
+    db.groceries_list.set(update_dict, merge=True)
 
-    return jsonify(groceries_list=groceries_list)
+    return jsonify(), 204
 
 
 @app.post("/groceries/reset")
 def reset_groceries():
     """
-    This endpoint reset groceries list.
+    This endpoint resets groceries list.
     """
-    fclient.groceries.document("groceries_list").delete()
-    return jsonify()
+    db.groceries_list.delete()
+    return jsonify(), 204
 
 
 if __name__ == "__main__":

@@ -6,9 +6,9 @@ import subprocess
 from pick import pick
 from rich import print as shell_print
 
-import utils_deploy
+import utils
 
-SERVICES: list[str] = utils_deploy.get_services()
+SERVICES: list[str] = utils.get_services()
 
 
 def deploy_services(services_to_deploy:list[str]):
