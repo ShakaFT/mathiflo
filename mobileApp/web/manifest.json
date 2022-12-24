@@ -1,6 +1,6 @@
 {
-    "name": "utils_app",
-    "short_name": "utils_app",
+    "name": "mathiflo",
+    "short_name": "mathiflo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

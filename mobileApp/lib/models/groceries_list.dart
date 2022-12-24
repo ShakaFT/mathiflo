@@ -1,6 +1,6 @@
 import 'package:state_notifier/state_notifier.dart';
-import 'package:utils_app/data/data.dart';
-import 'package:utils_app/data/item.dart';
+import 'package:mathiflo/data/data.dart';
+import 'package:mathiflo/data/item.dart';
 
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
   GroceriesListNotifier() : super(groceriesBox.values.toList().cast<Item>());

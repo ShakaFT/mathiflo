@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/constants.dart';
+import 'package:mathiflo/constants.dart';
 
 class AppBarButton extends StatelessWidget {
   const AppBarButton({super.key, required this.text, required this.onPressed});

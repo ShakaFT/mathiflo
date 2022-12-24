@@ -1,5 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:utils_app/data/item.dart';
+import 'package:mathiflo/data/item.dart';
 
 late Box groceriesBox;
 

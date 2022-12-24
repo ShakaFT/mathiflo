@@ -1,17 +1,3 @@
 {
-    "files.exclude": {
-        "**/.*": true,
-        "**/*.iml": true,
-        "**/*.lock": true,
-        "**/analysis*": true,
-
-        "android/": true,
-        "build/": true,
-        "ios/": true,
-        "linux/": true,
-        "macos/": true,
-        "test/": true,
-        "web/": true,
-        "windows/": true
-    },
+    
 }

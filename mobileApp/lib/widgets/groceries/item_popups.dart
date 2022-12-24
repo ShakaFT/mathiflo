@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/constants.dart';
-import 'package:utils_app/data/data.dart';
-import 'package:utils_app/data/item.dart';
-import 'package:utils_app/models/groceries_list.dart';
-import 'package:utils_app/widgets/flotting_action_buttons.dart';
+import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/data/data.dart';
+import 'package:mathiflo/data/item.dart';
+import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/widgets/flotting_action_buttons.dart';
 
 // ignore_for_file: must_be_immutable
 class AddItemPopup extends StatelessWidget {
@@ -149,7 +149,6 @@ class _EditItemPopupState extends State<EditItemPopup> {
   late TextEditingController nameController;
 
   String nameError = "";
-  String quantity = "1";
 
   @override
   void initState() {
@@ -184,7 +183,7 @@ class _EditItemPopupState extends State<EditItemPopup> {
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
                   onPressed: () async {
-                    if (await _editItem(index) == false) {
+                    if (await _editItem(index, item) == false) {
                       _updateNameError(
                         setPopupState,
                       ); // add error if name is empty
@@ -201,20 +200,18 @@ class _EditItemPopupState extends State<EditItemPopup> {
         ),
       );
 
-  Future<bool> _editItem(int index) async {
-    final name = nameController.text.trim().toUpperCase();
-    if (nameError.isNotEmpty || name.isEmpty) return false;
+  Future<bool> _editItem(int index, Item oldItem) async {
+    final newName = nameController.text.trim().toUpperCase();
+    if (nameError.isNotEmpty || newName.isEmpty) return false;
 
     final newItem = Item(
-      name: name,
-      quantity: int.parse(quantity),
+      name: newName,
+      quantity: oldItem.quantity,
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
     // Add in local database
-    await groceriesBox.put(
-      name,
-      newItem,
-    );
+    await groceriesBox.delete(oldItem.name);
+    await groceriesBox.put(newName, newItem);
     list.replaceItem(index, newItem);
 
     return true;

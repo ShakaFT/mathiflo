@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/constants.dart';
+import 'package:mathiflo/constants.dart';
 
 class PlusButton extends StatelessWidget {
   const PlusButton({super.key, required this.onPressed});

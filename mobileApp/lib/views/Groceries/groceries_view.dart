@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:utils_app/constants.dart';
-import 'package:utils_app/data/data.dart';
-import 'package:utils_app/models/groceries_list.dart';
-import 'package:utils_app/widgets/app_bar_button.dart';
-import 'package:utils_app/widgets/confirmation_popup.dart';
-import 'package:utils_app/widgets/groceries/item_popups.dart';
-import 'package:utils_app/widgets/groceries/list_item_widget.dart';
-import 'package:utils_app/widgets/navigation_drawer.dart';
+import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/data/data.dart';
+import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/widgets/app_bar_button.dart';
+import 'package:mathiflo/widgets/confirmation_popup.dart';
+import 'package:mathiflo/widgets/groceries/item_popups.dart';
+import 'package:mathiflo/widgets/groceries/list_item_widget.dart';
+import 'package:mathiflo/widgets/navigation_drawer.dart';
 
 class GroceriesView extends HookWidget {
   GroceriesView({super.key});

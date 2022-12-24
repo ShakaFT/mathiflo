@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:utils_app/data/data.dart';
-import 'package:utils_app/data/item.dart';
-import 'package:utils_app/models/groceries_list.dart';
-import 'package:utils_app/widgets/confirmation_popup.dart';
-import 'package:utils_app/widgets/flotting_action_buttons.dart';
-import 'package:utils_app/widgets/groceries/item_popups.dart';
+import 'package:mathiflo/data/data.dart';
+import 'package:mathiflo/data/item.dart';
+import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/widgets/confirmation_popup.dart';
+import 'package:mathiflo/widgets/flotting_action_buttons.dart';
+import 'package:mathiflo/widgets/groceries/item_popups.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {

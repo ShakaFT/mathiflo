@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:utils_app/constants.dart';
-import 'package:utils_app/main.dart';
-import 'package:utils_app/utils.dart';
-import 'package:utils_app/views/Groceries/groceries_view.dart';
+import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/utils.dart';
+import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({super.key});

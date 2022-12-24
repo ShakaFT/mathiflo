@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:utils_app/data/data.dart';
-import 'package:utils_app/models/groceries_list.dart';
-import 'package:utils_app/views/Groceries/groceries_view.dart';
+import 'package:mathiflo/data/data.dart';
+import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
 void main() async {
   await setDatabases();
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         create: (context) => GroceriesListNotifier(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Utils App',
+          title: 'mathiflo',
           theme: ThemeData(
             primarySwatch: Colors.orange,
           ),
