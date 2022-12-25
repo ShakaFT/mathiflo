@@ -3,6 +3,7 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/data/item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/widgets/flotting_action_buttons.dart';
 
 // ignore_for_file: must_be_immutable
@@ -88,6 +89,10 @@ class AddItemPopup extends StatelessWidget {
       quantity: int.parse(quantity),
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
+
+    // Add in remote database
+    await updateGroceries([item]);
+
     // Add in local database
     await groceriesBox.put(
       name,
@@ -209,6 +214,11 @@ class _EditItemPopupState extends State<EditItemPopup> {
       quantity: oldItem.quantity,
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
+
+    // Update Groceries Network
+    oldItem.quantity = 0; // reset quantity for Network
+    await updateGroceries([oldItem, newItem]);
+
     // Add in local database
     await groceriesBox.delete(oldItem.name);
     await groceriesBox.put(newName, newItem);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/utils.dart';
 import 'package:mathiflo/views/Groceries/groceries_view.dart';
@@ -35,7 +36,12 @@ class NavigationDrawer extends StatelessWidget {
               style: TextStyle(color: mainColor),
             ),
             onTap: () async {
-              await navigation(context, GroceriesView());
+              await navigation(
+                context,
+                HookBuilder(
+                  builder: (context) => useGroceriesView(),
+                ),
+              );
             },
           ),
         ],

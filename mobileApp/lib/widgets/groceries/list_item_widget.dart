@@ -4,6 +4,7 @@ import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/data/item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/widgets/confirmation_popup.dart';
 import 'package:mathiflo/widgets/flotting_action_buttons.dart';
 import 'package:mathiflo/widgets/groceries/item_popups.dart';
@@ -17,54 +18,57 @@ class ListItemWidget extends HookWidget {
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
         stateNotifier: list,
-        builder: (context, items, _) => ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) => Card(
-            elevation: 1.0,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(
-                      15,
+        builder: (context, items, _) => RefreshIndicator(
+          onRefresh: _refresh,
+          child: ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) => Card(
+              elevation: 1.0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(
+                        15,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () async {
+                          await _editItem(context, index, items[index]);
+                        },
+                      ),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.edit),
+                    Expanded(
+                      //width: context.width * 0.9, // we are letting the text to take 90% of screen width
+                      child: Text(
+                        items[index].name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                    MinusButton(
                       onPressed: () async {
-                        await _editItem(context, index, items[index]);
+                        await _decrementQuantity(context, index, items[index]);
                       },
                     ),
-                  ),
-                  Expanded(
-                    //width: context.width * 0.9, // we are letting the text to take 90% of screen width
-                    child: Text(
-                      items[index].name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                    Padding(
+                      padding: const EdgeInsets.all(
+                        15,
+                      ),
+                      child: Text(
+                        items[index].quantity.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  MinusButton(
-                    onPressed: () async {
-                      await _decrementQuantity(context, index, items[index]);
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(
-                      15,
-                    ),
-                    child: Text(
-                      items[index].quantity.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  PlusButton(
-                    onPressed: () async {
-                      await _incrementQuantity(index, items[index]);
-                    },
-                  )
-                ],
+                    PlusButton(
+                      onPressed: () async {
+                        await _incrementQuantity(index, items[index]);
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -96,15 +100,16 @@ class ListItemWidget extends HookWidget {
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
 
+    await updateGroceries([newItem]);
     await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
 
   Future<void> _editItem(BuildContext context, int index, Item item) async {
     await showDialog(
-        context: context,
-        builder: (context) =>
-            EditItemPopup(list: list, index: index, item: item));
+      context: context,
+      builder: (context) => EditItemPopup(list: list, index: index, item: item),
+    );
   }
 
   Future<void> _incrementQuantity(int index, Item oldItem) async {
@@ -116,11 +121,19 @@ class ListItemWidget extends HookWidget {
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
 
+    await updateGroceries([newItem]);
     await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
 
+  Future<void> _refresh() async {
+    await loadGroceries();
+    list.fectLocalDatabase();
+  }
+
   Future<void> _removeItem(int index, Item item) async {
+    item.quantity = 0;
+    await updateGroceries([item]);
     await groceriesBox.delete(item.name);
     list.removeItem(index);
   }

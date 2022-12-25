@@ -3,16 +3,30 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/models/groceries_list.dart';
+import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/widgets/app_bar_button.dart';
 import 'package:mathiflo/widgets/confirmation_popup.dart';
 import 'package:mathiflo/widgets/groceries/item_popups.dart';
 import 'package:mathiflo/widgets/groceries/list_item_widget.dart';
 import 'package:mathiflo/widgets/navigation_drawer.dart';
 
-class GroceriesView extends HookWidget {
-  GroceriesView({super.key});
+useGroceriesView() => use(const _GroceriesView());
 
-  final list = GroceriesListNotifier();
+class _GroceriesView extends Hook<void> {
+  const _GroceriesView();
+
+  @override
+  _GroceriesViewState createState() => _GroceriesViewState();
+}
+
+class _GroceriesViewState extends HookState<void, _GroceriesView> {
+  late GroceriesListNotifier list = GroceriesListNotifier();
+
+  @override
+  Future<void> initHook() async {
+    await loadGroceries();
+    list.fectLocalDatabase();
+  }
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -66,8 +80,9 @@ class GroceriesView extends HookWidget {
       builder: (context) => ConfirmationPopup(
         title: "Vider la liste",
         text: "Voulez-vous vraiment vider la liste de courses ?",
-        confirmation: () {
-          groceriesBox.clear();
+        confirmation: () async {
+          await resetGroceries();
+          await groceriesBox.clear();
           list.clear();
         },
       ),
