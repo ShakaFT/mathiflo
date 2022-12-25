@@ -34,17 +34,16 @@ def add_groceries():
     If quandity == 0, the item is removed.
     """
     payload = request.get_json(force=True)
-    new_items = payload.get("newItems")
+    new_items: dict = payload.get("newItems")
 
     if new_items is None:
         return jsonify(error="missing newItems"), 400
 
     # remove field if quantity == 0
     update_dict = {
-        item: quantity or firestore.DELETE_FIELD
-        for item, quantity in new_items.items()
+        item: firestore.DELETE_FIELD if info["quantity"] <= 0 else info
+        for item, info in new_items.items()
     }
-
     # store new groceries list to database
     db.groceries_list.set(update_dict, merge=True)
 
