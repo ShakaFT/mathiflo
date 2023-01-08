@@ -6,3 +6,12 @@ Future<void> navigation(BuildContext context, Widget view) async {
     MaterialPageRoute(builder: (context) => view),
   );
 }
+
+loading(Function awaitedFunction, widgetToDisplay) => FutureBuilder(
+      // ignore: discarded_futures
+      future: awaitedFunction(),
+      builder: (context, snapshot) =>
+          snapshot.connectionState == ConnectionState.waiting
+              ? const Center(child: CircularProgressIndicator())
+              : widgetToDisplay,
+    );

@@ -4,10 +4,11 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
-import 'package:mathiflo/widgets/app_bar_button.dart';
+import 'package:mathiflo/utils.dart';
+import 'package:mathiflo/views/Groceries/widgets/item_popups.dart';
+import 'package:mathiflo/views/Groceries/widgets/list_item_widget.dart';
+import 'package:mathiflo/widgets/bar.dart';
 import 'package:mathiflo/widgets/confirmation_popup.dart';
-import 'package:mathiflo/widgets/groceries/item_popups.dart';
-import 'package:mathiflo/widgets/groceries/list_item_widget.dart';
 import 'package:mathiflo/widgets/navigation_drawer.dart';
 
 useGroceriesView() => use(const _GroceriesView());
@@ -25,43 +26,43 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
-          appBar: AppBar(
-            title: Text("Liste de courses", style: TextStyle(color: textColor)),
-            backgroundColor: mainColor,
-            iconTheme: IconThemeData(color: textColor),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await _clearList(context);
-                },
-              ),
-            ],
-          ),
+          appBar: appBar("Liste de courses", icons: _appBarIcons()),
           // --> ListView with groceries list items
-          body: FutureBuilder(
-            future: loadGroceriesList(),
-            builder: (context, snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
-                    ? const Center(child: CircularProgressIndicator())
-                    : HookBuilder(
-                        builder: (context) => ListItemWidget(list: list),
-                      ),
+          body: loading(
+            _loadGroceriesList,
+            HookBuilder(
+              builder: (context) => ListItemWidget(list: list),
+            ),
           ),
           // --> Button to add item
-          bottomNavigationBar: BottomAppBar(
-            color: mainColor,
-            child: AppBarButton(
-              text: "Ajouter un article",
-              onPressed: () async {
-                await _addItemClick(context);
-              },
+          bottomNavigationBar: bottomBar(
+            BottomAppBar(
+              color: mainColor,
+              child: ButtonBarButton(
+                text: "Ajouter un article",
+                onPressed: () async {
+                  await _addItemClick(context);
+                },
+              ),
             ),
           ),
           drawer: const NavigationDrawer(),
         ),
         onWillPop: () async => false,
       );
+
+  // Widget methods
+
+  _appBarIcons() => <Widget>[
+        IconButton(
+          icon: const Icon(Icons.delete),
+          onPressed: () async {
+            await _clearList(context);
+          },
+        ),
+      ];
+
+  // Action methods
 
   Future<void> _addItemClick(BuildContext context) async {
     await showDialog(
@@ -88,7 +89,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
     );
   }
 
-  Future<void> loadGroceriesList() async {
+  Future<void> _loadGroceriesList() async {
     await loadNetworkGroceries();
     list.fetchLocalDatabase();
   }

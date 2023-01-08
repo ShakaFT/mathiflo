@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/models/groceries_list.dart';
-import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
 void main() async {
@@ -20,15 +19,19 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'mathiflo',
-          theme: ThemeData(
-            primarySwatch: Colors.orange,
-          ),
-          darkTheme: ThemeData(
-            primarySwatch: Colors.orange,
-          ),
+          theme: _theme(),
+          darkTheme: _darkTheme(),
           home: HookBuilder(
             builder: (context) => useGroceriesView(),
           ),
         ),
       );
 }
+
+_darkTheme() => ThemeData(
+      primarySwatch: Colors.orange,
+    );
+
+_theme() => ThemeData(
+      primarySwatch: Colors.orange,
+    );
