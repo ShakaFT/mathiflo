@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
 void main() async {
-  await setDatabases();
   runApp(const MyApp());
 }
 

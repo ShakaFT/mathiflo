@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/data/data.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/utils.dart';
@@ -81,8 +80,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
         title: "Vider la liste",
         text: "Voulez-vous vraiment vider la liste de courses ?",
         confirmation: () async {
-          await resetGroceries();
-          await groceriesBox.clear();
+          await resetNetworkGroceries();
           list.clear();
         },
       ),
@@ -90,7 +88,9 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   }
 
   Future<void> _loadGroceriesList() async {
-    await loadNetworkGroceries();
-    list.fetchLocalDatabase();
+    if (await list.refresh()) {
+      return;
+    }
+    // TODO Add error handling !!!
   }
 }

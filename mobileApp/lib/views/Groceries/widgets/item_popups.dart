@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/data/data.dart';
-import 'package:mathiflo/data/item.dart';
+import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/widgets/flotting_action_buttons.dart';
@@ -84,20 +83,12 @@ class AddItemPopup extends StatelessWidget {
     final name = nameController.text.trim().toUpperCase();
     if (nameError.isNotEmpty || name.isEmpty) return false;
 
-    final item = Item(
-      name: name,
-      quantity: int.parse(quantity),
-      lastUpdate: DateTime.now().millisecondsSinceEpoch,
-    );
+    final item = Item(name, int.parse(quantity));
 
     // Add in remote database
     await updateNetworkGroceries([item]);
 
-    // Add in local database
-    await groceriesBox.put(
-      name,
-      item,
-    );
+    // Add in groceries list
     list.addItem(item);
 
     return true;
@@ -122,7 +113,7 @@ class AddItemPopup extends StatelessWidget {
     setPopupState(() {
       if (name.isEmpty) {
         nameError = "Vous devez inscrire un nom";
-      } else if (itemExists(name)) {
+      } else if (list.exists(name)) {
         nameError = "Cet article existe déjà";
       } else {
         nameError = "";
@@ -209,19 +200,13 @@ class _EditItemPopupState extends State<EditItemPopup> {
     final newName = nameController.text.trim().toUpperCase();
     if (nameError.isNotEmpty || newName.isEmpty) return false;
 
-    final newItem = Item(
-      name: newName,
-      quantity: oldItem.quantity,
-      lastUpdate: DateTime.now().millisecondsSinceEpoch,
-    );
+    final newItem = Item(newName, oldItem.quantity);
 
     // Update Groceries Network
     oldItem.quantity = 0; // reset quantity for Network
     await updateNetworkGroceries([oldItem, newItem]);
 
-    // Add in local database
-    await groceriesBox.delete(oldItem.name);
-    await groceriesBox.put(newName, newItem);
+    // Replace in list
     list.replaceItem(index, newItem);
 
     return true;
@@ -232,7 +217,7 @@ class _EditItemPopupState extends State<EditItemPopup> {
     setPopupState(() {
       if (name.isEmpty) {
         nameError = "Vous devez inscrire un nom";
-      } else if (itemExists(name) && name != item.name) {
+      } else if (list.exists(name) && name != item.name) {
         nameError = "Cet article existe déjà";
       } else {
         nameError = "";

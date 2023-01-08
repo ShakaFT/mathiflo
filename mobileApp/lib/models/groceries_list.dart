@@ -1,13 +1,11 @@
-import 'package:mathiflo/data/data.dart';
-import 'package:mathiflo/data/item.dart';
+import 'package:mathiflo/models/groceries_item.dart';
+import 'package:mathiflo/network/groceries.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
   GroceriesListNotifier() : super([]);
 
   // Public methods
-
-  bool get isEmpty => state.isEmpty;
 
   void addItem(Item item) {
     state = [...state, item];
@@ -18,8 +16,21 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state = [];
   }
 
-  void fetchLocalDatabase() {
-    state = groceriesBox.values.toList().cast<Item>();
+  bool exists(String name) => state.any((item) => item.name == name);
+
+  bool get isEmpty => state.isEmpty;
+
+  Future<bool> refresh() async {
+    final groceriesList = await getNetworkGroceries();
+    if (groceriesList is List<Item>) {
+      state = groceriesList;
+      return true;
+    }
+    return false;
+  }
+
+  set items(List<Item> newItems) {
+    state = newItems;
   }
 
   void replaceItem(int index, Item item) {

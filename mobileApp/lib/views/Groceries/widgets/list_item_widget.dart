@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:mathiflo/data/data.dart';
-import 'package:mathiflo/data/item.dart';
+import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
+import 'package:mathiflo/views/Groceries/widgets/item_popups.dart';
 import 'package:mathiflo/widgets/confirmation_popup.dart';
 import 'package:mathiflo/widgets/flotting_action_buttons.dart';
-import 'package:mathiflo/widgets/groceries/item_popups.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
@@ -101,14 +100,9 @@ class ListItemWidget extends HookWidget {
       return;
     }
 
-    final newItem = Item(
-      name: oldItem.name,
-      quantity: oldItem.quantity - 1,
-      lastUpdate: DateTime.now().millisecondsSinceEpoch,
-    );
+    final newItem = Item(oldItem.name, oldItem.quantity - 1);
 
     await updateNetworkGroceries([newItem]);
-    await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
 
@@ -122,26 +116,22 @@ class ListItemWidget extends HookWidget {
   Future<void> _incrementQuantity(int index, Item oldItem) async {
     if (oldItem.quantity == 9) return;
 
-    final newItem = Item(
-      name: oldItem.name,
-      quantity: oldItem.quantity + 1,
-      lastUpdate: DateTime.now().millisecondsSinceEpoch,
-    );
+    final newItem = Item(oldItem.name, oldItem.quantity + 1);
 
     await updateNetworkGroceries([newItem]);
-    await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
 
   Future<void> _refresh() async {
-    await loadNetworkGroceries();
-    list.fetchLocalDatabase();
+    if (await list.refresh()) {
+      return;
+    }
+    // TODO Add error handling !!!
   }
 
   Future<void> _removeItem(int index, Item item) async {
     item.quantity = 0;
     await updateNetworkGroceries([item]);
-    await groceriesBox.delete(item.name);
     list.removeItem(index);
   }
 }
