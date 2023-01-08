@@ -91,7 +91,7 @@ class AddItemPopup extends StatelessWidget {
     );
 
     // Add in remote database
-    await updateGroceries([item]);
+    await updateNetworkGroceries([item]);
 
     // Add in local database
     await groceriesBox.put(
@@ -217,7 +217,7 @@ class _EditItemPopupState extends State<EditItemPopup> {
 
     // Update Groceries Network
     oldItem.quantity = 0; // reset quantity for Network
-    await updateGroceries([oldItem, newItem]);
+    await updateNetworkGroceries([oldItem, newItem]);
 
     // Add in local database
     await groceriesBox.delete(oldItem.name);

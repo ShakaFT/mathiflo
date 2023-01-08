@@ -1,4 +1,7 @@
 {
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
     "files.exclude": {
         "**/.*": true,
         "**/*.iml": true,

@@ -23,12 +23,6 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   late GroceriesListNotifier list = GroceriesListNotifier();
 
   @override
-  Future<void> initHook() async {
-    await loadGroceries();
-    list.fectLocalDatabase();
-  }
-
-  @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
           appBar: AppBar(
@@ -36,7 +30,6 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
             backgroundColor: mainColor,
             iconTheme: IconThemeData(color: textColor),
             actions: <Widget>[
-              // IconButton(icon: const Icon(Icons.refresh), onPressed: () {}),
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () async {
@@ -46,8 +39,14 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
             ],
           ),
           // --> ListView with groceries list items
-          body: HookBuilder(
-            builder: (context) => ListItemWidget(list: list),
+          body: FutureBuilder(
+            future: loadGroceriesList(),
+            builder: (context, snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? const Center(child: CircularProgressIndicator())
+                    : HookBuilder(
+                        builder: (context) => ListItemWidget(list: list),
+                      ),
           ),
           // --> Button to add item
           bottomNavigationBar: BottomAppBar(
@@ -87,5 +86,10 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
         },
       ),
     );
+  }
+
+  Future<void> loadGroceriesList() async {
+    await loadNetworkGroceries();
+    list.fetchLocalDatabase();
   }
 }

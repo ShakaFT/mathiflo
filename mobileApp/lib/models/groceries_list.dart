@@ -5,6 +5,8 @@ import 'package:state_notifier/state_notifier.dart';
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
   GroceriesListNotifier() : super([]);
 
+  // Public methods
+
   bool get isEmpty => state.isEmpty;
 
   void addItem(Item item) {
@@ -16,7 +18,7 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state = [];
   }
 
-  void fectLocalDatabase() {
+  void fetchLocalDatabase() {
     state = groceriesBox.values.toList().cast<Item>();
   }
 
@@ -30,6 +32,8 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state.removeAt(index);
     state = [...state];
   }
+
+  // Private methods
 
   void _sort() {
     state.sort((a, b) => a.name.compareTo(b.name));

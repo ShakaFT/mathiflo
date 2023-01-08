@@ -20,58 +20,65 @@ class ListItemWidget extends HookWidget {
         stateNotifier: list,
         builder: (context, items, _) => RefreshIndicator(
           onRefresh: _refresh,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) => Card(
-              elevation: 1.0,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(
-                        15,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () async {
-                          await _editItem(context, index, items[index]);
-                        },
+          child: list.isEmpty
+              ? const Center(child: Text("La liste de course est vide..."))
+              : ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) => Card(
+                    elevation: 1.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(
+                              15,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () async {
+                                await _editItem(context, index, items[index]);
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            //width: context.width * 0.9, // we are letting the text to take 90% of screen width
+                            child: Text(
+                              items[index].name,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                          MinusButton(
+                            onPressed: () async {
+                              await _decrementQuantity(
+                                context,
+                                index,
+                                items[index],
+                              );
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(
+                              15,
+                            ),
+                            child: Text(
+                              items[index].quantity.toString(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          PlusButton(
+                            onPressed: () async {
+                              await _incrementQuantity(index, items[index]);
+                            },
+                          )
+                        ],
                       ),
                     ),
-                    Expanded(
-                      //width: context.width * 0.9, // we are letting the text to take 90% of screen width
-                      child: Text(
-                        items[index].name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                      ),
-                    ),
-                    MinusButton(
-                      onPressed: () async {
-                        await _decrementQuantity(context, index, items[index]);
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(
-                        15,
-                      ),
-                      child: Text(
-                        items[index].quantity.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    PlusButton(
-                      onPressed: () async {
-                        await _incrementQuantity(index, items[index]);
-                      },
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
       );
 
@@ -100,7 +107,7 @@ class ListItemWidget extends HookWidget {
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
 
-    await updateGroceries([newItem]);
+    await updateNetworkGroceries([newItem]);
     await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
@@ -121,19 +128,19 @@ class ListItemWidget extends HookWidget {
       lastUpdate: DateTime.now().millisecondsSinceEpoch,
     );
 
-    await updateGroceries([newItem]);
+    await updateNetworkGroceries([newItem]);
     await groceriesBox.put(newItem.name, newItem);
     list.replaceItem(index, newItem);
   }
 
   Future<void> _refresh() async {
-    await loadGroceries();
-    list.fectLocalDatabase();
+    await loadNetworkGroceries();
+    list.fetchLocalDatabase();
   }
 
   Future<void> _removeItem(int index, Item item) async {
     item.quantity = 0;
-    await updateGroceries([item]);
+    await updateNetworkGroceries([item]);
     await groceriesBox.delete(item.name);
     list.removeItem(index);
   }

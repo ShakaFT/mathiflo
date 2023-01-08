@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.orange,
           ),
+          darkTheme: ThemeData(
+            primarySwatch: Colors.orange,
+          ),
           home: HookBuilder(
             builder: (context) => useGroceriesView(),
           ),

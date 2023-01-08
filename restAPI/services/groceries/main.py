@@ -39,12 +39,12 @@ def add_groceries():
     if new_items is None:
         return jsonify(error="missing newItems"), 400
 
-    # remove field if quantity == 0
+    # Remove field if quantity == 0
     update_dict = {
         item: firestore.DELETE_FIELD if info["quantity"] <= 0 else info
         for item, info in new_items.items()
     }
-    # store new groceries list to database
+    # Store new groceries list to database
     db.groceries_list.set(update_dict, merge=True)
 
     return jsonify(), 204
