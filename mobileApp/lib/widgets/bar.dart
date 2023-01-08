@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 
 appBar(String title, {List<Widget> icons = const []}) => AppBar(
-      title: Text("Li", style: TextStyle(color: textColor)),
+      title: Text(title, style: TextStyle(color: textColor)),
       backgroundColor: mainColor,
       iconTheme: IconThemeData(color: textColor),
       actions: icons,

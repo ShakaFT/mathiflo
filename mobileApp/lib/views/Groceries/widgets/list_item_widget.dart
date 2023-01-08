@@ -20,7 +20,15 @@ class ListItemWidget extends HookWidget {
         builder: (context, items, _) => RefreshIndicator(
           onRefresh: _refresh,
           child: list.isEmpty
-              ? const Center(child: Text("La liste de course est vide..."))
+              ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Text("La liste de course est vide"),
+                    ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                    ),
+                  ],
+                )
               : ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) => Card(

@@ -1,7 +1,6 @@
 """
 This module contains main endpoints of groceries service.
 """
-from firebase_admin import firestore
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -24,28 +23,22 @@ def get_groceries():
     """
     This endpoint returns groceries list.
     """
-    return jsonify(db.groceries_list.get().to_dict() or {})
+    groceries_list = db.groceries_list.get().to_dict() or {}
+    return jsonify(groceriesList = groceries_list.get("list", {}))
 
 
 @app.post("/groceries/update")
 def add_groceries():
     """
     This endpoint updates groceries list.
-    If quandity == 0, the item is removed.
     """
     payload = request.get_json(force=True)
-    new_items: dict = payload.get("newItems")
+    groceries_list = payload.get("groceriesList")
 
-    if new_items is None:
-        return jsonify(error="missing newItems"), 400
+    if groceries_list is None:
+        return jsonify(error="missing groceriesList"), 400
 
-    # Remove field if quantity == 0
-    update_dict = {
-        item: firestore.DELETE_FIELD if info["quantity"] <= 0 else info
-        for item, info in new_items.items()
-    }
-    # Store new groceries list to database
-    db.groceries_list.set(update_dict, merge=True)
+    db.groceries_list.set({"list": groceries_list}, merge=True)
 
     return jsonify(), 204
 
