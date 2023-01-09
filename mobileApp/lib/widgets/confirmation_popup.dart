@@ -6,12 +6,12 @@ class ConfirmationPopup extends StatelessWidget {
   const ConfirmationPopup({
     super.key,
     required this.title,
-    required this.text,
+    required this.message,
     required this.confirmation,
   });
 
   final String title;
-  final String text;
+  final String message;
   final void Function() confirmation;
 
   @override
@@ -20,35 +20,29 @@ class ConfirmationPopup extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(text),
+            Text(message),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // ignore: use_build_context_synchronously
-                      Navigator.pop(context); // close popup
-                    },
-                    child: Text("Annuler", style: TextStyle(color: textColor)),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      confirmation();
-                      // ignore: use_build_context_synchronously
-                      Navigator.pop(context); // close popup
-                    },
-                    child:
-                        Text("Confirmer", style: TextStyle(color: textColor)),
-                  ),
-                ),
+                _actionButton(context, "Annuler"),
+                _actionButton(context, "Confirmer"),
               ],
             ),
           ],
+        ),
+      );
+
+  // Private methods
+
+  _actionButton(BuildContext context, String title) => Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: ElevatedButton(
+          onPressed: () {
+            confirmation();
+            // ignore: use_build_context_synchronously
+            Navigator.pop(context); // close popup
+          },
+          child: Text(title, style: TextStyle(color: textColor)),
         ),
       );
 }

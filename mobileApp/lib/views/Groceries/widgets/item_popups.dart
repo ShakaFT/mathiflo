@@ -108,7 +108,7 @@ class AddItemPopup extends StatelessWidget {
     });
   }
 
-  void _updateNameError(setPopupState) {
+  void _updateNameError(Function setPopupState) {
     final name = nameController.text.trim().toUpperCase();
     setPopupState(() {
       if (name.isEmpty) {

@@ -99,7 +99,7 @@ class ListItemWidget extends HookWidget {
         context: context,
         builder: (context) => ConfirmationPopup(
           title: "Supprimer un article",
-          text: "Voulez-vous vraiment supprimer l'article ${oldItem.name} ?",
+          message: "Voulez-vous vraiment supprimer l'article ${oldItem.name} ?",
           confirmation: () {
             _removeItem(index, oldItem);
           },

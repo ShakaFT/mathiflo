@@ -78,7 +78,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
       context: context,
       builder: (context) => ConfirmationPopup(
         title: "Vider la liste",
-        text: "Voulez-vous vraiment vider la liste de courses ?",
+        message: "Voulez-vous vraiment vider la liste de courses ?",
         confirmation: () async {
           await resetNetworkGroceries();
           list.clear();

@@ -13,37 +13,53 @@ class NavigationDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              buildHeader(context),
-              buildMenuItems(context),
+              _buildHeader(context),
+              _buildMenuItems(context),
             ],
           ),
         ),
       );
 
-  Widget buildHeader(BuildContext context) => Container(
+  Widget _buildHeader(BuildContext context) => Container(
         color: mainColor,
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top,
         ),
       );
 
-  Widget buildMenuItems(BuildContext context) => Column(
+  // tabs in sidebar
+
+  Widget _buildMenuItems(BuildContext context) => Column(
         children: [
-          ListTile(
-            leading: const Icon(Icons.local_grocery_store),
-            title: Text(
-              "Liste de courses",
-              style: TextStyle(color: mainColor),
+          _tab(
+            context,
+            "Liste de courses",
+            const Icon(Icons.local_grocery_store),
+            HookBuilder(
+              builder: (context) => useGroceriesView(),
             ),
-            onTap: () async {
-              await navigation(
-                context,
-                HookBuilder(
-                  builder: (context) => useGroceriesView(),
-                ),
-              );
-            },
           ),
+
+          // -----------------------------
+
+          // ...
         ],
+      );
+
+  // tab style
+
+  ListTile _tab(BuildContext context, String title, Icon icon, Widget view) =>
+      ListTile(
+        leading: icon,
+        title: Text(
+          title,
+          style: TextStyle(color: mainColor),
+        ),
+        onTap: () async {
+          await navigation(
+            context,
+            view,
+          );
+        },
       );
 }
