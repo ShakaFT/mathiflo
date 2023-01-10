@@ -24,8 +24,8 @@ class ConfirmationPopup extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _actionButton(context, "Annuler"),
-                _actionButton(context, "Confirmer"),
+                _actionButton(context, "Annuler", () {}),
+                _actionButton(context, "Confirmer", confirmation),
               ],
             ),
           ],
@@ -34,11 +34,12 @@ class ConfirmationPopup extends StatelessWidget {
 
   // Private methods
 
-  _actionButton(BuildContext context, String title) => Padding(
+  _actionButton(BuildContext context, String title, void Function() action) =>
+      Padding(
         padding: const EdgeInsets.only(top: 20),
         child: ElevatedButton(
           onPressed: () {
-            confirmation();
+            action();
             // ignore: use_build_context_synchronously
             Navigator.pop(context); // close popup
           },
@@ -46,3 +47,23 @@ class ConfirmationPopup extends StatelessWidget {
         ),
       );
 }
+
+snackbar(BuildContext context, String text) =>
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.blue,
+        content: Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height / 2.5,
+          right: 20,
+          left: 20,
+        ),
+      ),
+    );

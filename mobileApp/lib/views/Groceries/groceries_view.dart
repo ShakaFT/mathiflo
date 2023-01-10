@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/utils.dart';
-import 'package:mathiflo/views/Groceries/widgets/item_popups.dart';
-import 'package:mathiflo/views/Groceries/widgets/list_item_widget.dart';
+import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
+import 'package:mathiflo/views/Groceries/widgets/list_items.dart';
 import 'package:mathiflo/widgets/bar.dart';
-import 'package:mathiflo/widgets/confirmation_popup.dart';
 import 'package:mathiflo/widgets/navigation_drawer.dart';
+import 'package:mathiflo/widgets/popups.dart';
 
 useGroceriesView() => use(const _GroceriesView());
 
@@ -66,14 +67,19 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   Future<void> _addItemClick(BuildContext context) async {
     await showDialog(
       context: context,
-      builder: (context) => AddItemPopup(
+      builder: (context) => HandleItemPopup(
         list: list,
+        index: -1,
+        item: Item("", 1),
       ),
     );
   }
 
   Future<void> _clearList(BuildContext context) async {
-    if (list.isEmpty) return;
+    if (list.isEmpty) {
+      snackbar(context, 'Rempli la liste de course avant de vouloir la vider');
+      return;
+    }
     await showDialog(
       context: context,
       builder: (context) => ConfirmationPopup(

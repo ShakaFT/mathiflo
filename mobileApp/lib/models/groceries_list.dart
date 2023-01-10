@@ -20,6 +20,8 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
 
   bool get isEmpty => state.isEmpty;
 
+  List<Item> get items => state;
+
   Future<bool> refresh() async {
     final groceriesList = await getNetworkGroceries();
     if (groceriesList is List<Item>) {
