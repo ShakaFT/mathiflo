@@ -33,7 +33,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
             future: future,
             builder: (context, snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(child: CircularProgressIndicator(color: mainColor))
                     : HookBuilder(
                         builder: (context) => ListItemWidget(list: list),
                       ),

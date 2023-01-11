@@ -18,6 +18,7 @@ class ListItemWidget extends HookWidget {
   Widget build(BuildContext context) => StateNotifierBuilder(
         stateNotifier: list,
         builder: (context, items, _) => RefreshIndicator(
+          color: mainColor,
           onRefresh: _refresh,
           child: list.isEmpty
               ? Stack(
@@ -59,7 +60,7 @@ class ListItemWidget extends HookWidget {
             15,
           ),
           child: IconButton(
-            icon: const Icon(Icons.edit),
+            icon: Icon(Icons.edit, color: mainColor),
             onPressed: () async {
               await _editItemPopup(context, index, items[index]);
             },
