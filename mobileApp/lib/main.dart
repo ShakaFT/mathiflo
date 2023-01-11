@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'mathiflo',
           theme: _theme(),
-          darkTheme: _darkTheme(),
+          darkTheme: _theme(),
           home: HookBuilder(
             builder: (context) => useGroceriesView(),
           ),
@@ -26,10 +27,7 @@ class MyApp extends StatelessWidget {
       );
 }
 
-_darkTheme() => ThemeData(
-      primarySwatch: Colors.orange,
-    );
-
 _theme() => ThemeData(
-      primarySwatch: Colors.orange,
+      // primarySwatch: Colors.orange,
+      primaryColor: mainColor,
     );

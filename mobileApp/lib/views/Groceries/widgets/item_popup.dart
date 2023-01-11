@@ -3,7 +3,7 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
-import 'package:mathiflo/widgets/flotting_action_buttons.dart';
+import 'package:mathiflo/widgets/buttons.dart';
 
 // --> Style of Handle Item Popup
 
@@ -101,8 +101,9 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: ElevatedButton(
-                  onPressed: _disableButton()
+                child: button(
+                  index == -1 ? "Ajouter" : "Modifier",
+                  _disableButton()
                       ? null
                       : () async {
                           if (await _updateGroceriesList(setPopupState) ==
@@ -110,10 +111,6 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                             Navigator.pop(context); // close popup
                           }
                         },
-                  child: Text(
-                    index == -1 ? "Ajouter" : "Modifier",
-                    style: TextStyle(color: textColor),
-                  ),
                 ),
               ),
               if (apiError.isNotEmpty)
@@ -121,8 +118,8 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     apiError,
-                    style: const TextStyle(
-                      color: Colors.red,
+                    style: TextStyle(
+                      color: errorColor,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

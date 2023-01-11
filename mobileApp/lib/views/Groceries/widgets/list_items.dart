@@ -59,7 +59,6 @@ class ListItemWidget extends HookWidget {
             15,
           ),
           child: IconButton(
-            color: Colors.blue,
             icon: const Icon(Icons.edit),
             onPressed: () async {
               await _editItemPopup(context, index, items[index]);
@@ -83,15 +82,14 @@ class ListItemWidget extends HookWidget {
             items[index].quantity.toString(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
             ),
           ),
         ),
         // Remove button
         IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.close,
-            color: Colors.red,
+            color: errorColor,
           ),
           onPressed: () async {
             await _removeItem(context, index, items[index]);

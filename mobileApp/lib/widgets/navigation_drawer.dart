@@ -34,7 +34,7 @@ class NavigationDrawer extends StatelessWidget {
           _tab(
             context,
             "Liste de courses",
-            const Icon(Icons.local_grocery_store),
+            Icon(Icons.local_grocery_store, color: mainColor),
             HookBuilder(
               builder: (context) => useGroceriesView(),
             ),

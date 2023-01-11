@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/widgets/buttons.dart';
 
 // ignore_for_file: must_be_immutable
 class ConfirmationPopup extends StatelessWidget {
@@ -37,15 +38,15 @@ class ConfirmationPopup extends StatelessWidget {
   _actionButton(BuildContext context, String title, void Function()? action) =>
       Padding(
         padding: const EdgeInsets.only(top: 20),
-        child: ElevatedButton(
-          onPressed: action == null
+        child: button(
+          title,
+          action == null
               ? null
               : () {
                   action();
                   // ignore: use_build_context_synchronously
                   Navigator.pop(context); // close popup
                 },
-          child: Text(title, style: TextStyle(color: textColor)),
         ),
       );
 }
@@ -53,7 +54,7 @@ class ConfirmationPopup extends StatelessWidget {
 snackbar(BuildContext context, String text, {bool error = false}) =>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: error ? Colors.red : Colors.blue,
+        backgroundColor: error ? errorColor : Colors.blue,
         content: Text(
           text,
           textAlign: TextAlign.center,
