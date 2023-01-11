@@ -34,6 +34,8 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
   late String quantity;
 
   String nameError = "";
+  String apiError = "";
+  bool inProcess = false; // true during API calls
 
   @override
   void initState() {
@@ -100,20 +102,31 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                  onPressed: !_formIsValid()
+                  onPressed: _disableButton()
                       ? null
                       : () async {
-                          if (await _updateGroceriesList() == false) {
-                            _updateNameError(
-                              setPopupState,
-                            ); // add error if name is empty
-                            return;
+                          if (await _updateGroceriesList(setPopupState) ==
+                              true) {
+                            Navigator.pop(context); // close popup
                           }
-                          Navigator.pop(context); // close popup
                         },
-                  child: Text("Modifier", style: TextStyle(color: textColor)),
+                  child: Text(
+                    index == -1 ? "Ajouter" : "Modifier",
+                    style: TextStyle(color: textColor),
+                  ),
                 ),
               ),
+              if (apiError.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    apiError,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -150,27 +163,36 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
 
   // Action methods
 
-  Future<bool> _updateGroceriesList() async {
-    if (!_formIsValid()) return false;
+  Future<bool> _updateGroceriesList(setPopupState) async {
+    inProcess = true;
 
     final item =
         Item(nameController.text.trim().toUpperCase(), int.parse(quantity));
 
-    // Add in remote database
-    if (index == -1) {
-      list.addItem(item);
-    } else {
-      list.replaceItem(index, item);
+    final groceriesList = [...list.items];
+    if (index >= 0) {
+      groceriesList.removeAt(index);
     }
-    await updateNetworkGroceries(list.items);
+    groceriesList.add(item);
 
-    // Add in groceries list
-
-    return true;
+    if (await updateNetworkGroceries(groceriesList) == true) {
+      if (index == -1) {
+        list.addItem(item);
+      } else {
+        list.replaceItem(index, item);
+      }
+      inProcess = false;
+      return true;
+    }
+    setPopupState(() {
+      apiError = unknownError;
+    });
+    inProcess = false;
+    return false;
   }
 
   // Util methods
 
-  bool _formIsValid() =>
-      nameError.isEmpty && nameController.text.trim().isNotEmpty;
+  bool _disableButton() =>
+      nameError.isNotEmpty || nameController.text.trim().isEmpty || inProcess;
 }

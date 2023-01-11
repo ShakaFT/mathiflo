@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
-import 'package:mathiflo/widgets/confirmation_popup.dart';
+import 'package:mathiflo/widgets/popups.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
@@ -116,10 +117,7 @@ class ListItemWidget extends HookWidget {
   }
 
   Future<void> _refresh() async {
-    if (await list.refresh()) {
-      return;
-    }
-    // TODO Add error handling !!!
+    if (!await list.refresh()) {}
   }
 
   Future<void> _removeItem(BuildContext context, int index, Item item) async {
@@ -130,8 +128,12 @@ class ListItemWidget extends HookWidget {
         message:
             "Voulez-vous vraiment supprimer cet article ? L'action est irréversible.",
         confirmation: () async {
-          list.removeItem(index);
-          await updateNetworkGroceries(list.items);
+          final groceriesList = [...list.items]..removeAt(index);
+          if (await updateNetworkGroceries(groceriesList)) {
+            list.removeItem(index);
+          } else {
+            snackbar(context, unknownError, error: true);
+          }
         },
       ),
     );

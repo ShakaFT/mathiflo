@@ -12,7 +12,7 @@ class ConfirmationPopup extends StatelessWidget {
 
   final String title;
   final String message;
-  final void Function() confirmation;
+  final void Function()? confirmation;
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -34,24 +34,26 @@ class ConfirmationPopup extends StatelessWidget {
 
   // Private methods
 
-  _actionButton(BuildContext context, String title, void Function() action) =>
+  _actionButton(BuildContext context, String title, void Function()? action) =>
       Padding(
         padding: const EdgeInsets.only(top: 20),
         child: ElevatedButton(
-          onPressed: () {
-            action();
-            // ignore: use_build_context_synchronously
-            Navigator.pop(context); // close popup
-          },
+          onPressed: action == null
+              ? null
+              : () {
+                  action();
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context); // close popup
+                },
           child: Text(title, style: TextStyle(color: textColor)),
         ),
       );
 }
 
-snackbar(BuildContext context, String text) =>
+snackbar(BuildContext context, String text, {bool error = false}) =>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: error ? Colors.red : Colors.blue,
         content: Text(
           text,
           textAlign: TextAlign.center,

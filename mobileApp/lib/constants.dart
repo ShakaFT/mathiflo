@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+String unknownError =
+    "Une erreur inconnue est survenue... Vérifie ta connexion internet.";
 String urlGroceries = "https://groceries-dot-mathiflo.ew.r.appspot.com";
 
 Color mainColor = Colors.orange.shade700;

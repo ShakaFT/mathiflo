@@ -9,18 +9,23 @@ Future<List<Item>?> getNetworkGroceries() async {
   final uri = Uri.tryParse(
     '$urlGroceries/groceries',
   )!;
-  final response = await http.get(uri);
 
-  if (response.statusCode < 200 && response.statusCode > 299) {
+  try {
+    final response = await http.get(uri);
+
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      return null;
+    }
+    final decodedPayload = json.decode(response.body)["groceriesList"];
+
+    final groceriesList = <Item>[];
+    for (final element in decodedPayload) {
+      groceriesList.add(Item(element["name"], element["quantity"]));
+    }
+    return groceriesList;
+  } catch (e) {
     return null;
   }
-  final decodedPayload = json.decode(response.body)["groceriesList"];
-
-  final groceriesList = <Item>[];
-  for (final element in decodedPayload) {
-    groceriesList.add(Item(element["name"], element["quantity"]));
-  }
-  return groceriesList;
 }
 
 Future<bool> updateNetworkGroceries(List<Item> groceriesList) async {
@@ -33,15 +38,23 @@ Future<bool> updateNetworkGroceries(List<Item> groceriesList) async {
     payload.add({"name": item.name, "quantity": item.quantity});
   }
   final encodedPayload = jsonEncode({'groceriesList': payload});
-  final response = await http.post(uri, body: encodedPayload);
-
-  return response.statusCode < 200 && response.statusCode > 299;
+  try {
+    final response = await http.post(uri, body: encodedPayload);
+    return response.statusCode >= 200 && response.statusCode <= 299;
+  } catch (e) {
+    return false;
+  }
 }
 
 Future<bool> resetNetworkGroceries() async {
   final uri = Uri.tryParse(
     '$urlGroceries/groceries/reset',
   )!;
-  final response = await http.post(uri);
-  return response.statusCode < 200 && response.statusCode > 299;
+
+  try {
+    final response = await http.post(uri);
+    return response.statusCode >= 200 && response.statusCode <= 299;
+  } catch (e) {
+    return false;
+  }
 }

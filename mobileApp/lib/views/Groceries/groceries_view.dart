@@ -4,7 +4,6 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
-import 'package:mathiflo/utils.dart';
 import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
 import 'package:mathiflo/views/Groceries/widgets/list_items.dart';
 import 'package:mathiflo/widgets/bar.dart';
@@ -22,17 +21,22 @@ class _GroceriesView extends Hook<void> {
 
 class _GroceriesViewState extends HookState<void, _GroceriesView> {
   late GroceriesListNotifier list = GroceriesListNotifier();
+  late final Future future = _loadGroceriesList();
 
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
           appBar: appBar("Liste de courses", icons: _appBarIcons()),
           // --> ListView with groceries list items
-          body: loading(
-            _loadGroceriesList,
-            HookBuilder(
-              builder: (context) => ListItemWidget(list: list),
-            ),
+          body: FutureBuilder(
+            // ignore: discarded_futures
+            future: future,
+            builder: (context, snapshot) =>
+                snapshot.connectionState == ConnectionState.waiting
+                    ? const Center(child: CircularProgressIndicator())
+                    : HookBuilder(
+                        builder: (context) => ListItemWidget(list: list),
+                      ),
           ),
           // --> Button to add item
           bottomNavigationBar: bottomBar(
@@ -86,17 +90,19 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
         title: "Vider la liste",
         message: "Voulez-vous vraiment vider la liste de courses ?",
         confirmation: () async {
-          await resetNetworkGroceries();
-          list.clear();
+          if (await resetNetworkGroceries()) {
+            list.clear();
+          } else {
+            snackbar(context, unknownError, error: true);
+          }
         },
       ),
     );
   }
 
   Future<void> _loadGroceriesList() async {
-    if (await list.refresh()) {
-      return;
+    if (!await list.refresh()) {
+      snackbar(context, unknownError, error: true);
     }
-    // TODO Add error handling !!!
   }
 }

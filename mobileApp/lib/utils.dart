@@ -7,7 +7,8 @@ Future<void> navigation(BuildContext context, Widget view) async {
   );
 }
 
-loading(Function awaitedFunction, widgetToDisplay) => FutureBuilder(
+loading(Future<void> Function() awaitedFunction, widgetToDisplay) =>
+    FutureBuilder(
       // ignore: discarded_futures
       future: awaitedFunction(),
       builder: (context, snapshot) =>
