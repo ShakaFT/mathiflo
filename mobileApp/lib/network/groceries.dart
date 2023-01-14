@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mathiflo/constants.dart';
-
+import 'package:mathiflo/config/config.dart' as config;
 import 'package:mathiflo/models/groceries_item.dart';
 
 Future<List<Item>?> getNetworkGroceries() async {
   // If returns null, API call has not worked
   final uri = Uri.tryParse(
-    '$urlGroceries/groceries',
+    '${config.groceriesUrl}/groceries',
   )!;
 
   try {
@@ -30,7 +29,7 @@ Future<List<Item>?> getNetworkGroceries() async {
 
 Future<bool> updateNetworkGroceries(List<Item> groceriesList) async {
   final uri = Uri.tryParse(
-    '$urlGroceries/groceries/update',
+    '${config.groceriesUrl}/groceries/update',
   )!;
 
   final payload = [];
@@ -48,7 +47,7 @@ Future<bool> updateNetworkGroceries(List<Item> groceriesList) async {
 
 Future<bool> resetNetworkGroceries() async {
   final uri = Uri.tryParse(
-    '$urlGroceries/groceries/reset',
+    '${config.groceriesUrl}/groceries/reset',
   )!;
 
   try {

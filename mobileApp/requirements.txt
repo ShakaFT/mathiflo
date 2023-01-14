@@ -1,0 +1,3 @@
+# This file contains dependencies used by Python scripts.
+pick==2.2.0
+rich==13.1.0

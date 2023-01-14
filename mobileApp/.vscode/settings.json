@@ -4,10 +4,12 @@
     },
     "files.exclude": {
         "**/.*": true,
+
+        "**/__pycache__": true,
+
         "**/*.iml": true,
         "**/*.lock": true,
         "**/analysis*": true,
-
         "android/": true,
         "build/": true,
         "ios/": true,
