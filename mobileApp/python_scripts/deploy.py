@@ -11,7 +11,7 @@ from rich import print as shell_print
 import utils
 
 ENVIRONNEMENT = utils.get_environnement()
-SERVICES: list[str] = utils.get_devices()
+DEVICES: list[str] = utils.get_devices()
 
 
 def deploy(target_device: str):
@@ -27,10 +27,10 @@ def select_menu() -> list:
     This function shows select menu and returns the target device.
     """
     title = "Choose the target device :"
-    options = ["None", *utils.get_devices()]
+    options = ["None", *DEVICES]
     chosen_device, _ = pick(options, title)
 
-    return chosen_device.split("(")[0]
+    return chosen_device.split("-")[1].strip()
 
 
 def set_config():

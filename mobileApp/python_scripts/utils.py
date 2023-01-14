@@ -40,7 +40,14 @@ def get_devices() -> list[str]:
     This function returns a list that contains connected devices.
     """
     devices = subprocess.getoutput("flutter devices").split("\n")[2:]
-    return [device.split("•")[0].strip() for device in devices]
+    result = []
+    for device in devices:
+        splited_device = device.split('•')
+        device_name = splited_device[0].strip()
+        device_id = splited_device[1].strip()
+        result.append(f"{device_name} - {device_id}")
+
+    return result
 
 
 def reset():
