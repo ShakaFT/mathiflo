@@ -37,7 +37,7 @@ def set_config():
     """
     This method sets lib/config.json file.
     """
-    flutter_config_path = "lib/config.json"
+    flutter_config_path = "assets/config/config.json"
     python_config_path = "python_scripts/config.json"
 
     with open(python_config_path, "r", encoding="UTF-8") as file:
