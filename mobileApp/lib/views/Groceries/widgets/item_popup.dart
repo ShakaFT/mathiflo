@@ -63,8 +63,9 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
             children: <Widget>[
               TextField(
                 controller: nameController,
+                textCapitalization: TextCapitalization.characters, // upperCase
                 onChanged: (_) {
-                  _updateNameError(setPopupState);
+                  setPopupState(_updateNameError);
                 },
                 decoration: InputDecoration(
                   hintText: "Nom de l'article",
@@ -145,17 +146,15 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
     });
   }
 
-  void _updateNameError(setPopupState) {
+  void _updateNameError() {
     final name = nameController.text.trim().toUpperCase();
-    setPopupState(() {
-      if (name.isEmpty) {
-        nameError = "Vous devez inscrire un nom";
-      } else if (list.exists(name) && name != item.name) {
-        nameError = "Cet article existe déjà";
-      } else {
-        nameError = "";
-      }
-    });
+    if (name.isEmpty) {
+      nameError = "Vous devez inscrire un nom";
+    } else if (list.exists(name) && name != item.name) {
+      nameError = "Cet article existe déjà";
+    } else {
+      nameError = "";
+    }
   }
 
   // Action methods

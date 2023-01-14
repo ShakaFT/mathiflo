@@ -24,7 +24,7 @@ class ListItemWidget extends HookWidget {
               ? Stack(
                   alignment: Alignment.center,
                   children: [
-                    const Text("La liste de course est vide"),
+                    const Text("La liste de courses est vide"),
                     ListView(
                       physics: const AlwaysScrollableScrollPhysics(),
                     ),
