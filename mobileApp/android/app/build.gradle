@@ -57,6 +57,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // buildToolsVersion "3.0.0"
     }
 
     signingConfigs {

@@ -7,16 +7,17 @@
 
         "**/__pycache__": true,
 
-        "**/*.iml": true,
-        "**/*.lock": true,
-        "**/analysis*": true,
-        "android/": true,
-        "build/": true,
+        "**/*.iml": false,
+        "**/*.lock": false,
+        "**/analysis*": false,
+        "android/": false,
+        "build/": false,
         "ios/": true,
         "linux/": true,
         "macos/": true,
-        "test/": true,
+        "test/": false,
         "web/": true,
         "windows/": true
     },
+    "java.configuration.updateBuildConfiguration": "automatic",
 }
