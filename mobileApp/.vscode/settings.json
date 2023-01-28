@@ -4,18 +4,14 @@
     },
     "files.exclude": {
         "**/.*": true,
-
         "**/__pycache__": true,
-
-        "**/*.iml": false,
-        "**/*.lock": false,
-        "**/analysis*": false,
-        "android/": false,
-        "build/": false,
-        "ios/": true,
+        "**/*.iml": true,
+        "**/*.lock": true,
+        "**/analysis*": true,
+        "build": true,
         "linux/": true,
         "macos/": true,
-        "test/": false,
+        "test/": true,
         "web/": true,
         "windows/": true
     },
