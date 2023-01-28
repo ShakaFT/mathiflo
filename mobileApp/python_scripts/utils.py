@@ -57,8 +57,8 @@ def push(message: str):
     """
     This functions commits and pushs.
     """
-    subprocess.call(f"git commit -am '{message}'", shell=True)
-    subprocess.call("git push", shell=True)
+    __write_in_shell(f"git commit -am '{message}'")
+    __write_in_shell("git push")
 
 
 def rename_app():

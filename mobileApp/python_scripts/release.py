@@ -56,7 +56,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # utils.verify_environment()
+    utils.verify_environment()
     try:
         main()
     except Exception as e:  # pylint: disable=broad-except
