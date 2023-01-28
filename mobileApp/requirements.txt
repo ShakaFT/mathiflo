@@ -2,3 +2,4 @@
 autopep8==2.0.1
 pick==2.2.0
 rich==13.1.0
+PyYAML==6.0
