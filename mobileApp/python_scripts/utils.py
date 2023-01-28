@@ -59,6 +59,7 @@ def push(message: str):
     """
     __write_in_shell(f"git commit -am '{message}'")
     __write_in_shell("git push")
+    __write_in_shell("echo hello")
 
 
 def rename_app():

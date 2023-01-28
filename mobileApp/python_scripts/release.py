@@ -51,16 +51,16 @@ def main():
 
     upgrade_version()
     utils.set_config(ENVIRONNEMENT)
+    print('je rename')
     utils.rename_app()
     release()
 
 
 if __name__ == "__main__":
-    main()
-    # utils.verify_environment()
-    # try:
-    #     main()
-    # except Exception as e:  # pylint: disable=broad-except
-    #     shell_print(f"[bold red]Exit with error : {str(e)}")
-    # finally:
-    #     utils.reset()
+    utils.verify_environment()
+    try:
+        main()
+    except Exception as e:  # pylint: disable=broad-except
+        shell_print(f"[bold red]Exit with error : {str(e)}")
+    finally:
+        utils.reset()
