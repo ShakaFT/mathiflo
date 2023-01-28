@@ -1,9 +1,12 @@
 """
 This module contains util functions.
 """
+import json
 import os
+import plistlib
 import subprocess
 from typing import Any
+from xml.etree import ElementTree as et
 
 
 def branch_name() -> str:
@@ -50,6 +53,35 @@ def get_devices() -> list[str]:
     return result
 
 
+def push(message: str):
+    """
+    This functions commits and pushs.
+    """
+    __write_in_shell(f"git commit -am '{message}'")
+    __write_in_shell("git push")
+
+
+def rename_app():
+    """
+    This function renames app to "Mathiflo" (production name).
+    """
+    # Android
+    et.register_namespace('android', 'http://schemas.android.com/apk/res/android')
+    tree = et.parse("android/app/src/main/AndroidManifest.xml")
+    application = tree.getroot().find('application')
+    application.attrib['{http://schemas.android.com/apk/res/android}label'] = "Mathiflo"
+    tree.write("android/app/src/main/AndroidManifest.xml")
+
+    # IOS
+    with open("ios/Runner/Info.plist", "rb") as file:
+        ios_config = plistlib.load(file)
+
+    ios_config["CFBundleName"] = "Mathiflo"
+
+    with open("ios/Runner/Info.plist", "wb") as file:
+        plistlib.dump(ios_config, file)
+
+
 def reset():
     """
     This function executes `git reset --hard` command.
@@ -67,6 +99,20 @@ def run_service(service: str):
         f"python services/{service}/main.py"
     ]
     subprocess.call(" ".join(commands), shell=True)
+
+
+def set_config(environnement: str):
+    """
+    This function sets lib/config.json file.
+    """
+    flutter_config_path = "assets/config/config.json"
+    python_config_path = "python_scripts/config.json"
+
+    with open(python_config_path, "r", encoding="UTF-8") as file:
+        python_config = json.load(file)
+
+    with open(flutter_config_path, "w", encoding="UTF-8") as file:
+        json.dump(python_config[environnement], file)
 
 
 def verify_environment():
