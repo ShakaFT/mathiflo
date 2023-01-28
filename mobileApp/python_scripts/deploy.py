@@ -1,7 +1,6 @@
 """
 This script is used to locally deploy app.
 """
-import json
 import subprocess
 import sys
 
@@ -33,26 +32,6 @@ def select_menu() -> list:
     return chosen_device.split("(")[0]
 
 
-def set_config():
-    """
-    This method sets lib/config.json file.
-    """
-    flutter_config_path = "assets/config/config.json"
-    python_config_path = "python_scripts/config.json"
-
-    with open(python_config_path, "r", encoding="UTF-8") as file:
-        python_config = json.load(file)
-
-
-    with open(flutter_config_path, "r", encoding="UTF-8") as file:
-        flutter_config = json.load(file)
-
-    flutter_config["restAPI"] = python_config[ENVIRONNEMENT]["restAPI"]
-
-    with open(flutter_config_path, "w", encoding="UTF-8") as file:
-        json.dump(flutter_config, file)
-
-
 def main():
     """
     main function
@@ -67,7 +46,8 @@ def main():
         shell_print("[red]Exit, no service to deploy...")
         sys.exit()
 
-    set_config()
+    utils.set_config(ENVIRONNEMENT)
+    utils.rename_app()
     deploy(target_device)
 
 
