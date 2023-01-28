@@ -51,7 +51,6 @@ def main():
 
     upgrade_version()
     utils.set_config(ENVIRONNEMENT)
-    print('je rename')
     utils.rename_app()
     release()
 
