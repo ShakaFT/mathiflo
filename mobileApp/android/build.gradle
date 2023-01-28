@@ -1,13 +1,14 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.8.0'
     repositories {
         google()
-        mavenCentral()
+        jcenter()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.triplet.gradle:play-publisher:3.7.0"
     }
 }
 
@@ -15,17 +16,20 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://maven.google.com/"
+        }
     }
 }
 
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+// apply plugin: 'com.github.triplet.play'

@@ -1,0 +1,14 @@
+default_platform(:android)
+
+platform :android do
+
+  desc 'Deploy a new internal version to the Google Play Store'
+  lane :deploy do
+    supply(
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      track: 'internal',
+      release_status: 'draft'
+    )
+  end
+
+end

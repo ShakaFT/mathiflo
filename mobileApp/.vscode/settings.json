@@ -4,19 +4,16 @@
     },
     "files.exclude": {
         "**/.*": true,
-
         "**/__pycache__": true,
-
         "**/*.iml": true,
         "**/*.lock": true,
         "**/analysis*": true,
-        "android/": true,
-        "build/": true,
-        "ios/": true,
+        "build": true,
         "linux/": true,
         "macos/": true,
         "test/": true,
         "web/": true,
         "windows/": true
     },
+    "java.configuration.updateBuildConfiguration": "automatic",
 }
