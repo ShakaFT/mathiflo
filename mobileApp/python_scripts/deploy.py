@@ -29,7 +29,10 @@ def select_menu() -> list:
     options = ["None", *DEVICES]
     chosen_device, _ = pick(options, title)
 
-    return chosen_device.split("-")[1].strip()
+    if chosen_device != "None":
+        chosen_device = chosen_device.split("-")[1].strip()
+
+    return chosen_device
 
 
 def main():
