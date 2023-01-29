@@ -26,6 +26,7 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     final groceriesList = await getNetworkGroceries();
     if (groceriesList is List<Item>) {
       state = groceriesList;
+      _sort();
       return true;
     }
     return false;
