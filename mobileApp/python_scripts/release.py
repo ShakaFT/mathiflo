@@ -1,6 +1,7 @@
 """
 This script is used to locally deploy app.
 """
+import os
 import subprocess
 import sys
 
@@ -18,6 +19,7 @@ def release():
     This function sends a new release on Play Store.
     """
     subprocess.call("flutter build appbundle", shell=True)
+    os.chdir('android')
     subprocess.call("fastlane deploy", shell=True)
 
 
