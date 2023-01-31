@@ -17,6 +17,12 @@ plusButton(void Function()? onPressed) =>
 minusButton(void Function()? onPressed) =>
     _floatingButton(const Icon(Icons.remove), onPressed);
 
+nextButton(void Function()? onPressed) =>
+    _floatingButton(const Icon(Icons.arrow_right), onPressed);
+
+previousButton(void Function()? onPressed) =>
+    _floatingButton(const Icon(Icons.arrow_left), onPressed);
+
 // Private
 
 _floatingButton(Icon icon, void Function()? onPressed) => FloatingActionButton(

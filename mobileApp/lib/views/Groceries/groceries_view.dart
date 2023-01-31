@@ -50,7 +50,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
               ),
             ),
           ),
-          drawer: const NavigationDrawer(),
+          drawer: const NavigationDrawerWidget(),
         ),
         onWillPop: () async => false,
       );
@@ -81,8 +81,11 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
 
   Future<void> _clearList(BuildContext context) async {
     if (list.isEmpty) {
-      snackbar(context, 'Remplis la liste de courses avant de vouloir la vider',
-          error: true);
+      snackbar(
+        context,
+        'Remplis la liste de courses avant de vouloir la vider',
+        error: true,
+      );
       return;
     }
     await showDialog(
