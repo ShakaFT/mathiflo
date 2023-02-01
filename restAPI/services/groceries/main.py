@@ -4,7 +4,7 @@ This module contains main endpoints of groceries service.
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from FirestoreClient import db
+from FirestoreClient import database
 
 app = Flask(__name__)
 CORS(app)
@@ -23,7 +23,7 @@ def get_groceries():
     """
     This endpoint returns groceries list.
     """
-    groceries_list = db.groceries_list.get().to_dict() or {}
+    groceries_list = database.groceries_list.get().to_dict() or {}
     return jsonify(groceriesList = groceries_list.get("list", {}))
 
 
@@ -38,7 +38,7 @@ def add_groceries():
     if groceries_list is None:
         return jsonify(error="missing groceriesList"), 400
 
-    db.groceries_list.set({"list": groceries_list}, merge=True)
+    database.groceries_list.set({"list": groceries_list}, merge=True)
 
     return jsonify(), 204
 
@@ -48,7 +48,7 @@ def reset_groceries():
     """
     This endpoint resets groceries list.
     """
-    db.groceries_list.delete()
+    database.groceries_list.delete()
     return jsonify(), 204
 
 
