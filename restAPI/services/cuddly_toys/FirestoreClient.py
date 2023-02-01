@@ -24,11 +24,24 @@ class FirestoreClient(firestore_v1.client.Client):
         firestore_v1.client.Client.__init__(self)
 
     @property
-    def groceries_list(self):
+    def cuddly_toys(self) -> list[str]:
         """
-        This method return an instance of groceries_list document.
+        This method returns cuddly toys list from database.
         """
-        return self.document(constants.COLLECTION_GROCERIES, constants.DOCUMENT_GROCERIES)
+        return (
+            self.document(
+                constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
+            )
+            .get()
+            .to_dict()["cuddly_toys"]
+        )
+
+    @property
+    def history(self):
+        """
+        This method returns the cuddly_toys_history Firestore collection.
+        """
+        return self.collection(constants.COLLECTION_HISTORY)
 
 
 database = FirestoreClient.start()
