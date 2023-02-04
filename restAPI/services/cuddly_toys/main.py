@@ -58,7 +58,9 @@ def new_night():
     It called by Scheduler Job every 24 hours at 20:00 pm.
     """
     history = History.new_night()
-    history.update_database()
+    print(history.florent)
+    print(history.mathilde)
+    # history.update_database()
     return jsonify(), 204
 
 

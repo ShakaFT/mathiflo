@@ -50,7 +50,15 @@ class History:
         This method creates an instance by generation a new night.
         """
         florent, mathilde = cls.__get_obligation()
+        print("start")
+        print(florent)
+        print(mathilde)
         florent, mathilde = cls.__generate_night(florent, mathilde)
+        print("before")
+        print(florent)
+        print(mathilde)
+        print("after")
+        florent, mathilde = cls.__Bukowski_Martha(florent, mathilde)
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
     @property
@@ -99,10 +107,57 @@ class History:
         else:
             has_more = False
 
-        return self.__history_data | {"token": self.__history_token, "hasMore": has_more}
+        return self.__history_data | {
+            "token": self.__history_token,
+            "hasMore": has_more,
+        }
 
     @staticmethod
-    def __generate_night(florent: list[str], mathilde: list[str]):
+    def __Bukowski_Martha(
+        florent: list[str], mathilde: list[str]
+    ) -> tuple[list[str], list[str]]:
+        """
+        This static method reorders night because Bukowski
+        can only sleep with Martha unkess Bukowski or Martha
+        is alone with a human.
+        """
+        if (
+            # Bukowski or Martha sleeps alone with Florent
+            (len(florent) == 1 and florent[0] in ["Bukowski", "Martha"])
+            # Bukowski or Martha sleeps alone with Mathilde
+            or (len(mathilde) == 1 and mathilde[0] in ["Bukowski", "Martha"])
+            # Bukowski and Martha sleeps with Florent
+            or ("Bukowski" in florent and "Martha" in florent)
+            # Bukowski and Martha sleeps with Mathilde
+            or ("Bukowski" in mathilde and "Martha" in mathilde)
+        ):
+            return florent, mathilde
+
+        random_human = random.choice(["Florent", "Mathilde"])
+
+        if (len(florent) < len(mathilde)) or (
+            len(florent) == len(mathilde) and random_human == "Florent"
+        ):
+            # Florent sleeps with Bukowski and Martha
+            try:
+                florent.append(mathilde.pop(mathilde.index("Bukowski")))
+            except ValueError:
+                # Bukowski isn't in list
+                florent.append(mathilde.pop(mathilde.index("Martha")))
+        else:
+            # Mathilde sleeps with Bukowski and Martha
+            try:
+                mathilde.append(florent.pop(florent.index("Bukowski")))
+            except ValueError:
+                # Bukowski isn't in list
+                mathilde.append(florent.pop(florent.index("Martha")))
+
+        return florent, mathilde
+
+    @staticmethod
+    def __generate_night(
+        florent: list[str], mathilde: list[str]
+    ) -> tuple[list[str], list[str]]:
         """
         This static method fills florent mathilde lists.
         """
