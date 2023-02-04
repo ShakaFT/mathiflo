@@ -34,6 +34,17 @@ class NavigationDrawerWidget extends StatelessWidget {
         children: [
           _tab(
             context,
+            "Doudous",
+            Icon(Icons.hotel_rounded, color: mainColor),
+            HookBuilder(
+              builder: (context) => useCuddlyToysView(),
+            ),
+          ),
+
+          // -----------------------------
+
+          _tab(
+            context,
             "Liste de courses",
             Icon(Icons.local_grocery_store, color: mainColor),
             HookBuilder(
@@ -43,14 +54,14 @@ class NavigationDrawerWidget extends StatelessWidget {
 
           // -----------------------------
 
-          _tab(
-            context,
-            "Doudous",
-            Icon(Icons.living_rounded, color: mainColor),
-            HookBuilder(
-              builder: (context) => useCuddlyToysView(),
-            ),
-          ),
+          // _tab(
+          //   context,
+          //   "Tricount",
+          //   Icon(Icons.savings, color: mainColor),
+          //   HookBuilder(
+          //     builder: (context) => useCuddlyToysView(),
+          //   ),
+          // ),
 
           // ...
         ],

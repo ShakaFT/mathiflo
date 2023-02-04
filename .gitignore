@@ -46,3 +46,6 @@ app.*.map.json
 # restAPI
 **/__pycache__
 **/.venv
+
+# vscode
+**/*.code-workspace

@@ -76,11 +76,10 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   minusButton(
-                    quantity == "1"
-                        ? null
-                        : () {
-                            _decrementQuantity(setPopupState);
-                          },
+                    () {
+                      _decrementQuantity(setPopupState);
+                    },
+                    disabled: quantity == "1",
                   ),
                   Padding(
                     padding: const EdgeInsets.all(
@@ -92,11 +91,10 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                     ),
                   ),
                   plusButton(
-                    quantity == "9"
-                        ? null
-                        : () {
-                            _incrementQuantity(setPopupState);
-                          },
+                    () {
+                      _incrementQuantity(setPopupState);
+                    },
+                    disabled: quantity == "9",
                   ),
                 ],
               ),
@@ -109,6 +107,7 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                       : () async {
                           if (await _updateGroceriesList(setPopupState) ==
                               true) {
+                            // ignore: use_build_context_synchronously
                             Navigator.pop(context); // close popup
                           }
                         },

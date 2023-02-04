@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/models/cuddly_toys.dart';
+import 'package:mathiflo/models/cuddly_toys_histories_list.dart';
 import 'package:mathiflo/views/CuddlyToys/widgets/cuddly_toys.dart';
 import 'package:mathiflo/widgets/bar.dart';
 import 'package:mathiflo/widgets/navigation_drawer.dart';
@@ -17,8 +17,8 @@ class _CuddlyToysView extends Hook<void> {
 }
 
 class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
-  late CuddlyToysNotifier cuddlyToys = CuddlyToysNotifier();
-  late final Future future = _loadCuddlyToys();
+  late CuddlyToysHistoriesNotifier cuddlyToys = CuddlyToysHistoriesNotifier();
+  late final Future future = _loadCuddlyToysHistories();
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -32,7 +32,7 @@ class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
                     ? Center(child: CircularProgressIndicator(color: mainColor))
                     : HookBuilder(
                         builder: (context) =>
-                            CuddlyToysWidget(cuddlyToys: cuddlyToys),
+                            CuddlyToysWidget(histories: cuddlyToys),
                       ),
           ),
           drawer: const NavigationDrawerWidget(),
@@ -51,8 +51,9 @@ class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
 
   // Action methods
 
-  Future<void> _loadCuddlyToys() async {
+  Future<void> _loadCuddlyToysHistories() async {
     if (!await cuddlyToys.refresh()) {
+      // ignore: use_build_context_synchronously
       snackbar(context, unknownError, error: true);
     }
   }
