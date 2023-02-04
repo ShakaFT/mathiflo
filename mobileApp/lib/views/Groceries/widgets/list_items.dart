@@ -7,6 +7,7 @@ import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
 import 'package:mathiflo/widgets/popups.dart';
+import 'package:mathiflo/widgets/texts.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
@@ -21,15 +22,7 @@ class ListItemWidget extends HookWidget {
           color: mainColor,
           onRefresh: _refresh,
           child: list.isEmpty
-              ? Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const Text("La liste de courses est vide"),
-                    ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                    ),
-                  ],
-                )
+              ? scrollableText("La liste de courses est vide")
               : ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) => Card(
@@ -131,6 +124,7 @@ class ListItemWidget extends HookWidget {
           if (await updateNetworkGroceries(groceriesList)) {
             list.removeItem(index);
           } else {
+            // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
           }
         },

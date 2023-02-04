@@ -97,6 +97,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
           if (await resetNetworkGroceries()) {
             list.clear();
           } else {
+            // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
           }
         },
@@ -106,6 +107,7 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
 
   Future<void> _loadGroceriesList() async {
     if (!await list.refresh()) {
+      // ignore: use_build_context_synchronously
       snackbar(context, unknownError, error: true);
     }
   }

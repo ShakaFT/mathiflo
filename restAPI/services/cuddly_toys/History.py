@@ -82,7 +82,24 @@ class History:
         """
         This method returns a dict that represents the history information.
         """
-        return self.__history_data | {"token": self.__history_token}
+        snapshot = (
+            database.collection(constants.COLLECTION_HISTORY)
+            .document(self.__history_token)
+            .get()
+        )
+        query = (
+            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)
+            .limit(1)
+            .start_after(snapshot)
+        )
+
+        for _ in query.stream():
+            has_more = True
+            break
+        else:
+            has_more = False
+
+        return self.__history_data | {"token": self.__history_token, "hasMore": has_more}
 
     @staticmethod
     def __generate_night(florent: list[str], mathilde: list[str]):

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 late String defaultUrl;
 late String groceriesUrl;
+late String cuddlyToysUrl;
 
 Future<void> loadConfigData() async {
   // Load config data
@@ -13,4 +14,5 @@ Future<void> loadConfigData() async {
   // Set data
   defaultUrl = data['restAPI']['default'];
   groceriesUrl = data['restAPI']['groceries'];
+  cuddlyToysUrl = data['restAPI']['cuddlyToys'];
 }
