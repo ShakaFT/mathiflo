@@ -51,9 +51,6 @@ class History:
         """
         florent, mathilde = cls.__get_obligation()
         florent, mathilde = cls.__generate_night(florent, mathilde)
-        print("failed ?")
-        print(florent)
-        print(mathilde)
         florent, mathilde = cls.__Bukowski_Martha(florent, mathilde)
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
@@ -162,8 +159,6 @@ class History:
         mathilde_nb_cuddly_toys = random.randint(
             len(mathilde) + 1, len(cuddly_toys) - len(florent)
         )
-
-        print(mathilde_nb_cuddly_toys)
 
         random.shuffle(cuddly_toys)
         while cuddly_toys:
