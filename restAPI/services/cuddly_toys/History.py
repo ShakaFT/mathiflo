@@ -50,14 +50,10 @@ class History:
         This method creates an instance by generation a new night.
         """
         florent, mathilde = cls.__get_obligation()
-        print("start")
-        print(florent)
-        print(mathilde)
         florent, mathilde = cls.__generate_night(florent, mathilde)
-        print("before")
+        print("failed ?")
         print(florent)
         print(mathilde)
-        print("after")
         florent, mathilde = cls.__Bukowski_Martha(florent, mathilde)
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
@@ -164,8 +160,10 @@ class History:
         cuddly_toys = database.cuddly_toys
 
         mathilde_nb_cuddly_toys = random.randint(
-            len(mathilde), len(cuddly_toys) - len(florent)
+            len(mathilde) + 1, len(cuddly_toys) - len(florent)
         )
+
+        print(mathilde_nb_cuddly_toys)
 
         random.shuffle(cuddly_toys)
         while cuddly_toys:
