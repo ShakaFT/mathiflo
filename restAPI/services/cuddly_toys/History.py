@@ -60,7 +60,7 @@ class History:
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
         """
-        return self.__history_data["Florent"]
+        return sorted(self.__history_data["Florent"])
 
     @property
     def mathilde(self) -> list[str]:
@@ -68,7 +68,14 @@ class History:
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
         """
-        return self.__history_data["Mathilde"]
+        return sorted(self.__history_data["Mathilde"])
+
+    @property
+    def timestamp(self) -> int:
+        """
+        This method returns timestamp.
+        """
+        return self.__history_data["timestamp"]
 
     def update_database(self):
         """
@@ -100,9 +107,12 @@ class History:
         else:
             has_more = False
 
-        return self.__history_data | {
-            "token": self.__history_token,
+        return {
+            "Florent": self.florent,
             "hasMore": has_more,
+            "Mathilde": self.mathilde,
+            "timestamp": self.timestamp,
+            "token": self.__history_token,
         }
 
     @staticmethod
@@ -156,9 +166,12 @@ class History:
         """
         cuddly_toys = database.cuddly_toys
 
-        mathilde_nb_cuddly_toys = random.randint(
-            len(mathilde) + 1, len(cuddly_toys) - len(florent)
+        mathilde_min = len(mathilde) if mathilde else 1
+        mathilde_max = (
+            len(cuddly_toys) - len(florent) if florent else len(cuddly_toys) - 1
         )
+
+        mathilde_nb_cuddly_toys = random.randint(mathilde_min, mathilde_max)
 
         random.shuffle(cuddly_toys)
         while cuddly_toys:
