@@ -36,6 +36,7 @@ def run_service(service: str):
     root_path = os.path.join(os.path.dirname(__file__), os.pardir)
     commands = [
         f"GOOGLE_APPLICATION_CREDENTIALS={root_path}/services/credentials.json",
+        "GOOGLE_CLOUD_PROJECT=mathiflo-dev",
         f"python services/{service}/main.py"
     ]
     subprocess.call(" ".join(commands), shell=True)
