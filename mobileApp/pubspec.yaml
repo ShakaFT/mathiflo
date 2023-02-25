@@ -28,7 +28,7 @@ flutter_icons:
   image_path: assets/app_icon.png
   ios: true
 flutter_native_splash:
-  color: '#ff8000'
+  color: '#ffffff'
   image: assets/launch_app.png
 name: mathiflo
 publish_to: none
