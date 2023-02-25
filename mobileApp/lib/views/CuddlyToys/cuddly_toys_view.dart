@@ -23,7 +23,7 @@ class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
-          appBar: appBar("Doudous", icons: _appBarIcons()),
+          appBar: appBar("Doudous"),
           body: FutureBuilder(
             // ignore: discarded_futures
             future: future,
@@ -39,15 +39,6 @@ class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
         ),
         onWillPop: () async => false,
       );
-
-  // Widget methods
-
-  _appBarIcons() => <Widget>[
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () {},
-        ),
-      ];
 
   // Action methods
 
