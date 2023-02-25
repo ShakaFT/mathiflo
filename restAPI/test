@@ -1,3 +1,0 @@
-# This script allows to test in local services.
-
-python python_scripts/test.py
