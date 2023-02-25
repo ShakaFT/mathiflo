@@ -158,7 +158,38 @@ class CuddlyToysWidget extends HookWidget {
 
       result.add(
         TableRow(
-          children: [centerText(forMathilde), centerText(forFlorent)],
+          children: [
+            Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Image(
+                    image: NetworkImage(
+                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+                    ),
+                    height: 50,
+                    width: 50,
+                  ),
+                ),
+                centerText(forMathilde),
+              ],
+            ),
+            Row(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Image(
+                    image: NetworkImage(
+                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+                    ),
+                    height: 50,
+                    width: 50,
+                  ),
+                ),
+                centerText(forFlorent),
+              ],
+            ),
+          ],
         ),
       );
     }
