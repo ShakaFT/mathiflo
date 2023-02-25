@@ -8,6 +8,8 @@ import random
 from time import time
 
 from firebase_admin import firestore, storage
+from google.auth import compute_engine
+import google.auth.transport.requests
 
 import constants
 from FirestoreClient import database
@@ -236,12 +238,17 @@ class History:
     def __get_urls(self, cuddly_toys: list[str]) -> dict:
         bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
         expires_at_ms = datetime.now() + timedelta(minutes=1)
+        auth_request = google.auth.transport.requests.Request()
+        signing_credentials = compute_engine.IDTokenCredentials(auth_request, "")
+
         return [
             {
                 "name": cuddly_toy,
                 "image_url": bucket.blob(
                     f"cuddly_toys_pictures/{cuddly_toy}.jpeg"
-                ).generate_signed_url(expiration=expires_at_ms),
+                ).generate_signed_url(
+                    expiration=expires_at_ms, credentials=signing_credentials
+                ),
             }
             for cuddly_toy in cuddly_toys
         ]
