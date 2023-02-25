@@ -28,7 +28,7 @@ def select_menu() -> list:
     """
     title = "Choose the service you want to deploy: "
     options = ["None", "All"]
-    options += SERVICES
+    options.extend(SERVICES)
     service_to_deploy, _ = pick(options, title)
 
     match service_to_deploy:
