@@ -3,7 +3,6 @@ Test module
 """
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from google.cloud import exceptions
 
 from History import History
 
@@ -29,26 +28,6 @@ def get_history():
         return jsonify(history.to_dict())
     except TypeError:
         return jsonify(error="Invalid token"), 400
-
-
-@app.put("/history")
-def update_history():
-    """
-    This endpoint updates history.
-    """
-    try:
-        if token := request.args.get("token"):
-            history = History(request.get_json(force=True), token)
-            history.update_database()
-            return jsonify(), 204
-        else:
-            return jsonify(error="Missing token"), 400
-
-    except exceptions.NotFound:
-        return jsonify(error="Invalid token"), 400
-
-    except ValueError as e:
-        return jsonify(error=str(e)), 400
 
 
 @app.post("/new-night")

@@ -2,10 +2,12 @@
 This module contains History class.
 """
 from collections import defaultdict
+from datetime import datetime, timedelta
+import os
 import random
 from time import time
 
-from firebase_admin import firestore
+from firebase_admin import firestore, storage
 
 import constants
 from FirestoreClient import database
@@ -55,20 +57,20 @@ class History:
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
     @property
-    def florent(self) -> list[str]:
+    def florent(self) -> dict:
         """
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
         """
-        return sorted(self.__history_data["Florent"])
+        return self.__get_urls(self.__history_data["Florent"])
 
     @property
-    def mathilde(self) -> list[str]:
+    def mathilde(self) -> dict:
         """
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
         """
-        return sorted(self.__history_data["Mathilde"])
+        return self.__get_urls(self.__history_data["Mathilde"])
 
     @property
     def timestamp(self) -> int:
@@ -230,6 +232,19 @@ class History:
                 if number == constants.LIMIT_NIGHT_IN_A_ROW
             ],
         )
+
+    def __get_urls(self, cuddly_toys: list[str]) -> dict:
+        bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
+        expires_at_ms = datetime.now() + timedelta(minutes=1)
+        return [
+            {
+                "name": cuddly_toy,
+                "image_url": bucket.blob(
+                    f"cuddly_toys_pictures/{cuddly_toy}.jpeg"
+                ).generate_signed_url(expiration=expires_at_ms),
+            }
+            for cuddly_toy in cuddly_toys
+        ]
 
     def __check_data(self, data: dict):
         if "Florent" not in data or "Mathilde" not in data or "timestamp" not in data:
