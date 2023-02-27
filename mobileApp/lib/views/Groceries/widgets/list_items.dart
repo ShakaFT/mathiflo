@@ -11,9 +11,10 @@ import 'package:mathiflo/widgets/texts.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
-  const ListItemWidget({super.key, required this.list});
+  ListItemWidget({super.key, required this.list});
 
   final GroceriesListNotifier list;
+  bool checked = false;
 
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
@@ -25,15 +26,25 @@ class ListItemWidget extends HookWidget {
               ? scrollableText("La liste de courses est vide")
               : ListView.builder(
                   itemCount: items.length,
-                  itemBuilder: (context, index) => Card(
-                    elevation: 1.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: _listContent(context, index, items),
+                  itemBuilder: (context, index) => GestureDetector(
+                    child: Card(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 700),
+                        curve: Curves.easeInOut,
+                        color: checked ? Colors.grey : Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: _listContent(context, index, items),
+                          ),
+                        ),
                       ),
                     ),
+                    onDoubleTap: () {
+                      checked = !checked;
+                      list.notify();
+                    },
                   ),
                 ),
         ),
@@ -48,6 +59,7 @@ class ListItemWidget extends HookWidget {
   ) =>
       <Widget>[
         // Edit button
+        if (checked == true) Icon(Icons.check, color: mainColor),
         Padding(
           padding: const EdgeInsets.all(
             15,
