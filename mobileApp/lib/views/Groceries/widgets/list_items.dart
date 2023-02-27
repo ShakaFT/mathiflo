@@ -59,7 +59,11 @@ class ListItemWidget extends HookWidget {
   ) =>
       <Widget>[
         // Edit button
-        if (checked == true) Icon(Icons.check, color: mainColor),
+
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: checked ? Icon(Icons.check, color: mainColor) : null,
+        ),
         Padding(
           padding: const EdgeInsets.all(
             15,
