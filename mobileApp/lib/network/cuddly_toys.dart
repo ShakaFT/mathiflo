@@ -19,27 +19,13 @@ Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
     }
     final Map<String, dynamic> decodedPayload = json.decode(response.body);
     return CuddlyToysHistory(
-      decodedPayload["Florent"].cast<String>(),
-      decodedPayload["Mathilde"].cast<String>(),
+      List<Map<String, dynamic>>.from(decodedPayload["Florent"]),
+      List<Map<String, dynamic>>.from(decodedPayload["Mathilde"]),
       decodedPayload["timestamp"],
       hasMore: decodedPayload["hasMore"],
       token: decodedPayload["token"],
     );
   } catch (e) {
     return null;
-  }
-}
-
-Future<bool> updateNetworkCuddlyToysNight(CuddlyToysHistory history) async {
-  final uri = Uri.tryParse(
-    '${config.cuddlyToysUrl}/history',
-  )!;
-
-  final encodedPayload = jsonEncode(history.toMap());
-  try {
-    final response = await http.put(uri, body: encodedPayload);
-    return response.statusCode >= 200 && response.statusCode <= 299;
-  } catch (e) {
-    return false;
   }
 }
