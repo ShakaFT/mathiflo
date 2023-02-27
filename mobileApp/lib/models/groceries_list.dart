@@ -36,6 +36,10 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state = newItems;
   }
 
+  void notify() {
+    state = [...state];
+  }
+
   void replaceItem(int index, Item item) {
     state.removeAt(index);
     state = [...state, item];
