@@ -168,12 +168,9 @@ class CuddlyToysWidget extends HookWidget {
                 if (forMathilde["name"]! != "")
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      image: NetworkImage(
-                        forMathilde["image_url"]!,
-                      ),
-                      height: 50,
-                      width: 50,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(forMathilde["image_url"]!),
                     ),
                   ),
                 centerText(forMathilde["name"]!),
@@ -184,12 +181,9 @@ class CuddlyToysWidget extends HookWidget {
                 if (forFlorent["name"]! != "")
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Image(
-                      image: NetworkImage(
-                        forFlorent["image_url"]!,
-                      ),
-                      height: 50,
-                      width: 50,
+                    child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(forFlorent["image_url"]!),
                     ),
                   ),
                 centerText(forFlorent["name"]!),
