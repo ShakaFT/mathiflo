@@ -151,42 +151,48 @@ class CuddlyToysWidget extends HookWidget {
 
     final result = <TableRow>[];
     for (var i = 0; i < mathilde.length + florent.length; i++) {
-      final forMathilde = mathilde.length > i ? mathilde.elementAt(i) : "";
-      final forFlorent = florent.length > i ? florent.elementAt(i) : "";
+      final forMathilde = mathilde.length > i
+          ? mathilde.elementAt(i)
+          : {'name': '', 'image_url': ''};
+      final forFlorent = florent.length > i
+          ? florent.elementAt(i)
+          : {'name': '', 'image_url': ''};
 
-      if (forMathilde.isEmpty && forFlorent.isEmpty) break;
+      if (forMathilde["name"]!.isEmpty && forFlorent["name"]!.isEmpty) break;
 
       result.add(
         TableRow(
           children: [
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Image(
-                    image: NetworkImage(
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+                if (forMathilde["name"]! != "")
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      image: NetworkImage(
+                        forMathilde["image_url"]!,
+                      ),
+                      height: 50,
+                      width: 50,
                     ),
-                    height: 50,
-                    width: 50,
                   ),
-                ),
-                centerText(forMathilde),
+                centerText(forMathilde["name"]!),
               ],
             ),
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Image(
-                    image: NetworkImage(
-                      'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+                if (forFlorent["name"]! != "")
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image(
+                      image: NetworkImage(
+                        forFlorent["image_url"]!,
+                      ),
+                      height: 50,
+                      width: 50,
                     ),
-                    height: 50,
-                    width: 50,
                   ),
-                ),
-                centerText(forFlorent),
+                centerText(forFlorent["name"]!),
               ],
             ),
           ],

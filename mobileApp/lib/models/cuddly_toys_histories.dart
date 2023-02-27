@@ -8,8 +8,8 @@ class CuddlyToysHistory {
   });
 
   bool hasMore = false;
-  List<String> florent;
-  List<String> mathilde;
+  List<Map<String, dynamic>> florent;
+  List<Map<String, dynamic>> mathilde;
   int timestamp;
   String token;
 
