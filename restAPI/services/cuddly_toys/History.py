@@ -62,7 +62,7 @@ class History:
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
         """
-        return self.__get_urls(self.__history_data["Florent"]["name"])
+        return self.__get_urls(self.__history_data["Florent"])
 
     @property
     def mathilde(self) -> list[str]:
@@ -70,7 +70,7 @@ class History:
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
         """
-        return self.__get_urls(self.__history_data["Mathilde"]["name"])
+        return self.__get_urls(self.__history_data["Mathilde"])
 
     @property
     def timestamp(self) -> int:
@@ -217,9 +217,9 @@ class History:
 
         for history in latest_histories:
             for cuddly_toy in history.florent:
-                florent_counter[cuddly_toy] += 1
+                florent_counter[cuddly_toy]["name"] += 1
             for cuddly_toy in history.mathilde:
-                mathilde_counter[cuddly_toy] += 1
+                mathilde_counter[cuddly_toy]["name"] += 1
 
         return (
             [
