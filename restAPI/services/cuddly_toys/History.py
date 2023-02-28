@@ -217,9 +217,9 @@ class History:
 
         for history in latest_histories:
             for cuddly_toy in history.florent:
-                florent_counter[cuddly_toy]["name"] += 1
+                florent_counter[cuddly_toy["name"]] += 1
             for cuddly_toy in history.mathilde:
-                mathilde_counter[cuddly_toy]["name"] += 1
+                mathilde_counter[cuddly_toy["name"]] += 1
 
         return (
             [
