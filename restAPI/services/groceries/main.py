@@ -23,6 +23,7 @@ def get_groceries():
     """
     This endpoint returns groceries list.
     """
+    print(request.args.get("debug", "not found"))
     groceries_list = database.groceries_list.get().to_dict() or {}
     return jsonify(groceriesList = groceries_list.get("list", []))
 
