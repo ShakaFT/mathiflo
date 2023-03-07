@@ -10,16 +10,13 @@ import yaml
 
 import utils
 
-ENVIRONNEMENT = utils.get_environnement()
-SERVICES: list[str] = utils.get_devices()
-
 
 def release():
     """
     This function sends a new release on Play Store.
     """
     subprocess.call("flutter build appbundle", shell=True)
-    os.chdir('android')
+    os.chdir("android")
     subprocess.call("fastlane deploy", shell=True)
 
 
@@ -43,16 +40,19 @@ def main():
     """
     main function
     """
-    if ENVIRONNEMENT == "prod":
+    environment = utils.get_environnement()
+
+    if environment == "prod":
         shell_print(
-            "[bold italic yellow on red blink]You really want to send release in production ?")
+            "[bold italic yellow on red blink]You really want to send release in production ?"
+        )
         input("Press Enter to continue...")
     else:
-        shell_print("[red]Exit ! You can send release only on master...")
+        shell_print("[red]Exit ! You can send release only on main...")
         sys.exit()
 
     upgrade_version()
-    utils.set_config(ENVIRONNEMENT)
+    utils.set_config(environment)
     utils.rename_app()
     release()
 

@@ -29,7 +29,9 @@ def main():
         shell_print("[magenta]No service will be locally")
         return
 
-    shell_print(f"[magenta]This service will be runned locally : [green]{service_to_run}")
+    shell_print(
+        f"[magenta]This service will be runned locally : [green]{service_to_run}"
+    )
     utils.run_service(service_to_run)
 
 

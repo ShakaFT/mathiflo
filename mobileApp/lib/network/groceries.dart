@@ -6,7 +6,7 @@ import 'package:mathiflo/models/groceries_item.dart';
 Future<List<Item>?> getNetworkGroceries() async {
   // If returns null, API call has not worked
   final uri = Uri.tryParse(
-    '${config.groceriesUrl}/groceries',
+    '${config.groceriesUrl}/groceries?debug=true',
   )!;
 
   try {

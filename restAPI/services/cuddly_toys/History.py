@@ -57,7 +57,7 @@ class History:
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
     @property
-    def florent(self) -> dict:
+    def florent(self) -> list[str]:
         """
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
@@ -65,7 +65,7 @@ class History:
         return self.__get_urls(self.__history_data["Florent"])
 
     @property
-    def mathilde(self) -> dict:
+    def mathilde(self) -> list[str]:
         """
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
@@ -214,11 +214,12 @@ class History:
         # in latest nights
         florent_counter = defaultdict(int)
         mathilde_counter = defaultdict(int)
+
         for history in latest_histories:
             for cuddly_toy in history.florent:
-                florent_counter[cuddly_toy] += 1
+                florent_counter[cuddly_toy["name"]] += 1
             for cuddly_toy in history.mathilde:
-                mathilde_counter[cuddly_toy] += 1
+                mathilde_counter[cuddly_toy["name"]] += 1
 
         return (
             [
