@@ -23,13 +23,12 @@ def get_groceries():
     """
     This endpoint returns groceries list.
     """
-    print(request.args.get("debug", "not found"))
     groceries_list = database.groceries_list.get().to_dict() or {}
-    return jsonify(groceriesList = groceries_list.get("list", []))
+    return jsonify(groceriesList=groceries_list.get("list", []))
 
 
-@app.post("/groceries/update")
-def add_groceries():
+@app.post("/groceries")
+def update_groceries():
     """
     This endpoint updates groceries list.
     """
@@ -44,12 +43,25 @@ def add_groceries():
     return jsonify(), 204
 
 
-@app.post("/groceries/reset")
-def reset_groceries():
+@app.delete("/groceries")
+def delete_groceries():
     """
-    This endpoint resets groceries list.
+    This endpoint deletes groceries list.
     """
-    database.groceries_list.delete()
+    payload = request.get_json(force=True)
+
+    if payload.get("all", False):
+        database.groceries_list.delete()
+        return jsonify(), 204
+
+    groceries_list = (database.groceries_list.get().to_dict() or {}).get("list", [])
+    new_groceries_list = [
+        item
+        for item in groceries_list
+        if item["name"] not in payload.get("toDelete", [])
+    ]
+
+    database.groceries_list.update({"list": new_groceries_list})
     return jsonify(), 204
 
 
