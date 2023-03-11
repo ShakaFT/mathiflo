@@ -1,3 +1,4 @@
+import 'package:mathiflo/localstore/localstore.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/network/groceries.dart';
 import 'package:state_notifier/state_notifier.dart';
@@ -27,6 +28,12 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     if (groceriesList is List<Item>) {
       state = groceriesList;
       _sort();
+
+      final checkedItems = await getCheckedItems();
+      for (var item in groceriesList) {
+        item.checked = checkedItems.contains(item.name);
+      }
+
       return true;
     }
     return false;
@@ -34,6 +41,11 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
 
   set items(List<Item> newItems) {
     state = newItems;
+  }
+
+  void updateCheck(int index, {bool checked = true}) {
+    state[index].checked = checked;
+    notify();
   }
 
   void notify() {
@@ -48,7 +60,7 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
 
   void removeItem(int index) {
     state.removeAt(index);
-    state = [...state];
+    notify();
   }
 
   // Private methods

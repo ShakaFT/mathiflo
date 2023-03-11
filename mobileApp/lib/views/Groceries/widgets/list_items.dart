@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/localstore/localstore.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
@@ -11,10 +12,9 @@ import 'package:mathiflo/widgets/texts.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
-  ListItemWidget({super.key, required this.list});
+  const ListItemWidget({super.key, required this.list});
 
   final GroceriesListNotifier list;
-  bool checked = false;
 
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
@@ -31,7 +31,8 @@ class ListItemWidget extends HookWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 700),
                         curve: Curves.easeInOut,
-                        color: checked ? Colors.grey : Colors.white,
+                        color:
+                            items[index].checked ? Colors.grey : Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -41,9 +42,16 @@ class ListItemWidget extends HookWidget {
                         ),
                       ),
                     ),
-                    onDoubleTap: () {
-                      checked = !checked;
-                      list.notify();
+                    onDoubleTap: () async {
+                      final checkedItems = await getCheckedItems();
+                      print(checkedItems);
+                      if (checkedItems.contains(items[index].name)) {
+                        await removeCheckedItem(items[index].name);
+                        list.updateCheck(index, checked: false);
+                      } else {
+                        await addCheckedItem(items[index].name);
+                        list.updateCheck(index);
+                      }
                     },
                   ),
                 ),
@@ -62,7 +70,8 @@ class ListItemWidget extends HookWidget {
 
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: checked ? Icon(Icons.check, color: mainColor) : null,
+          child:
+              items[index].checked ? Icon(Icons.check, color: mainColor) : null,
         ),
         Padding(
           padding: const EdgeInsets.all(

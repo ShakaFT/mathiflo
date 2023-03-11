@@ -3,4 +3,5 @@ class Item {
 
   String name;
   int quantity;
+  bool checked = false;
 }
