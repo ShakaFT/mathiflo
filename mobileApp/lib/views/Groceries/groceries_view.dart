@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/localstore/localstore.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
 import 'package:mathiflo/network/groceries.dart';
@@ -94,8 +95,8 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
         title: "Vider la liste",
         message: "Voulez-vous vraiment vider la liste de courses ?",
         confirmation: () async {
-          if (await resetNetworkGroceries()) {
-            list.clear();
+          if (await resetNetworkGroceries(await getCheckedItems())) {
+            await list.refresh();
           } else {
             // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
