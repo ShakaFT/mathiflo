@@ -81,8 +81,20 @@ avatarImage(BuildContext context, String imageUrl) => Padding(
             await showDialog(
               context: context,
               builder: (_) => Dialog(
-                child: Image.network(imageUrl,
-                    width: MediaQuery.of(context).size.width / 2),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.width / 2,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: Image.network(imageUrl).image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
             );
           },
