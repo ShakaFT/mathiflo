@@ -70,3 +70,22 @@ snackbar(BuildContext context, String text, {bool error = false}) =>
         ),
       ),
     );
+
+avatarImage(BuildContext context, String imageUrl) => Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundImage: NetworkImage(imageUrl),
+        child: GestureDetector(
+          onTap: () async {
+            await showDialog(
+              context: context,
+              builder: (_) => Dialog(
+                child: Image.network(imageUrl,
+                    width: MediaQuery.of(context).size.width / 2),
+              ),
+            );
+          },
+        ),
+      ),
+    );
