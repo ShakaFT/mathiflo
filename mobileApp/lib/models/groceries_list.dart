@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:mathiflo/localstore/localstore.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/network/groceries.dart';
@@ -30,7 +31,7 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
       _sort();
 
       final checkedItems = await getCheckedItems();
-      for (var item in groceriesList) {
+      for (final item in groceriesList) {
         item.checked = checkedItems.contains(item.name);
       }
 
@@ -66,6 +67,8 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
   // Private methods
 
   void _sort() {
-    state.sort((a, b) => a.name.compareTo(b.name));
+    state.sort(
+      (a, b) => removeDiacritics(a.name).compareTo(removeDiacritics(b.name)),
+    );
   }
 }
