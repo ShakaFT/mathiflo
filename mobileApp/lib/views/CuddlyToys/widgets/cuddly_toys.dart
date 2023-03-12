@@ -61,7 +61,7 @@ class CuddlyToysWidget extends HookWidget {
                                   )
                                 ],
                               ),
-                              ..._rowToDisplay()
+                              ..._rowToDisplay(context)
                             ],
                           ),
                         ),
@@ -145,7 +145,7 @@ class CuddlyToysWidget extends HookWidget {
         )
       ];
 
-  List<TableRow> _rowToDisplay() {
+  List<TableRow> _rowToDisplay(BuildContext context) {
     final mathilde = histories.getAt(_currentIndex).mathilde;
     final florent = histories.getAt(_currentIndex).florent;
 
@@ -166,26 +166,14 @@ class CuddlyToysWidget extends HookWidget {
             Row(
               children: [
                 if (forMathilde["name"]! != "")
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(forMathilde["image_url"]!),
-                    ),
-                  ),
+                  avatarImage(context, forMathilde["image_url"]!),
                 centerText(forMathilde["name"]!),
               ],
             ),
             Row(
               children: [
                 if (forFlorent["name"]! != "")
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(forFlorent["image_url"]!),
-                    ),
-                  ),
+                  avatarImage(context, forFlorent["image_url"]!),
                 centerText(forFlorent["name"]!),
               ],
             ),
