@@ -44,7 +44,6 @@ class ListItemWidget extends HookWidget {
                     ),
                     onDoubleTap: () async {
                       final checkedItems = await getCheckedItems();
-                      print(checkedItems);
                       if (checkedItems.contains(items[index].name)) {
                         await removeCheckedItem(items[index].name);
                         list.updateCheck(index, checked: false);
