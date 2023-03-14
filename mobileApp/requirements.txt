@@ -3,4 +3,4 @@ black==23.1.0
 pick==2.2.0
 rich==13.3.2
 PyYAML==6.0
-sourcery==1.0.6
+sourcery==1.0.7
