@@ -1,10 +1,13 @@
-23.1.0
-firebase-admin==6.0.1
-Flask==2.2.2
+# Requirements used for local development
+black==23.1.0
+pick==2.2.0
+pylint==2.17.0
+rich==13.3.2
+sourcery==1.0.7
+
+# Requirements used by services
+firebase-admin==6.1.0
+Flask==2.2.3
 Flask-Cors==3.0.10
 google.cloud==0.34.0
-pick==2.2.0
-pylint==2.15.9
-rich==12.6.0
-sourcery==1.0.6
 Unidecode==1.3.6
