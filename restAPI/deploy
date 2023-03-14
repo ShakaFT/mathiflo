@@ -1,7 +1,0 @@
-firebase login:use tornicelliflorent@gmail.com
-gcloud auth login
-
-python python_scripts/deploy.py
-
-firebase login:use florent@geode.com
-gcloud auth login
