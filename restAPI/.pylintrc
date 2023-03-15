@@ -1,5 +1,4 @@
 [MASTER]
-init-hook="import sys; sys.path.append('geode_package')"
 
 [MESSAGES CONTROL]
 
@@ -21,16 +20,23 @@ confidence=HIGH,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=line-too-long,
-        invalid-name, # snake_case so if name is 'error', not authorized
-	wrong-import-position,
-	unexpected-keyword-arg,
-        redefined-outer-name,
-        global-statement,
-        no-member # for constants
+disable=global-statement,
+		invalid-name, # snake_case so if name is 'error', not authorized... '_' should be in variable.
+		logging-fstring-interpolation,
+		no-member, # pylint not found constants...
+		no-name-in-module, # pylint not found functions...
+		redefined-outer-name,
+		unexpected-keyword-arg,
+		ungrouped-imports,
+		wrong-import-position,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once). See also the "--disable" option for examples.
 enable=c-extension-no-member
+
+[FORMAT]
+
+# Skip lines with http/https and lines with only strings
+ignore-long-lines=^(\s*\".*)|(\s*f.*)|(.*\s*(# )?<?https?://\S+>?)$
