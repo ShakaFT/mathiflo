@@ -9,6 +9,7 @@ import 'package:mathiflo/network/groceries.dart';
 import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
 import 'package:mathiflo/widgets/popups.dart';
 import 'package:mathiflo/widgets/texts.dart';
+import 'package:vibration/vibration.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
@@ -42,14 +43,20 @@ class ListItemWidget extends HookWidget {
                         ),
                       ),
                     ),
-                    onDoubleTap: () async {
+                    onTap: () async {
                       final checkedItems = await getCheckedItems();
                       if (checkedItems.contains(items[index].name)) {
                         await removeCheckedItem(items[index].name);
                         list.updateCheck(index, checked: false);
-                      } else {
+                        await Vibration.vibrate(duration: 100);
+                      }
+                    },
+                    onLongPress: () async {
+                      final checkedItems = await getCheckedItems();
+                      if (!checkedItems.contains(items[index].name)) {
                         await addCheckedItem(items[index].name);
                         list.updateCheck(index);
+                        await Vibration.vibrate(duration: 100);
                       }
                     },
                   ),

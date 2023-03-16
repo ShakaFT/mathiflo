@@ -92,8 +92,8 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
     await showDialog(
       context: context,
       builder: (context) => ConfirmationPopup(
-        title: "Vider la liste",
-        message: "Voulez-vous vraiment vider la liste de courses ?",
+        title: "Supprimer les articles",
+        message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
         confirmation: () async {
           if (await resetNetworkGroceries(await getCheckedItems())) {
             await list.refresh();
