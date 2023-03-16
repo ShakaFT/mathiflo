@@ -82,12 +82,12 @@ avatarImage(BuildContext context, String imageUrl) => Padding(
               context: context,
               builder: (_) => Dialog(
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: Image.network(imageUrl).image,
