@@ -5,10 +5,13 @@ import 'package:mathiflo/constants.dart';
 
 // Public
 
-button(String title, void Function()? onPressed) => ElevatedButton(
-      onPressed: onPressed,
+button(String title, void Function()? onPressed, {bool disabled = false}) =>
+    ElevatedButton(
+      onPressed: disabled ? null : onPressed,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(mainColor),
+        backgroundColor: disabled
+            ? MaterialStateProperty.all<Color>(Colors.grey)
+            : MaterialStateProperty.all<Color>(mainColor),
       ),
       child: Text(title, style: TextStyle(color: textColor)),
     );
