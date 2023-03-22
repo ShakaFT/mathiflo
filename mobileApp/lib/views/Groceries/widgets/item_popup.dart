@@ -103,12 +103,16 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                 child: button(
                   index == -1 ? "Ajouter" : "Modifier",
                   () async {
-                    inProcess = true;
+                    setState(() {
+                      inProcess = true;
+                    });
                     if (await _updateGroceriesList(setPopupState) == true) {
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context); // close popup
                     }
-                    inProcess = false;
+                    setState(() {
+                      inProcess = false;
+                    });
                   },
                   disabled: nameError.isNotEmpty ||
                       nameController.text.trim().isEmpty ||
