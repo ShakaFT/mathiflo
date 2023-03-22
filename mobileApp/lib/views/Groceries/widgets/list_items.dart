@@ -32,8 +32,9 @@ class ListItemWidget extends HookWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 700),
                         curve: Curves.easeInOut,
-                        color:
-                            items[index].checked ? Colors.grey : Colors.white,
+                        color: items[index].checked
+                            ? const Color.fromARGB(255, 226, 224, 224)
+                            : Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
