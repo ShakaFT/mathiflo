@@ -102,15 +102,17 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                 padding: const EdgeInsets.only(top: 20),
                 child: button(
                   index == -1 ? "Ajouter" : "Modifier",
-                  _disableButton()
-                      ? null
-                      : () async {
-                          if (await _updateGroceriesList(setPopupState) ==
-                              true) {
-                            // ignore: use_build_context_synchronously
-                            Navigator.pop(context); // close popup
-                          }
-                        },
+                  () async {
+                    inProcess = true;
+                    if (await _updateGroceriesList(setPopupState) == true) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context); // close popup
+                    }
+                    inProcess = false;
+                  },
+                  disabled: nameError.isNotEmpty ||
+                      nameController.text.trim().isEmpty ||
+                      inProcess,
                 ),
               ),
               if (apiError.isNotEmpty)
@@ -159,8 +161,6 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
   // Action methods
 
   Future<bool> _updateGroceriesList(setPopupState) async {
-    inProcess = true;
-
     final item =
         Item(nameController.text.trim().toUpperCase(), int.parse(quantity));
 
@@ -176,18 +176,11 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
       } else {
         list.replaceItem(index, item);
       }
-      inProcess = false;
       return true;
     }
     setPopupState(() {
       apiError = unknownError;
     });
-    inProcess = false;
     return false;
   }
-
-  // Util methods
-
-  bool _disableButton() =>
-      nameError.isNotEmpty || nameController.text.trim().isEmpty || inProcess;
 }
