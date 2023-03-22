@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/globals.dart';
 import 'package:mathiflo/localstore/localstore.dart';
 import 'package:mathiflo/models/groceries_item.dart';
 import 'package:mathiflo/models/groceries_list.dart';
@@ -152,6 +153,7 @@ class ListItemWidget extends HookWidget {
         message:
             "Voulez-vous vraiment supprimer cet article ? L'action est irréversible.",
         confirmation: () async {
+          pendingAPI.value = true;
           final groceriesList = [...list.items]..removeAt(index);
           if (await updateNetworkGroceries(groceriesList)) {
             list.removeItem(index);
@@ -159,6 +161,7 @@ class ListItemWidget extends HookWidget {
             // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
           }
+          pendingAPI.value = false;
         },
       ),
     );
