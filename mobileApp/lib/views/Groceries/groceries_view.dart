@@ -24,34 +24,60 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   late GroceriesListNotifier list = GroceriesListNotifier();
   late final Future future = _loadGroceriesList();
 
+  final ValueNotifier<bool> _inProcess = ValueNotifier(false);
+
   @override
   Widget build(BuildContext context) => WillPopScope(
-        child: Scaffold(
-          appBar: appBar("Liste de courses", icons: _appBarIcons()),
-          // --> ListView with groceries list items
-          body: FutureBuilder(
-            // ignore: discarded_futures
-            future: future,
-            builder: (context, snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: appBar("Liste de courses", icons: _appBarIcons()),
+              // --> ListView with groceries list items
+              body: FutureBuilder(
+                // ignore: discarded_futures
+                future: future,
+                builder: (context, snapshot) => snapshot.connectionState ==
+                        ConnectionState.waiting
                     ? Center(child: CircularProgressIndicator(color: mainColor))
                     : HookBuilder(
                         builder: (context) => ListItemWidget(list: list),
                       ),
-          ),
-          // --> Button to add item
-          bottomNavigationBar: bottomBar(
-            BottomAppBar(
-              color: mainColor,
-              child: ButtonBarButton(
-                text: "Ajouter un article",
-                onPressed: () async {
-                  await _addItemClick(context);
-                },
+              ),
+              // --> Button to add item
+              bottomNavigationBar: bottomBar(
+                BottomAppBar(
+                  color: mainColor,
+                  child: ButtonBarButton(
+                    text: "Ajouter un article",
+                    onPressed: () async {
+                      await _addItemClick(context);
+                    },
+                  ),
+                ),
+              ),
+              drawer: const NavigationDrawerWidget(),
+            ),
+            ValueListenableBuilder(
+              valueListenable: _inProcess,
+              builder: (context, isLoading, _) => Center(
+                child: isLoading
+                    ? const Opacity(
+                        opacity: 0.8,
+                        child: ModalBarrier(
+                          dismissible: false,
+                          color: Colors.black,
+                        ),
+                      )
+                    : null,
               ),
             ),
-          ),
-          drawer: const NavigationDrawerWidget(),
+            ValueListenableBuilder(
+              valueListenable: _inProcess,
+              builder: (context, isLoading, _) => Center(
+                child: isLoading ? const CircularProgressIndicator() : null,
+              ),
+            ),
+          ],
         ),
         onWillPop: () async => false,
       );
@@ -95,12 +121,14 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
         title: "Supprimer les articles",
         message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
         confirmation: () async {
+          _inProcess.value = true;
           if (await resetNetworkGroceries(await getCheckedItems())) {
             await list.refresh();
           } else {
             // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
           }
+          _inProcess.value = false;
         },
       ),
     );
