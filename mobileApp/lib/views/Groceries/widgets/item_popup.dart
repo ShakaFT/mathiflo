@@ -178,7 +178,7 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
       if (index == -1) {
         list.addItem(item);
       } else {
-        list.replaceItem(index, item);
+        await list.replaceItem(index, item);
       }
       return true;
     }
