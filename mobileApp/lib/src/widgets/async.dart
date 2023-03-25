@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mathiflo/globals.dart';
+import 'package:mathiflo/config.dart';
 
 waitingApi() => [
       ValueListenableBuilder(

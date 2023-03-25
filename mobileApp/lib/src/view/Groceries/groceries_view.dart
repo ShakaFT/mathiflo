@@ -2,18 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/globals.dart';
-import 'package:mathiflo/localstore/localstore.dart';
-import 'package:mathiflo/models/groceries_item.dart';
-import 'package:mathiflo/models/groceries_list.dart';
-import 'package:mathiflo/network/groceries.dart';
-import 'package:mathiflo/views/Groceries/widgets/item_popup.dart';
-import 'package:mathiflo/views/Groceries/widgets/list_items.dart';
-import 'package:mathiflo/widgets/async.dart';
-import 'package:mathiflo/widgets/bar.dart';
-import 'package:mathiflo/widgets/navigation_drawer.dart';
-import 'package:mathiflo/widgets/popups.dart';
+import 'package:mathiflo/src/localstore/groceries.dart';
+import 'package:mathiflo/src/model/Groceries/groceries.dart';
+import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
+import 'package:mathiflo/src/model/Groceries/groceries_list.dart';
+import 'package:mathiflo/src/view/Groceries/widgets/item_popup.dart';
+import 'package:mathiflo/src/view/Groceries/widgets/list_items.dart';
+import 'package:mathiflo/src/widgets/async.dart';
+import 'package:mathiflo/src/widgets/bar.dart';
+import 'package:mathiflo/src/widgets/navigation_drawer.dart';
+import 'package:mathiflo/src/widgets/popups.dart';
 
 useGroceriesView() => use(const _GroceriesView());
 

@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mathiflo/config/config.dart' as config;
-import 'package:mathiflo/models/cuddly_toys_histories.dart';
+import 'package:mathiflo/config.dart' as config;
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories.dart';
 
 Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
   String token = "",
 }) async {
   // If returns null, API call has not worked
   final uri = Uri.tryParse(
-    '${config.cuddlyToysUrl}/history?token=$token',
+    '${config.cuddlyToysRestApiUrl}/history?token=$token',
   )!;
 
   try {

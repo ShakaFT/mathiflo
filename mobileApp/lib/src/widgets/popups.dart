@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/widgets/buttons.dart';
+import 'package:mathiflo/src/widgets/buttons.dart';
 
 // ignore_for_file: must_be_immutable
 class ConfirmationPopup extends StatelessWidget {

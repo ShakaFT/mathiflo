@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mathiflo/config/config.dart' as config;
-import 'package:mathiflo/models/groceries_item.dart';
+import 'package:mathiflo/config.dart' as config;
+import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 
 Future<List<Item>?> getNetworkGroceries() async {
   // If returns null, API call has not worked
   final uri = Uri.tryParse(
-    '${config.groceriesUrl}/groceries?debug=true',
+    '${config.groceriesRestApiUrl}/groceries?debug=true',
   )!;
 
   try {
@@ -29,7 +29,7 @@ Future<List<Item>?> getNetworkGroceries() async {
 
 Future<bool> updateNetworkGroceries(List<Item> groceriesList) async {
   final uri = Uri.tryParse(
-    '${config.groceriesUrl}/groceries',
+    '${config.groceriesRestApiUrl}/groceries',
   )!;
 
   final payload = [];
@@ -51,7 +51,7 @@ Future<bool> resetNetworkGroceries(
   all = false,
 }) async {
   final uri = Uri.tryParse(
-    '${config.groceriesUrl}/groceries',
+    '${config.groceriesRestApiUrl}/groceries',
   )!;
 
   final encodedPayload = jsonEncode({'all': all, 'toDelete': toDelete});

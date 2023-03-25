@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/models/cuddly_toys_histories_list.dart';
-import 'package:mathiflo/views/CuddlyToys/widgets/cuddly_toys.dart';
-import 'package:mathiflo/widgets/bar.dart';
-import 'package:mathiflo/widgets/navigation_drawer.dart';
-import 'package:mathiflo/widgets/popups.dart';
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories_list.dart';
+import 'package:mathiflo/src/view/CuddlyToys/widgets/cuddly_toys.dart';
+import 'package:mathiflo/src/widgets/bar.dart';
+import 'package:mathiflo/src/widgets/navigation_drawer.dart';
+import 'package:mathiflo/src/widgets/popups.dart';
 
 useCuddlyToysView() => use(const _CuddlyToysView());
 
