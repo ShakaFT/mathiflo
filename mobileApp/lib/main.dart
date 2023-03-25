@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:mathiflo/config/config.dart';
+import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/views/CuddlyToys/cuddly_toys_view.dart';
+import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
+import 'package:mathiflo/src/view/Groceries/groceries_view.dart';
 import 'package:mathiflo/utils.dart';
-import 'package:mathiflo/views/CuddlyToys/cuddly_toys_view.dart';
-import 'package:mathiflo/views/Groceries/groceries_view.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});

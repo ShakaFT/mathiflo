@@ -3,10 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/models/cuddly_toys_histories_list.dart';
-import 'package:mathiflo/widgets/buttons.dart';
-import 'package:mathiflo/widgets/popups.dart';
-import 'package:mathiflo/widgets/texts.dart';
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories_list.dart';
+import 'package:mathiflo/src/widgets/buttons.dart';
+import 'package:mathiflo/src/widgets/popups.dart';
+import 'package:mathiflo/src/widgets/texts.dart';
 
 // ignore: must_be_immutable
 class CuddlyToysWidget extends HookWidget {

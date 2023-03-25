@@ -1,5 +1,5 @@
-import 'package:mathiflo/models/cuddly_toys_histories.dart';
-import 'package:mathiflo/network/cuddly_toys.dart';
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys.dart';
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 class CuddlyToysHistoriesNotifier
