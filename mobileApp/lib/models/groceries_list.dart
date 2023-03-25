@@ -26,18 +26,30 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
 
   Future<bool> refresh() async {
     final groceriesList = await getNetworkGroceries();
-    if (groceriesList is List<Item>) {
-      state = groceriesList;
-      _sort();
-
-      final checkedItems = await getCheckedItems();
-      for (final item in groceriesList) {
-        item.checked = checkedItems.contains(item.name);
-      }
-
-      return true;
+    if (groceriesList is! List<Item>) {
+      return false;
     }
-    return false;
+
+    // Retrieve all checked items
+    final itemNames = <String>[];
+    final checkedItems = await getCheckedItems();
+
+    for (final item in groceriesList) {
+      item.checked = checkedItems.contains(item.name);
+      itemNames.add(item.name);
+    }
+
+    // Remove all checked items that are no longer in database.
+    for (final checkedName in checkedItems) {
+      if (!itemNames.contains(checkedName)) {
+        await removeCheckedItem(checkedName);
+      }
+    }
+
+    state = groceriesList;
+    _sort();
+
+    return true;
   }
 
   set items(List<Item> newItems) {
@@ -53,14 +65,20 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state = [...state];
   }
 
-  void replaceItem(int index, Item item) {
-    state.removeAt(index);
+  Future<void> replaceItem(int index, Item item) async {
+    final removedItem = state.removeAt(index);
+    if (removedItem.checked) {
+      await removeCheckedItem(removedItem.name);
+      await addCheckedItem(item.name);
+      item.checked = true;
+    }
     state = [...state, item];
     _sort();
   }
 
-  void removeItem(int index) {
-    state.removeAt(index);
+  Future<void> removeItem(int index) async {
+    final removedItem = state.removeAt(index);
+    await removeCheckedItem(removedItem.name);
     notify();
   }
 

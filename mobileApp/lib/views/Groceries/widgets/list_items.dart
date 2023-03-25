@@ -156,7 +156,7 @@ class ListItemWidget extends HookWidget {
           pendingAPI.value = true;
           final groceriesList = [...list.items]..removeAt(index);
           if (await updateNetworkGroceries(groceriesList)) {
-            list.removeItem(index);
+            await list.removeItem(index);
           } else {
             // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);

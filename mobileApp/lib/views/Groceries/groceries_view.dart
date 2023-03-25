@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
@@ -88,10 +90,10 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
   }
 
   Future<void> _clearList(BuildContext context) async {
-    if (list.isEmpty) {
+    if ((await getCheckedItems()).isEmpty) {
       snackbar(
         context,
-        'Remplis la liste de courses avant de vouloir la vider',
+        "Sélectionne les articles que tu veux supprimer.",
         error: true,
       );
       return;
@@ -106,7 +108,6 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
           if (await resetNetworkGroceries(await getCheckedItems())) {
             await list.refresh();
           } else {
-            // ignore: use_build_context_synchronously
             snackbar(context, unknownError, error: true);
           }
           await Future.delayed(const Duration(milliseconds: 1000));
@@ -118,7 +119,6 @@ class _GroceriesViewState extends HookState<void, _GroceriesView> {
 
   Future<void> _loadGroceriesList() async {
     if (!await list.refresh()) {
-      // ignore: use_build_context_synchronously
       snackbar(context, unknownError, error: true);
     }
   }
