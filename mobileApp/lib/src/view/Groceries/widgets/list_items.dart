@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
-import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/localstore/groceries.dart';
-import 'package:mathiflo/src/model/Groceries/groceries.dart';
+import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
-import 'package:mathiflo/src/model/Groceries/groceries_list.dart';
 import 'package:mathiflo/src/view/Groceries/widgets/item_popup.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
-import 'package:vibration/vibration.dart';
 
 // ignore: must_be_immutable
 class ListItemWidget extends HookWidget {
-  const ListItemWidget({super.key, required this.list});
+  const ListItemWidget({super.key, required this.controller});
 
-  final GroceriesListNotifier list;
+  final GroceriesController controller;
 
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
-        stateNotifier: list,
+        stateNotifier: controller.groceriesList,
         builder: (context, items, _) => RefreshIndicator(
           color: mainColor,
-          onRefresh: _refresh,
-          child: list.isEmpty
+          onRefresh: controller.refreshGroceries,
+          child: items.isEmpty
               ? scrollableText("La liste de courses est vide")
               : ListView.builder(
                   itemCount: items.length,
@@ -40,26 +36,25 @@ class ListItemWidget extends HookWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: _listContent(context, index, items),
+                            children:
+                                _cardItemContent(context, items[index], index),
                           ),
                         ),
                       ),
                     ),
                     onTap: () async {
-                      final checkedItems = await getCheckedItems();
-                      if (checkedItems.contains(items[index].name)) {
-                        await removeCheckedItem(items[index].name);
-                        list.updateCheck(index, checked: false);
-                        await Vibration.vibrate(duration: 100);
-                      }
+                      await controller.checkItem(
+                        items[index].name,
+                        index,
+                        checked: true,
+                      );
                     },
                     onLongPress: () async {
-                      final checkedItems = await getCheckedItems();
-                      if (!checkedItems.contains(items[index].name)) {
-                        await addCheckedItem(items[index].name);
-                        list.updateCheck(index);
-                        await Vibration.vibrate(duration: 100);
-                      }
+                      await controller.checkItem(
+                        items[index].name,
+                        index,
+                        checked: false,
+                      );
                     },
                   ),
                 ),
@@ -68,19 +63,18 @@ class ListItemWidget extends HookWidget {
 
   // Widgets Methods
 
-  List<Widget> _listContent(
+  List<Widget> _cardItemContent(
     BuildContext context,
+    Item item,
     int index,
-    List<Item> items,
   ) =>
       <Widget>[
-        // Edit button
-
+        // Checked icon
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child:
-              items[index].checked ? Icon(Icons.check, color: mainColor) : null,
+          child: item.checked ? Icon(Icons.check, color: mainColor) : null,
         ),
+        // Edit button
         Padding(
           padding: const EdgeInsets.all(
             15,
@@ -88,14 +82,14 @@ class ListItemWidget extends HookWidget {
           child: IconButton(
             icon: Icon(Icons.edit, color: mainColor),
             onPressed: () async {
-              await _editItemPopup(context, index, items[index]);
+              await _editItemPopup(context, item, index);
             },
           ),
         ),
         // Name text
         Expanded(
           child: Text(
-            items[index].name,
+            item.name,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
@@ -106,7 +100,7 @@ class ListItemWidget extends HookWidget {
             15,
           ),
           child: Text(
-            items[index].quantity.toString(),
+            item.quantity.toString(),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -119,7 +113,7 @@ class ListItemWidget extends HookWidget {
             color: errorColor,
           ),
           onPressed: () async {
-            await _removeItem(context, index, items[index]);
+            await _removeItem(context, item, index);
           },
         ),
       ];
@@ -128,24 +122,20 @@ class ListItemWidget extends HookWidget {
 
   Future<void> _editItemPopup(
     BuildContext context,
-    int index,
     Item item,
+    int index,
   ) async {
     await showDialog(
       context: context,
       builder: (context) => HandleItemPopup(
-        list: list,
+        groceriesController: controller,
         index: index,
         item: item,
       ),
     );
   }
 
-  Future<void> _refresh() async {
-    if (!await list.refresh()) {}
-  }
-
-  Future<void> _removeItem(BuildContext context, int index, Item item) async {
+  Future<void> _removeItem(BuildContext context, Item item, int index) async {
     await showDialog(
       context: context,
       builder: (context) => ConfirmationPopup(
@@ -153,15 +143,10 @@ class ListItemWidget extends HookWidget {
         message:
             "Voulez-vous vraiment supprimer cet article ? L'action est irréversible.",
         confirmation: () async {
-          pendingAPI.value = true;
-          final groceriesList = [...list.items]..removeAt(index);
-          if (await updateNetworkGroceries(groceriesList)) {
-            await list.removeItem(index);
-          } else {
-            // ignore: use_build_context_synchronously
-            snackbar(context, unknownError, error: true);
+          final error = await controller.removeItemGroceries(index);
+          if (error.isNotEmpty) {
+            if (context.mounted) snackbar(context, error, error: true);
           }
-          pendingAPI.value = false;
         },
       ),
     );

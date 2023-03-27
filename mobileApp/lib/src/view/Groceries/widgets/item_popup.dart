@@ -1,52 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/model/Groceries/groceries.dart';
+import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
+import 'package:mathiflo/src/controller/Groceries/item_popup_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
-import 'package:mathiflo/src/model/Groceries/groceries_list.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 
-// --> Style of Handle Item Popup
-
-// ! If index == -1 --> It's a popup that allows to AddItem, else it's a popup that allows to EditItem
+// ! If index == -1 --> It's a popup that allows to AddItem,
+// else it's a popup that allows to EditItem
 
 class HandleItemPopup extends StatefulWidget {
   const HandleItemPopup({
     super.key,
-    required this.list,
-    required this.index,
+    required this.groceriesController,
     required this.item,
+    required this.index,
   });
 
-  final GroceriesListNotifier list;
-  final int index;
+  final GroceriesController groceriesController;
   final Item item;
+  final int index;
 
   @override
   State<HandleItemPopup> createState() => _HandleItemPopupState();
 }
 
 class _HandleItemPopupState extends State<HandleItemPopup> {
-  late GroceriesListNotifier list;
-  late int index;
+  late GroceriesController groceriesController;
   late Item item;
-  late TextEditingController nameController;
+  late int index;
 
-  late String quantity;
+  final popupController = ItemPopupController();
 
-  String nameError = "";
   String apiError = "";
-  bool inProcess = false; // true during API calls
+  String nameError = "";
 
   @override
   void initState() {
     super.initState();
 
-    list = widget.list;
-    index = widget.index;
-    item = widget.item;
-
-    nameController = TextEditingController(text: item.name);
-    quantity = item.quantity.toString();
+    groceriesController = widget.groceriesController;
+    popupController
+      ..item = widget.item
+      ..index = widget.index;
   }
 
   @override
@@ -62,7 +57,7 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
-                controller: nameController,
+                controller: popupController.nameController,
                 textCapitalization: TextCapitalization.characters, // upperCase
                 onChanged: (_) {
                   setPopupState(_updateNameError);
@@ -77,24 +72,24 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                 children: [
                   minusButton(
                     () {
-                      _decrementQuantity(setPopupState);
+                      setState(popupController.decrementQuantity);
                     },
-                    disabled: quantity == "1",
+                    disabled: popupController.disabledDecrementButton,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(
                       15,
                     ),
                     child: Text(
-                      quantity,
+                      popupController.item.quantity.toString(),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                   plusButton(
                     () {
-                      _incrementQuantity(setPopupState);
+                      setState(popupController.incrementQuantity);
                     },
-                    disabled: quantity == "9",
+                    disabled: popupController.disabledIncrementButton,
                   ),
                 ],
               ),
@@ -103,20 +98,29 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
                 child: button(
                   index == -1 ? "Ajouter" : "Modifier",
                   () async {
-                    setState(() {
-                      inProcess = true;
+                    final item = Item(
+                      popupController.nameControllerText,
+                      popupController.item.quantity,
+                    );
+                    setState(() async {
+                      apiError = index == -1
+                          ? await groceriesController.addGroceriesItem(
+                              item,
+                              index,
+                            )
+                          : await groceriesController.updateGroceriesItem(
+                              item,
+                              index,
+                            );
                     });
-                    if (await _updateGroceriesList(setPopupState) == true) {
+
+                    if (apiError.isEmpty) {
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context); // close popup
                     }
-                    setState(() {
-                      inProcess = false;
-                    });
                   },
                   disabled: nameError.isNotEmpty ||
-                      nameController.text.trim().isEmpty ||
-                      inProcess,
+                      popupController.nameControllerText.isEmpty,
                 ),
               ),
               if (apiError.isNotEmpty)
@@ -135,56 +139,15 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
         ),
       );
 
-  // Front methods
-
-  void _decrementQuantity(setPopupState) {
-    if (quantity == "1") return;
-    setPopupState(() {
-      quantity = (int.parse(quantity) - 1).toString();
-    });
-  }
-
-  void _incrementQuantity(setPopupState) {
-    if (quantity == "9") return;
-    setPopupState(() {
-      quantity = (int.parse(quantity) + 1).toString();
-    });
-  }
-
   void _updateNameError() {
-    final name = nameController.text.trim().toUpperCase();
+    final name = popupController.nameControllerText;
     if (name.isEmpty) {
       nameError = "Vous devez inscrire un nom";
-    } else if (list.exists(name) && name != item.name) {
+    } else if (groceriesController.groceriesContains(name) &&
+        name != item.name) {
       nameError = "Cet article existe déjà";
     } else {
       nameError = "";
     }
-  }
-
-  // Action methods
-
-  Future<bool> _updateGroceriesList(setPopupState) async {
-    final item =
-        Item(nameController.text.trim().toUpperCase(), int.parse(quantity));
-
-    final groceriesList = [...list.items];
-    if (index >= 0) {
-      groceriesList.removeAt(index);
-    }
-    groceriesList.add(item);
-
-    if (await updateNetworkGroceries(groceriesList) == true) {
-      if (index == -1) {
-        list.addItem(item);
-      } else {
-        await list.replaceItem(index, item);
-      }
-      return true;
-    }
-    setPopupState(() {
-      apiError = unknownError;
-    });
-    return false;
   }
 }

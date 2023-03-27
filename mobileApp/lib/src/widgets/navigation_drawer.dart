@@ -47,9 +47,7 @@ class NavigationDrawerWidget extends StatelessWidget {
             context,
             "Liste de courses",
             Icon(Icons.local_grocery_store, color: mainColor),
-            HookBuilder(
-              builder: (context) => useGroceriesView(),
-            ),
+            const GroceriesView(),
           ),
 
           // -----------------------------
