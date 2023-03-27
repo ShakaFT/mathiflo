@@ -8,7 +8,8 @@ appBar(String title, {List<Widget> icons = const []}) => AppBar(
       actions: icons,
     );
 
-bottomBar(child) => BottomAppBar(color: mainColor, child: child);
+bottomBar({required Widget child}) =>
+    BottomAppBar(color: mainColor, child: child);
 
 class ButtonBarButton extends StatelessWidget {
   const ButtonBarButton({
