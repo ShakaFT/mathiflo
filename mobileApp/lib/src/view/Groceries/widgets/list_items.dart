@@ -16,7 +16,7 @@ class ListItemWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
-        stateNotifier: controller.groceriesList,
+        stateNotifier: controller.groceriesNotifier,
         builder: (context, items, _) => RefreshIndicator(
           color: mainColor,
           onRefresh: controller.refreshGroceries,
@@ -46,14 +46,14 @@ class ListItemWidget extends HookWidget {
                       await controller.checkItem(
                         items[index].name,
                         index,
-                        checked: true,
+                        checked: false,
                       );
                     },
                     onLongPress: () async {
                       await controller.checkItem(
                         items[index].name,
                         index,
-                        checked: false,
+                        checked: true,
                       );
                     },
                   ),
@@ -82,11 +82,11 @@ class ListItemWidget extends HookWidget {
           child: IconButton(
             icon: Icon(Icons.edit, color: mainColor),
             onPressed: () async {
-              await _editItemPopup(context, item, index);
+              await _openUpdateItemPopup(context, item, index);
             },
           ),
         ),
-        // Name text
+        // Name
         Expanded(
           child: Text(
             item.name,
@@ -94,11 +94,11 @@ class ListItemWidget extends HookWidget {
             maxLines: 2,
           ),
         ),
-        // Quantity text
         Padding(
           padding: const EdgeInsets.all(
             15,
           ),
+          // Quantity
           child: Text(
             item.quantity.toString(),
             style: const TextStyle(
@@ -113,29 +113,12 @@ class ListItemWidget extends HookWidget {
             color: errorColor,
           ),
           onPressed: () async {
-            await _removeItem(context, item, index);
+            await _openRemoveItemPopup(context, item, index);
           },
         ),
       ];
 
-  // Action methods
-
-  Future<void> _editItemPopup(
-    BuildContext context,
-    Item item,
-    int index,
-  ) async {
-    await showDialog(
-      context: context,
-      builder: (context) => HandleItemPopup(
-        groceriesController: controller,
-        index: index,
-        item: item,
-      ),
-    );
-  }
-
-  Future<void> _removeItem(BuildContext context, Item item, int index) async {
+  _openRemoveItemPopup(BuildContext context, Item item, int index) async {
     await showDialog(
       context: context,
       builder: (context) => ConfirmationPopup(
@@ -148,6 +131,17 @@ class ListItemWidget extends HookWidget {
             if (context.mounted) snackbar(context, error, error: true);
           }
         },
+      ),
+    );
+  }
+
+  _openUpdateItemPopup(BuildContext context, Item item, int index) async {
+    await showDialog(
+      context: context,
+      builder: (context) => HandleItemPopup(
+        groceriesController: controller,
+        index: index,
+        item: item,
       ),
     );
   }

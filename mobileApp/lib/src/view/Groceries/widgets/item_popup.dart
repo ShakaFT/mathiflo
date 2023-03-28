@@ -26,8 +26,6 @@ class HandleItemPopup extends StatefulWidget {
 
 class _HandleItemPopupState extends State<HandleItemPopup> {
   late GroceriesController groceriesController;
-  late Item item;
-  late int index;
 
   final popupController = ItemPopupController();
 
@@ -48,9 +46,9 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
   Widget build(BuildContext context) => StatefulBuilder(
         builder: (context, setPopupState) => AlertDialog(
           title: Text(
-            index == -1
+            popupController.index == -1
                 ? "Ajouter un article"
-                : "Modifier l'article ${item.name}",
+                : "Modifier l'article ${popupController.item.name}",
             style: TextStyle(color: popupColor),
           ),
           content: Column(
@@ -96,22 +94,23 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: button(
-                  index == -1 ? "Ajouter" : "Modifier",
+                  popupController.index == -1 ? "Ajouter" : "Modifier",
                   () async {
                     final item = Item(
                       popupController.nameControllerText,
                       popupController.item.quantity,
                     );
-                    setState(() async {
-                      apiError = index == -1
-                          ? await groceriesController.addGroceriesItem(
-                              item,
-                              index,
-                            )
-                          : await groceriesController.updateGroceriesItem(
-                              item,
-                              index,
-                            );
+                    final error = popupController.index == -1
+                        ? await groceriesController.addGroceriesItem(
+                            item,
+                            popupController.index,
+                          )
+                        : await groceriesController.updateGroceriesItem(
+                            item,
+                            popupController.index,
+                          );
+                    setState(() {
+                      apiError = error;
                     });
 
                     if (apiError.isEmpty) {
@@ -144,7 +143,7 @@ class _HandleItemPopupState extends State<HandleItemPopup> {
     if (name.isEmpty) {
       nameError = "Vous devez inscrire un nom";
     } else if (groceriesController.groceriesContains(name) &&
-        name != item.name) {
+        name != popupController.item.name) {
       nameError = "Cet article existe déjà";
     } else {
       nameError = "";

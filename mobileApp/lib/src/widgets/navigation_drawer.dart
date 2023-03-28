@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
 import 'package:mathiflo/src/view/Groceries/groceries_view.dart';
-import 'package:mathiflo/utils.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
@@ -75,9 +74,9 @@ class NavigationDrawerWidget extends StatelessWidget {
           style: TextStyle(color: mainColor),
         ),
         onTap: () async {
-          await navigation(
+          await Navigator.pushReplacement(
             context,
-            view,
+            MaterialPageRoute(builder: (context) => view),
           );
         },
       );

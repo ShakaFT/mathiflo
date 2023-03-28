@@ -1,3 +1,5 @@
+// ignore_for_file: close_sinks
+
 import 'dart:async';
 
 import 'package:mathiflo/config.dart';
@@ -18,13 +20,8 @@ class GroceriesController extends ControllerMVC {
   // Model
   final GroceriesListNotifier _groceriesList;
 
-  // Streams
-  StreamController<bool> addItemPopup = StreamController<bool>();
-  StreamController<bool> clearListPopup = StreamController<bool>();
-
   // Methods
-
-  GroceriesListNotifier get groceriesList => _groceriesList;
+  GroceriesListNotifier get groceriesNotifier => _groceriesList;
 
   bool groceriesContains(String name) => _groceriesList.exists(name);
 
@@ -61,10 +58,10 @@ class GroceriesController extends ControllerMVC {
   }) async {
     final checkedItems = await getCheckedItems();
 
-    if (checkedItems.contains(name) && checked) {
-      await removeCheckedItem(name);
-    } else if (!checkedItems.contains(name) && !checked) {
+    if (!checkedItems.contains(name) && checked) {
       await addCheckedItem(name);
+    } else if (checkedItems.contains(name) && !checked) {
+      await removeCheckedItem(name);
     }
 
     _groceriesList.updateCheck(index, checked: checked);
@@ -76,9 +73,11 @@ class GroceriesController extends ControllerMVC {
   Future<String> removeItemGroceries(int index) async {
     pendingAPI.value = true;
     var error = "";
-    final groceriesList = _groceriesList.items..removeAt(index);
+    // We need to unpack groceriesList so as not to delete
+    // the item from groceriesList
+    final list = [..._groceriesList.items]..removeAt(index);
 
-    if (await updateNetworkGroceries(groceriesList)) {
+    if (await updateNetworkGroceries(list)) {
       await _groceriesList.removeItem(index);
     } else {
       error = unknownError;
@@ -101,17 +100,5 @@ class GroceriesController extends ControllerMVC {
 
     pendingAPI.value = false;
     return error;
-  }
-
-  openAddItemPopup({required bool open}) {
-    addItemPopup.add(open);
-  }
-
-  openClearListPopup({required bool open}) {
-    clearListPopup.add(open);
-  }
-
-  closeListeners() async {
-    await addItemPopup.close();
   }
 }
