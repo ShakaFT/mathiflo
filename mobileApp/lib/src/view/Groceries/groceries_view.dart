@@ -10,8 +10,6 @@ import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
 
-// useGroceriesView() => use(const _GroceriesView());
-
 class GroceriesView extends StatefulWidget {
   const GroceriesView({super.key});
 
@@ -25,13 +23,6 @@ class _GroceriesViewState extends State<GroceriesView> {
   @override
   void initState() {
     super.initState();
-    _listen();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.closeListeners();
   }
 
   @override
@@ -54,7 +45,7 @@ class _GroceriesViewState extends State<GroceriesView> {
               child: ButtonBarButton(
                 text: "Ajouter un article",
                 onPressed: () async {
-                  await _controller.openAddItemPopup(open: true);
+                  await _openAddItemPopup();
                 },
               ),
             ),
@@ -64,50 +55,40 @@ class _GroceriesViewState extends State<GroceriesView> {
         onWillPop: () async => false,
       );
 
-  // Widget methods
-
   _appBarIcons() => <Widget>[
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () async {
-            _controller.openClearListPopup(open: true);
+            _openClearListPopup();
           },
         ),
       ];
 
-  // Action methods
+  _openAddItemPopup() async {
+    await showDialog(
+      context: context,
+      builder: (context) => HandleItemPopup(
+        groceriesController: _controller,
+        index: -1,
+        item: Item("", 1),
+      ),
+    );
+  }
 
-  _listen() {
-    _controller.addItemPopup.stream.listen((addItemPopup) async {
-      if (addItemPopup) {
-        await showDialog(
-          context: context,
-          builder: (context) => HandleItemPopup(
-            groceriesController: _controller,
-            index: -1,
-            item: Item("", 1),
-          ),
-        );
-      }
-    });
-
-    _controller.clearListPopup.stream.listen((clearListPopup) async {
-      if (!clearListPopup) return;
-
-      await showDialog(
-        context: context,
-        builder: (context) => ConfirmationPopup(
-          title: "Supprimer les articles",
-          message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
-          confirmation: () async {
-            final error = await _controller.resetGroceries();
-            if (error.isNotEmpty) {
-              if (context.mounted) snackbar(context, error, error: true);
-            }
-          },
-        ),
-      );
-    });
+  _openClearListPopup() async {
+    await showDialog(
+      context: context,
+      builder: (context) => ConfirmationPopup(
+        title: "Supprimer les articles",
+        message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
+        confirmation: () async {
+          final error = await _controller.resetGroceries();
+          if (error.isNotEmpty) {
+            if (context.mounted) snackbar(context, error, error: true);
+          }
+        },
+      ),
+    );
   }
 
   Future<void> _loadGroceriesList() async {

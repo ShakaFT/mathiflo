@@ -23,6 +23,6 @@ class ItemPopupController extends ControllerMVC {
   bool get disabledDecrementButton => item.quantity == 1;
   bool get disabledIncrementButton => item.quantity == 9;
 
-  decrementQuantity() => --item.quantity;
-  incrementQuantity() => ++item.quantity;
+  void decrementQuantity() => --item.quantity;
+  void incrementQuantity() => ++item.quantity;
 }
