@@ -33,4 +33,4 @@ flutter_native_splash:
   image: assets/launch_app.png
 name: mathiflo
 publish_to: none
-version: 1.0.0+23
+version: 1.0.0+38
