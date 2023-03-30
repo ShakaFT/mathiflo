@@ -20,6 +20,10 @@ class GroceriesController extends ControllerMVC {
   // Model
   final GroceriesListNotifier _groceriesList;
 
+  // Bool used to lock buttons to add item (in bottom bar)
+  // & button to clear checked items during api process
+  bool lockButtons = false;
+
   // Methods
   GroceriesListNotifier get groceriesNotifier => _groceriesList;
 
@@ -27,13 +31,17 @@ class GroceriesController extends ControllerMVC {
 
   Future<String> addGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
+    await Future.delayed(const Duration(seconds: 3));
     var error = "";
-    final newGroceriesList = [..._groceriesList.items, item];
-    if (await updateNetworkGroceries(newGroceriesList)) {
+
+    final newList = [..._groceriesList.items, item];
+
+    if (await updateNetworkGroceries(newList)) {
       _groceriesList.addItem(item);
     } else {
       error = unknownError;
     }
+
     pendingAPI.value = false;
     return error;
   }
@@ -41,12 +49,17 @@ class GroceriesController extends ControllerMVC {
   Future<String> updateGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
     var error = "";
-    final newGroceriesList = [..._groceriesList.items, item]..removeAt(index);
-    if (await updateNetworkGroceries(newGroceriesList)) {
+
+    // We need to unpack groceriesList so as not to delete
+    // the item from groceriesList
+    final newList = [..._groceriesList.items, item]..removeAt(index);
+
+    if (await updateNetworkGroceries(newList)) {
       await _groceriesList.replaceItem(index, item);
     } else {
       error = unknownError;
     }
+
     pendingAPI.value = false;
     return error;
   }
@@ -68,25 +81,33 @@ class GroceriesController extends ControllerMVC {
     await Vibration.vibrate(duration: 100);
   }
 
-  Future<bool> refreshGroceries() => _groceriesList.refresh();
+  Future<bool> refreshGroceries() async {
+    lockButtons = true;
+    final worked = await _groceriesList.refresh();
+    lockButtons = false;
+    return worked;
+  }
 
-  Future<String> removeItemGroceries(int index) async {
+  Future<String> removeGroceriesItem(int index) async {
     pendingAPI.value = true;
     var error = "";
+
     // We need to unpack groceriesList so as not to delete
     // the item from groceriesList
-    final list = [..._groceriesList.items]..removeAt(index);
+    final newList = [..._groceriesList.items]..removeAt(index);
 
-    if (await updateNetworkGroceries(list)) {
+    if (await updateNetworkGroceries(newList)) {
       await _groceriesList.removeItem(index);
     } else {
       error = unknownError;
     }
+
     pendingAPI.value = false;
     return error;
   }
 
   Future<String> resetGroceries() async {
+    // Remove all checked items
     pendingAPI.value = true;
     var error = "";
 

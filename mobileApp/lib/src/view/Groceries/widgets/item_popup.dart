@@ -4,6 +4,7 @@ import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/controller/Groceries/item_popup_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 // ! If index == -1 --> It's a popup that allows to AddItem,
 // else it's a popup that allows to EditItem
@@ -21,10 +22,10 @@ class HandleItemPopup extends StatefulWidget {
   final int index;
 
   @override
-  State<HandleItemPopup> createState() => _HandleItemPopupState();
+  State createState() => _HandleItemPopupState();
 }
 
-class _HandleItemPopupState extends State<HandleItemPopup> {
+class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
   late GroceriesController groceriesController;
 
   final popupController = ItemPopupController();

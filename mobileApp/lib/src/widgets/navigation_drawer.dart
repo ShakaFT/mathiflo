@@ -74,7 +74,7 @@ class NavigationDrawerWidget extends StatelessWidget {
           style: TextStyle(color: mainColor),
         ),
         onTap: () async {
-          await Navigator.pushReplacement(
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => view),
           );

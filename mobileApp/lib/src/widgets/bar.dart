@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 
-appBar(String title, {List<Widget> icons = const []}) => AppBar(
+AppBar appBar(String title, {List<Widget> icons = const []}) => AppBar(
       title: Text(title, style: TextStyle(color: textColor)),
       backgroundColor: mainColor,
       iconTheme: IconThemeData(color: textColor),
       actions: icons,
     );
 
-bottomBar({required Widget child}) =>
+BottomAppBar bottomBar({required Widget child}) =>
     BottomAppBar(color: mainColor, child: child);
 
 class ButtonBarButton extends StatelessWidget {

@@ -17,48 +17,44 @@ class ListItemWidget extends HookWidget {
   @override
   Widget build(BuildContext context) => StateNotifierBuilder(
         stateNotifier: controller.groceriesNotifier,
-        builder: (context, items, _) => RefreshIndicator(
-          color: mainColor,
-          onRefresh: controller.refreshGroceries,
-          child: items.isEmpty
-              ? scrollableText("La liste de courses est vide")
-              : ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) => GestureDetector(
-                    child: Card(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 700),
-                        curve: Curves.easeInOut,
-                        color: items[index].checked
-                            ? const Color.fromARGB(255, 226, 224, 224)
-                            : Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children:
-                                _cardItemContent(context, items[index], index),
-                          ),
+        builder: (context, items, _) => items.isEmpty
+            ? scrollableText("La liste de courses est vide")
+            : ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  child: Card(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.easeInOut,
+                      color: items[index].checked
+                          ? const Color.fromARGB(255, 226, 224, 224)
+                          : Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children:
+                              _cardItemContent(context, items[index], index),
                         ),
                       ),
                     ),
-                    onTap: () async {
-                      await controller.checkItem(
-                        items[index].name,
-                        index,
-                        checked: false,
-                      );
-                    },
-                    onLongPress: () async {
-                      await controller.checkItem(
-                        items[index].name,
-                        index,
-                        checked: true,
-                      );
-                    },
                   ),
+                  onTap: () async {
+                    await controller.checkItem(
+                      items[index].name,
+                      index,
+                      checked: false,
+                    );
+                  },
+                  onLongPress: () async {
+                    await controller.checkItem(
+                      items[index].name,
+                      index,
+                      checked: true,
+                    );
+                  },
                 ),
-        ),
+              ),
       );
 
   // Widgets Methods
@@ -121,12 +117,12 @@ class ListItemWidget extends HookWidget {
   _openRemoveItemPopup(BuildContext context, Item item, int index) async {
     await showDialog(
       context: context,
-      builder: (context) => ConfirmationPopup(
+      builder: (context) => AlertPopup(
         title: "Supprimer l'article ${item.name}",
         message:
             "Voulez-vous vraiment supprimer cet article ? L'action est irréversible.",
         confirmation: () async {
-          final error = await controller.removeItemGroceries(index);
+          final error = await controller.removeGroceriesItem(index);
           if (error.isNotEmpty) {
             if (context.mounted) snackbar(context, error, error: true);
           }

@@ -15,24 +15,31 @@ class WaitingApi extends StatelessWidget {
           child,
           ValueListenableBuilder(
             valueListenable: pendingAPI,
-            builder: (context, isLoading, _) => isLoading
-                ? const Opacity(
-                    opacity: 0.3,
-                    child: ModalBarrier(
-                      color: Colors.black,
-                    ),
-                  )
-                : const Center(),
+            builder: (context, isLoading, _) =>
+                isLoading ? _lockScreen() : const Center(),
           ),
           ValueListenableBuilder(
             valueListenable: pendingAPI,
             builder: (context, isLoading, _) =>
-                isLoading ? circularProgressIndicator() : const Center(),
+                isLoading ? _circularProgressIndicator() : const Center(),
           )
         ],
       );
 }
 
-Widget circularProgressIndicator() => Center(
+Widget loader({lockScreen = false}) => lockScreen
+    ? Stack(
+        children: [_circularProgressIndicator(), _lockScreen()],
+      )
+    : _circularProgressIndicator();
+
+Widget _circularProgressIndicator() => Center(
       child: CircularProgressIndicator(color: mainColor),
+    );
+
+Widget _lockScreen() => const Opacity(
+      opacity: 0.2,
+      child: ModalBarrier(
+        color: Colors.black,
+      ),
     );
