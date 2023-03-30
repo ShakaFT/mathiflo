@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories_list.dart';
 import 'package:mathiflo/src/view/CuddlyToys/widgets/cuddly_toys.dart';
+import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
@@ -18,7 +19,6 @@ class _CuddlyToysView extends Hook<void> {
 
 class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
   late CuddlyToysHistoriesNotifier cuddlyToys = CuddlyToysHistoriesNotifier();
-  late final Future future = _loadCuddlyToysHistories();
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -26,10 +26,10 @@ class _CuddlyToysViewState extends HookState<void, _CuddlyToysView> {
           appBar: appBar("Doudous"),
           body: FutureBuilder(
             // ignore: discarded_futures
-            future: future,
+            future: _loadCuddlyToysHistories(),
             builder: (context, snapshot) =>
                 snapshot.connectionState == ConnectionState.waiting
-                    ? Center(child: CircularProgressIndicator(color: mainColor))
+                    ? loader()
                     : HookBuilder(
                         builder: (context) =>
                             CuddlyToysWidget(histories: cuddlyToys),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
@@ -9,21 +8,17 @@ import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
+import 'package:mvc_pattern/mvc_pattern.dart';
 
 class GroceriesView extends StatefulWidget {
   const GroceriesView({super.key});
 
   @override
-  State<GroceriesView> createState() => _GroceriesViewState();
+  State createState() => _GroceriesViewState();
 }
 
-class _GroceriesViewState extends State<GroceriesView> {
+class _GroceriesViewState extends StateMVC<GroceriesView> {
   final GroceriesController _controller = GroceriesController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -31,13 +26,16 @@ class _GroceriesViewState extends State<GroceriesView> {
           child: Scaffold(
             appBar: appBar("Liste de courses", icons: _appBarIcons()),
             body: FutureBuilder(
+              // ignore: discarded_futures
               future: _loadGroceriesList(),
               builder: (context, snapshot) =>
                   snapshot.connectionState == ConnectionState.waiting
-                      ? circularProgressIndicator()
-                      : HookBuilder(
-                          builder: (context) =>
-                              ListItemWidget(controller: _controller),
+                      ? loader()
+                      // Allow to refresh data by swiping down
+                      : RefreshIndicator(
+                          color: mainColor,
+                          onRefresh: _loadGroceriesList,
+                          child: ListItemWidget(controller: _controller),
                         ),
             ),
             // --> Button to add item
@@ -65,6 +63,7 @@ class _GroceriesViewState extends State<GroceriesView> {
       ];
 
   _openAddItemPopup() async {
+    if (_controller.lockButtons) return;
     await showDialog(
       context: context,
       builder: (context) => HandleItemPopup(
@@ -76,9 +75,10 @@ class _GroceriesViewState extends State<GroceriesView> {
   }
 
   _openClearListPopup() async {
+    if (_controller.lockButtons) return;
     await showDialog(
       context: context,
-      builder: (context) => ConfirmationPopup(
+      builder: (context) => AlertPopup(
         title: "Supprimer les articles",
         message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
         confirmation: () async {

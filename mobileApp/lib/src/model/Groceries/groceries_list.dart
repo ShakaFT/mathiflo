@@ -7,6 +7,11 @@ import 'package:state_notifier/state_notifier.dart';
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
   GroceriesListNotifier() : super([]);
 
+  // Getters
+
+  bool get isEmpty => state.isEmpty;
+  List<Item> get items => state;
+
   // Public methods
 
   void addItem(Item item) {
@@ -19,10 +24,6 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
   }
 
   bool exists(String name) => state.any((item) => item.name == name);
-
-  bool get isEmpty => state.isEmpty;
-
-  List<Item> get items => state;
 
   Future<bool> refresh() async {
     final groceriesList = await getNetworkGroceries();

@@ -3,8 +3,8 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 
 // ignore_for_file: must_be_immutable
-class ConfirmationPopup extends StatelessWidget {
-  const ConfirmationPopup({
+class AlertPopup extends StatelessWidget {
+  const AlertPopup({
     super.key,
     required this.title,
     required this.message,
