@@ -4,34 +4,35 @@ import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/controller/Groceries/item_popup_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
+import 'package:mathiflo/src/widgets/texts.dart';
 import 'package:mvc_pattern/mvc_pattern.dart';
 
 // ! If index == -1 --> It's a popup that allows to AddItem,
 // else it's a popup that allows to EditItem
 
-class HandleItemPopup extends StatefulWidget {
-  const HandleItemPopup({
+class GroceriesItemPopup extends StatefulWidget {
+  const GroceriesItemPopup({
     super.key,
     required this.groceriesController,
-    required this.item,
-    required this.index,
+    this.item,
+    this.index,
   });
 
   final GroceriesController groceriesController;
-  final Item item;
-  final int index;
+  final Item? item;
+  final int? index;
 
   @override
-  State createState() => _HandleItemPopupState();
+  State createState() => _GroceriesItemPopupState();
 }
 
-class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
-  late GroceriesController groceriesController;
-
+class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
   final popupController = ItemPopupController();
 
   String apiError = "";
   String nameError = "";
+
+  late GroceriesController groceriesController;
 
   @override
   void initState() {
@@ -39,22 +40,21 @@ class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
 
     groceriesController = widget.groceriesController;
     popupController
-      ..item = widget.item
-      ..index = widget.index;
+      ..item = widget.item ?? Item("", 1)
+      ..index = widget.index ?? -1;
   }
 
   @override
   Widget build(BuildContext context) => StatefulBuilder(
         builder: (context, setPopupState) => AlertDialog(
           title: Text(
-            popupController.index == -1
-                ? "Ajouter un article"
-                : "Modifier l'article ${popupController.item.name}",
+            popupController.popupTitle,
             style: TextStyle(color: popupColor),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
+              // TextField to change name
               TextField(
                 controller: popupController.nameController,
                 textCapitalization: TextCapitalization.characters, // upperCase
@@ -66,6 +66,7 @@ class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
                   errorText: nameError,
                 ),
               ),
+              // Quantity
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -92,10 +93,11 @@ class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
                   ),
                 ],
               ),
+              // Button to send Item
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: button(
-                  popupController.index == -1 ? "Ajouter" : "Modifier",
+                  popupController.buttonTitle,
                   () async {
                     final item = Item(
                       popupController.nameControllerText,
@@ -123,17 +125,7 @@ class _HandleItemPopupState extends StateMVC<HandleItemPopup> {
                       popupController.nameControllerText.isEmpty,
                 ),
               ),
-              if (apiError.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Text(
-                    apiError,
-                    style: TextStyle(
-                      color: errorColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+              if (apiError.isNotEmpty) errorText(apiError)
             ],
           ),
         ),

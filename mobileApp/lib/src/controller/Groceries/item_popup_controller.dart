@@ -8,17 +8,21 @@ class ItemPopupController extends ControllerMVC {
   ItemPopupController._(super.state);
   static ItemPopupController? _this;
 
-  late Item? _item;
-  int index = 0;
   final nameController = TextEditingController();
 
-  Item get item => _item!;
+  late Item _item;
+  late int index;
+
+  Item get item => _item;
   set item(Item item) {
     _item = item;
     nameController.text = item.name;
   }
 
+  String get buttonTitle => index == -1 ? "Ajouter" : "Modifier";
   String get nameControllerText => nameController.text.trim().toUpperCase();
+  String get popupTitle =>
+      index == -1 ? "Ajouter un article" : "Modifier l'article ${item.name}";
 
   bool get disabledDecrementButton => item.quantity == 1;
   bool get disabledIncrementButton => item.quantity == 9;

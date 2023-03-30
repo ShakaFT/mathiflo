@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
-import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/view/Groceries/widgets/item_popup.dart';
 import 'package:mathiflo/src/view/Groceries/widgets/list_items.dart';
 import 'package:mathiflo/src/widgets/async.dart';
@@ -66,10 +65,8 @@ class _GroceriesViewState extends StateMVC<GroceriesView> {
     if (_controller.lockButtons) return;
     await showDialog(
       context: context,
-      builder: (context) => HandleItemPopup(
+      builder: (context) => GroceriesItemPopup(
         groceriesController: _controller,
-        index: -1,
-        item: Item("", 1),
       ),
     );
   }
