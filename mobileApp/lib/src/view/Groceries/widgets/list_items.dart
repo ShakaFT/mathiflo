@@ -134,7 +134,7 @@ class ListItemWidget extends HookWidget {
   _openUpdateItemPopup(BuildContext context, Item item, int index) async {
     await showDialog(
       context: context,
-      builder: (context) => HandleItemPopup(
+      builder: (context) => GroceriesItemPopup(
         groceriesController: controller,
         index: index,
         item: item,
