@@ -1,7 +1,6 @@
 """
 This module contains contants.
 """
-
 COLLECTION_CUDDLY_TOYS = "cuddly_toys"
 DOCUMENT_CUDDLY_TOYS = "cuddly_toys"
 COLLECTION_HISTORY = "cuddly_toys_history"
