@@ -7,7 +7,7 @@ import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:state_extended/state_extended.dart';
 
 class GroceriesView extends StatefulWidget {
   const GroceriesView({super.key});
@@ -16,8 +16,12 @@ class GroceriesView extends StatefulWidget {
   State createState() => _GroceriesViewState();
 }
 
-class _GroceriesViewState extends StateMVC<GroceriesView> {
-  final GroceriesController _controller = GroceriesController();
+class _GroceriesViewState extends StateX<GroceriesView> {
+  _GroceriesViewState() : super(GroceriesController()) {
+    _controller = controller! as GroceriesController;
+  }
+  late GroceriesController _controller;
+  // final GroceriesController _controller = GroceriesController();
 
   @override
   Widget build(BuildContext context) => WillPopScope(
