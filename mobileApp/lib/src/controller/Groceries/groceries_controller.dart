@@ -8,16 +8,17 @@ import 'package:mathiflo/src/localstore/groceries.dart';
 import 'package:mathiflo/src/model/Groceries/groceries.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_list.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:state_extended/state_extended.dart';
 import 'package:vibration/vibration.dart';
 
-class GroceriesController extends ControllerMVC {
-  factory GroceriesController([StateMVC? state]) =>
-      _this ??= GroceriesController._(state);
-  GroceriesController._(super.state) : _groceriesList = GroceriesListNotifier();
-  static GroceriesController? _this;
+class GroceriesController extends StateXController {
+  factory GroceriesController() => _this ??= GroceriesController._();
+  GroceriesController._()
+      : _groceriesList = GroceriesListNotifier(),
+        super();
 
   // Model
+  static GroceriesController? _this;
   final GroceriesListNotifier _groceriesList;
 
   // Bool used to lock buttons to add item (in bottom bar)

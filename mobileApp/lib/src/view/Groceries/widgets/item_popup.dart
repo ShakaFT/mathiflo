@@ -5,7 +5,7 @@ import 'package:mathiflo/src/controller/Groceries/item_popup_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:state_extended/state_extended.dart';
 
 // ! If index == -1 --> It's a popup that allows to AddItem,
 // else it's a popup that allows to EditItem
@@ -26,20 +26,18 @@ class GroceriesItemPopup extends StatefulWidget {
   State createState() => _GroceriesItemPopupState();
 }
 
-class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
-  final popupController = ItemPopupController();
-
-  String apiError = "";
-  String nameError = "";
-
-  late GroceriesController groceriesController;
+class _GroceriesItemPopupState extends StateX<GroceriesItemPopup> {
+  _GroceriesItemPopupState() : super(ItemPopupController()) {
+    popupController = controller! as ItemPopupController;
+  }
+  late ItemPopupController popupController;
 
   @override
   void initState() {
     super.initState();
 
-    groceriesController = widget.groceriesController;
     popupController
+      ..groceriesController = widget.groceriesController
       ..item = widget.item ?? Item("", 1)
       ..index = widget.index ?? -1;
   }
@@ -59,11 +57,11 @@ class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
                 controller: popupController.nameController,
                 textCapitalization: TextCapitalization.characters, // upperCase
                 onChanged: (_) {
-                  setPopupState(_updateNameError);
+                  popupController.updateNameError();
                 },
                 decoration: InputDecoration(
                   hintText: "Nom de l'article",
-                  errorText: nameError,
+                  errorText: popupController.nameError,
                 ),
               ),
               // Quantity
@@ -71,9 +69,7 @@ class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   minusButton(
-                    () {
-                      setState(popupController.decrementQuantity);
-                    },
+                    popupController.decrementQuantity,
                     disabled: popupController.disabledDecrementButton,
                   ),
                   Padding(
@@ -86,9 +82,7 @@ class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
                     ),
                   ),
                   plusButton(
-                    () {
-                      setState(popupController.incrementQuantity);
-                    },
+                    popupController.incrementQuantity,
                     disabled: popupController.disabledIncrementButton,
                   ),
                 ],
@@ -99,47 +93,17 @@ class _GroceriesItemPopupState extends StateMVC<GroceriesItemPopup> {
                 child: button(
                   popupController.buttonTitle,
                   () async {
-                    final item = Item(
-                      popupController.nameControllerText,
-                      popupController.item.quantity,
-                    );
-                    final error = popupController.index == -1
-                        ? await groceriesController.addGroceriesItem(
-                            item,
-                            popupController.index,
-                          )
-                        : await groceriesController.updateGroceriesItem(
-                            item,
-                            popupController.index,
-                          );
-                    setState(() {
-                      apiError = error;
-                    });
-
-                    if (apiError.isEmpty) {
-                      // ignore: use_build_context_synchronously
-                      Navigator.pop(context); // close popup
+                    if (await popupController.sendItem()) {
+                      if (mounted) Navigator.pop(context); // close popup
                     }
                   },
-                  disabled: nameError.isNotEmpty ||
-                      popupController.nameControllerText.isEmpty,
+                  disabled: popupController.disabledSendItemButton,
                 ),
               ),
-              if (apiError.isNotEmpty) errorText(apiError)
+              if (popupController.apiError.isNotEmpty)
+                errorText(popupController.apiError)
             ],
           ),
         ),
       );
-
-  void _updateNameError() {
-    final name = popupController.nameControllerText;
-    if (name.isEmpty) {
-      nameError = "Vous devez inscrire un nom";
-    } else if (groceriesController.groceriesContains(name) &&
-        name != popupController.item.name) {
-      nameError = "Cet article existe déjà";
-    } else {
-      nameError = "";
-    }
-  }
 }

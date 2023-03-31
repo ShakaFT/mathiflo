@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
-import 'package:mvc_pattern/mvc_pattern.dart';
+import 'package:state_extended/state_extended.dart';
 
-class ItemPopupController extends ControllerMVC {
-  factory ItemPopupController([StateMVC? state]) =>
-      _this ??= ItemPopupController._(state);
-  ItemPopupController._(super.state);
+class ItemPopupController extends StateXController {
+  factory ItemPopupController() => _this ??= ItemPopupController._();
+  ItemPopupController._() : super();
+
   static ItemPopupController? _this;
 
+  String apiError = "";
+  String nameError = "";
   final nameController = TextEditingController();
 
+  late GroceriesController groceriesController;
   late Item _item;
   late int index;
 
@@ -20,13 +24,59 @@ class ItemPopupController extends ControllerMVC {
   }
 
   String get buttonTitle => index == -1 ? "Ajouter" : "Modifier";
-  String get nameControllerText => nameController.text.trim().toUpperCase();
   String get popupTitle =>
       index == -1 ? "Ajouter un article" : "Modifier l'article ${item.name}";
 
   bool get disabledDecrementButton => item.quantity == 1;
   bool get disabledIncrementButton => item.quantity == 9;
+  bool get disabledSendItemButton =>
+      nameError.isNotEmpty || _nameControllerText.isEmpty;
 
-  void decrementQuantity() => --item.quantity;
-  void incrementQuantity() => ++item.quantity;
+  void decrementQuantity() {
+    setState(() {
+      --item.quantity;
+    });
+  }
+
+  void incrementQuantity() {
+    setState(() {
+      ++item.quantity;
+    });
+  }
+
+  Future<bool> sendItem() async {
+    final item = Item(
+      _nameControllerText,
+      _item.quantity,
+    );
+
+    setState(() async {
+      apiError = index == -1
+          ? await groceriesController.addGroceriesItem(
+              item,
+              index,
+            )
+          : await groceriesController.updateGroceriesItem(
+              item,
+              index,
+            );
+    });
+    return apiError.isEmpty;
+  }
+
+  void updateNameError() {
+    setState(() {
+      nameError = "";
+      if (_nameControllerText.isEmpty) {
+        nameError = "Vous devez inscrire un nom";
+      } else if (groceriesController.groceriesContains(_nameControllerText) &&
+          _nameControllerText != item.name) {
+        nameError = "Cet article existe déjà";
+      }
+    });
+  }
+
+  // Private functions
+
+  String get _nameControllerText => nameController.text.trim().toUpperCase();
 }
