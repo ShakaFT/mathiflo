@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 
-// ignore_for_file: must_be_immutable
 class AlertPopup extends StatelessWidget {
   const AlertPopup({
     super.key,
@@ -44,7 +43,6 @@ class AlertPopup extends StatelessWidget {
               ? null
               : () {
                   action();
-                  // ignore: use_build_context_synchronously
                   Navigator.pop(context); // close popup
                 },
         ),

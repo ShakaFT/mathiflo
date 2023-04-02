@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
 import 'package:mathiflo/src/view/Groceries/groceries_view.dart';
@@ -35,9 +34,7 @@ class NavigationDrawerWidget extends StatelessWidget {
             context,
             "Doudous",
             Icon(Icons.hotel_rounded, color: mainColor),
-            HookBuilder(
-              builder: (context) => useCuddlyToysView(),
-            ),
+            const CuddlyToysView(),
           ),
 
           // -----------------------------
@@ -55,9 +52,7 @@ class NavigationDrawerWidget extends StatelessWidget {
           //   context,
           //   "Tricount",
           //   Icon(Icons.savings, color: mainColor),
-          //   HookBuilder(
-          //     builder: (context) => useCuddlyToysView(),
-          //   ),
+          //   const TricountView()
           // ),
 
           // ...

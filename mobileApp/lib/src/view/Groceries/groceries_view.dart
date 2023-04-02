@@ -21,7 +21,6 @@ class _GroceriesViewState extends StateX<GroceriesView> {
     _controller = controller! as GroceriesController;
   }
   late GroceriesController _controller;
-  // final GroceriesController _controller = GroceriesController();
 
   @override
   Widget build(BuildContext context) => WillPopScope(
