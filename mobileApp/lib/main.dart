@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
@@ -36,9 +35,7 @@ class _MathifloState extends AppStateX<Mathiflo> {
   static _MathifloState? _this;
 
   @override
-  Widget buildIn(BuildContext context) => HookBuilder(
-        builder: (context) => useCuddlyToysView(),
-      );
+  Widget buildIn(BuildContext context) => const CuddlyToysView();
 }
 
 _theme() => ThemeData(
