@@ -45,6 +45,8 @@ class GroceriesController extends StateXController {
     return error;
   }
 
+  Future<List<String>> checkedItems() async => getCheckedItems();
+
   Future<String> updateGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
     var error = "";
@@ -110,9 +112,7 @@ class GroceriesController extends StateXController {
     pendingAPI.value = true;
     var error = "";
 
-    if ((await getCheckedItems()).isEmpty) {
-      error = "Sélectionne les articles que tu veux supprimer.";
-    } else if (await resetNetworkGroceries(await getCheckedItems())) {
+    if (await resetNetworkGroceries(await getCheckedItems())) {
       await _groceriesList.refresh();
     } else {
       error = unknownError;

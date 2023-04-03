@@ -50,17 +50,16 @@ class ItemPopupController extends StateXController {
       _item.quantity,
     );
 
-    setState(() async {
-      apiError = index == -1
-          ? await groceriesController.addGroceriesItem(
-              item,
-              index,
-            )
-          : await groceriesController.updateGroceriesItem(
-              item,
-              index,
-            );
-    });
+    apiError = index == -1
+        ? await groceriesController.addGroceriesItem(
+            item,
+            index,
+          )
+        : await groceriesController.updateGroceriesItem(
+            item,
+            index,
+          );
+    setState(() {});
     return apiError.isEmpty;
   }
 
