@@ -24,11 +24,11 @@ class FirestoreClient(firestore_v1.client.Client):
         firestore_v1.client.Client.__init__(self)
 
     @property
-    def groceries_list(self):
+    def groceries(self):
         """
         This method return an instance of groceries_list document.
         """
-        return self.document(constants.COLLECTION_GROCERIES, constants.DOCUMENT_GROCERIES)
+        return self.collection(constants.COLLECTION_GROCERIES)
 
 
 database = FirestoreClient.start()

@@ -1,7 +1,8 @@
 import 'package:diacritic/diacritic.dart';
 import 'package:mathiflo/src/localstore/groceries.dart';
-import 'package:mathiflo/src/model/Groceries/groceries.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
+import 'package:mathiflo/src/model/Groceries/groceries_network.dart';
+
 import 'package:state_notifier/state_notifier.dart';
 
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
