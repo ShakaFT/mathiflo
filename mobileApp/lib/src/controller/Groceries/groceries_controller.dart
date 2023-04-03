@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/localstore/groceries.dart';
-import 'package:mathiflo/src/model/Groceries/groceries.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_list.dart';
+import 'package:mathiflo/src/model/Groceries/groceries_network.dart';
 import 'package:state_extended/state_extended.dart';
 import 'package:vibration/vibration.dart';
 
