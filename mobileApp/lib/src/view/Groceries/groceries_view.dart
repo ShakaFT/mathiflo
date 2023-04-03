@@ -76,19 +76,31 @@ class _GroceriesViewState extends StateX<GroceriesView> {
 
   _openClearListPopup() async {
     if (_controller.lockButtons) return;
-    await showDialog(
-      context: context,
-      builder: (context) => AlertPopup(
-        title: "Supprimer les articles",
-        message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
-        confirmation: () async {
-          final error = await _controller.resetGroceries();
-          if (error.isNotEmpty) {
-            if (context.mounted) snackbar(context, error, error: true);
-          }
-        },
-      ),
-    );
+
+    if ((await _controller.checkedItems()).isEmpty) {
+      if (mounted) {
+        snackbar(
+          context,
+          "Sélectionne les articles que tu veux supprimer.",
+          error: true,
+        );
+        return;
+      }
+    }
+
+    if (mounted) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertPopup(
+          title: "Supprimer les articles",
+          message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
+          confirmation: () async {
+            final error = await _controller.resetGroceries();
+            if (error.isNotEmpty) {}
+          },
+        ),
+      );
+    }
   }
 
   Future<void> _loadGroceriesList() async {
