@@ -18,7 +18,7 @@ def deploy(target_device: str):
     subprocess.call(f"flutter run -d {target_device}", shell=True)
 
 
-def select_menu() -> list:
+def select_menu() -> str:
     """
     This function shows select menu and returns the target device.
     """
@@ -27,9 +27,9 @@ def select_menu() -> list:
     chosen_device, _ = pick(options, title)
 
     if chosen_device != "None":
-        chosen_device = chosen_device.split("-")[1].strip()
+        chosen_device = str(chosen_device).split("-")[1].strip()
 
-    return chosen_device
+    return str(chosen_device)
 
 
 def main():

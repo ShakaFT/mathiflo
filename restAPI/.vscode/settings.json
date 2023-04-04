@@ -3,5 +3,6 @@
         "**/.*": true,
         "**/__pycache__": true
     },
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "python.analysis.typeCheckingMode": "basic"
 }

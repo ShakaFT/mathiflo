@@ -5,6 +5,7 @@ from collections import defaultdict
 import os
 import random
 from time import time
+from typing import Any
 from unidecode import unidecode
 
 from firebase_admin import firestore, storage
@@ -18,7 +19,7 @@ class History:
     This class represents an history.
     """
 
-    def __init__(self, history_data: dict, history_token: str | None = None):
+    def __init__(self, history_data: dict[str, Any], history_token: str | None = None):
         """
         This method creates an instance of an History object.
         """
@@ -34,7 +35,7 @@ class History:
         - TypeError if token is invalid.
         """
         query = database.history.order_by(
-            "timestamp", direction=firestore.Query.DESCENDING
+            "timestamp", direction=firestore.Query.DESCENDING # type: ignore
         ).limit(1)
 
         if token:
@@ -57,7 +58,7 @@ class History:
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
     @property
-    def florent(self) -> list[str]:
+    def florent(self) -> list[dict[str, str]]:
         """
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
@@ -65,7 +66,7 @@ class History:
         return self.__get_urls(self.__history_data["Florent"])
 
     @property
-    def mathilde(self) -> list[str]:
+    def mathilde(self) -> list[dict[str, str]]:
         """
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
@@ -88,7 +89,7 @@ class History:
         else:
             database.history.add(self.__history_data)
 
-    def to_dict(self) -> dict[str]:
+    def to_dict(self) -> dict[str, Any]:
         """
         This method returns a dict that represents the history information.
         """
@@ -98,7 +99,7 @@ class History:
             .get()
         )
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)
+            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING) # type: ignore
             .limit(1)
             .start_after(snapshot)
         )
@@ -195,7 +196,7 @@ class History:
         This static method returns a list that contains latest history.
         """
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)
+            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING) # type: ignore
             .limit(constants.LIMIT_NIGHT_IN_A_ROW)
             .stream()
         )
@@ -234,7 +235,7 @@ class History:
             ],
         )
 
-    def __get_urls(self, cuddly_toys: list[str]) -> dict:
+    def __get_urls(self, cuddly_toys: list[str]) -> list[dict[str, str]]:
         bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}-public")
 
         return [
