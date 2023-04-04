@@ -6,18 +6,18 @@ Future<List<String>> getCheckedItems() async {
   return List<String>.from(items["checked"] ?? []);
 }
 
-Future<void> addCheckedItem(String itemName) async {
+Future<void> addCheckedItem(String itemId) async {
   final currentCheckedItems = await getCheckedItems();
-  currentCheckedItems.add(itemName);
+  currentCheckedItems.add(itemId);
   await localDatabase
       .collection("groceries")
       .doc("items")
       .set({"checked": currentCheckedItems});
 }
 
-Future<void> removeCheckedItem(String itemName) async {
+Future<void> removeCheckedItem(String itemId) async {
   final currentCheckedItems = await getCheckedItems();
-  currentCheckedItems.removeWhere((name) => name == itemName);
+  currentCheckedItems.removeWhere((name) => name == itemId);
   await localDatabase
       .collection("groceries")
       .doc("items")

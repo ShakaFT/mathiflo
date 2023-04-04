@@ -13,7 +13,7 @@ class CuddlyToysHistory {
   int timestamp;
   String token;
 
-  toMap() => {
+  Map<String, dynamic> toMap() => {
         "Florent": florent,
         "Mathilde": mathilde,
         "timestamp": timestamp,

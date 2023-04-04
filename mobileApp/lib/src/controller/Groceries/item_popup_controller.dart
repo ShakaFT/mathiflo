@@ -46,6 +46,7 @@ class ItemPopupController extends StateXController {
 
   Future<bool> sendItem() async {
     final item = Item(
+      _item.id,
       _nameControllerText,
       _item.quantity,
     );

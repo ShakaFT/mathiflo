@@ -2,7 +2,6 @@ import 'package:diacritic/diacritic.dart';
 import 'package:mathiflo/src/localstore/groceries.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_network.dart';
-
 import 'package:state_notifier/state_notifier.dart';
 
 class GroceriesListNotifier extends StateNotifier<List<Item>> {
@@ -16,12 +15,8 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
   // Public methods
 
   void addItem(Item item) {
-    state = [...state, item];
+    state.add(item);
     _sort();
-  }
-
-  void clear() {
-    state = [];
   }
 
   bool exists(String name) => state.any((item) => item.name == name);
@@ -33,18 +28,18 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     }
 
     // Retrieve all checked items
-    final itemNames = <String>[];
+    final itemIds = <String>[];
     final checkedItems = await getCheckedItems();
 
     for (final item in groceriesList) {
-      item.checked = checkedItems.contains(item.name);
-      itemNames.add(item.name);
+      item.checked = checkedItems.contains(item.id);
+      itemIds.add(item.id);
     }
 
     // Remove all checked items that are no longer in database.
-    for (final checkedName in checkedItems) {
-      if (!itemNames.contains(checkedName)) {
-        await removeCheckedItem(checkedName);
+    for (final checkedId in checkedItems) {
+      if (!itemIds.contains(checkedId)) {
+        await removeCheckedItem(checkedId);
       }
     }
 
@@ -70,17 +65,17 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
   Future<void> replaceItem(int index, Item item) async {
     final removedItem = state.removeAt(index);
     if (removedItem.checked) {
-      await removeCheckedItem(removedItem.name);
+      await removeCheckedItem(removedItem.id);
       await addCheckedItem(item.name);
       item.checked = true;
     }
-    state = [...state, item];
+    state.add(item);
     _sort();
   }
 
   Future<void> removeItem(int index) async {
     final removedItem = state.removeAt(index);
-    await removeCheckedItem(removedItem.name);
+    await removeCheckedItem(removedItem.id);
     notify();
   }
 
@@ -90,5 +85,6 @@ class GroceriesListNotifier extends StateNotifier<List<Item>> {
     state.sort(
       (a, b) => removeDiacritics(a.name).compareTo(removeDiacritics(b.name)),
     );
+    notify();
   }
 }

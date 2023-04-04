@@ -30,15 +30,10 @@ class GroceriesController extends StateXController {
 
   Future<String> addGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
-    await Future.delayed(const Duration(seconds: 3));
-    var error = "";
 
-    final newList = [..._groceriesList.items, item];
-
-    if (await updateNetworkGroceries(newList)) {
+    final error = await addNetworkGroceriesItem(item);
+    if (error.isEmpty) {
       _groceriesList.addItem(item);
-    } else {
-      error = unknownError;
     }
 
     pendingAPI.value = false;
@@ -49,16 +44,10 @@ class GroceriesController extends StateXController {
 
   Future<String> updateGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
-    var error = "";
 
-    // We need to unpack groceriesList so as not to delete
-    // the item from groceriesList
-    final newList = [..._groceriesList.items, item]..removeAt(index);
-
-    if (await updateNetworkGroceries(newList)) {
+    final error = await updateNetworkGroceriesItem(item);
+    if (error.isEmpty) {
       await _groceriesList.replaceItem(index, item);
-    } else {
-      error = unknownError;
     }
 
     pendingAPI.value = false;
@@ -66,16 +55,16 @@ class GroceriesController extends StateXController {
   }
 
   Future<void> checkItem(
-    String name,
+    String id,
     int index, {
     required bool checked,
   }) async {
     final checkedItems = await getCheckedItems();
 
-    if (!checkedItems.contains(name) && checked) {
-      await addCheckedItem(name);
-    } else if (checkedItems.contains(name) && !checked) {
-      await removeCheckedItem(name);
+    if (!checkedItems.contains(id) && checked) {
+      await addCheckedItem(id);
+    } else if (checkedItems.contains(id) && !checked) {
+      await removeCheckedItem(id);
     }
 
     _groceriesList.updateCheck(index, checked: checked);
@@ -89,15 +78,11 @@ class GroceriesController extends StateXController {
     return worked;
   }
 
-  Future<String> removeGroceriesItem(int index) async {
+  Future<String> removeGroceriesItem(Item item, int index) async {
     pendingAPI.value = true;
     var error = "";
 
-    // We need to unpack groceriesList so as not to delete
-    // the item from groceriesList
-    final newList = [..._groceriesList.items]..removeAt(index);
-
-    if (await updateNetworkGroceries(newList)) {
+    if (await deleteNetworkGroceriesItems([item.id])) {
       await _groceriesList.removeItem(index);
     } else {
       error = unknownError;
@@ -112,7 +97,7 @@ class GroceriesController extends StateXController {
     pendingAPI.value = true;
     var error = "";
 
-    if (await resetNetworkGroceries(await getCheckedItems())) {
+    if (await deleteNetworkGroceriesItems(await getCheckedItems())) {
       await _groceriesList.refresh();
     } else {
       error = unknownError;
