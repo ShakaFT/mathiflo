@@ -60,8 +60,13 @@ Future<String> updateNetworkGroceriesItem(Item item) async {
       return unknownError;
     }
 
-    if (!json.decode(response.body)["exists"]) {
-      return "Cet article n'existe plus, mets à jour ta liste de courses.";
+    final payload = json.decode(response.body);
+
+    if (payload["exists"] == false) {
+      return "Un article possède déjà ce nom, mets à jour ta liste de courses.";
+    }
+    if (payload["deleted"] == true) {
+      return "Cet article a été supprimé, mets à jour ta liste de courses.";
     }
 
     return "";
