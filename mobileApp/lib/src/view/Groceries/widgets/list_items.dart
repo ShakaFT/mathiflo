@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
+
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
@@ -39,14 +40,14 @@ class ListItemWidget extends StatelessWidget {
                   ),
                   onTap: () async {
                     await controller.checkItem(
-                      items[index].name,
+                      items[index].id,
                       index,
                       checked: false,
                     );
                   },
                   onLongPress: () async {
                     await controller.checkItem(
-                      items[index].name,
+                      items[index].id,
                       index,
                       checked: true,
                     );
@@ -120,7 +121,7 @@ class ListItemWidget extends StatelessWidget {
         message:
             "Voulez-vous vraiment supprimer cet article ? L'action est irréversible.",
         confirmation: () async {
-          final error = await controller.removeGroceriesItem(index);
+          final error = await controller.removeGroceriesItem(item, index);
           if (error.isNotEmpty) {
             if (context.mounted) snackbar(context, error, error: true);
           }

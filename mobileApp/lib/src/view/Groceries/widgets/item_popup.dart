@@ -39,7 +39,7 @@ class _GroceriesItemPopupState extends StateX<GroceriesItemPopup> {
 
     popupController
       ..groceriesController = widget.groceriesController
-      ..item = widget.item ?? Item("", 1)
+      ..item = widget.item ?? Item(Uuid().generateV4(), "", 1)
       ..index = widget.index ?? -1;
   }
 
