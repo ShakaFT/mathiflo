@@ -7,7 +7,7 @@ from google.cloud import firestore_v1
 import constants
 
 
-class FirestoreClient(firestore_v1.client.Client):
+class FirestoreClient(firestore_v1.client.Client): # type: ignore
     """
     This class allows to use utils methods to interact with Firestore.
     """
@@ -21,7 +21,7 @@ class FirestoreClient(firestore_v1.client.Client):
         return FirestoreClient()
 
     def __init__(self):
-        firestore_v1.client.Client.__init__(self)
+        firestore_v1.client.Client.__init__(self) # type: ignore
 
     @property
     def cuddly_toys(self) -> list[str]:

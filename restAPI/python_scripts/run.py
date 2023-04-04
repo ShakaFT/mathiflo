@@ -16,7 +16,7 @@ def select_menu() -> str:
     options.extend(utils.get_services())
     service_to_run, _ = pick(options, title)
 
-    return service_to_run
+    return str(service_to_run)
 
 
 def main():

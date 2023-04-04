@@ -61,7 +61,9 @@ def rename_app():
     et.register_namespace("android", "http://schemas.android.com/apk/res/android")
     tree = et.parse("android/app/src/main/AndroidManifest.xml")
     application = tree.getroot().find("application")
-    application.attrib["{http://schemas.android.com/apk/res/android}label"] = "Mathiflo"
+    application.attrib[  # type: ignore
+        "{http://schemas.android.com/apk/res/android}label"
+    ] = "Mathiflo"
     tree.write("android/app/src/main/AndroidManifest.xml")
 
     # IOS
