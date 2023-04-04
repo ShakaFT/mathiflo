@@ -51,6 +51,9 @@ def add_groceries_item(item_id: str):
     item_doc = database.groceries.document(item_id)
 
     if item_doc.get().exists:
+        return jsonify(error="This item already exists"), 400
+
+    if database.groceries_item_exists(new_item["name"]):
         # This item already exists (maybe a desynchronization between the local and the server)
         return jsonify(success=False, exists=True), 200
 
@@ -76,6 +79,9 @@ def update_groceries_item(item_id: str):
     item_doc = database.groceries.document(item_id)
 
     if not item_doc.get().exists:
+        return jsonify(error="This item already exists"), 400
+
+    if not database.groceries_item_exists(updated_item["name"]):
         # This item not exists (maybe a desynchronization between the local and the server)
         return jsonify(success=False, exists=False), 200
 
