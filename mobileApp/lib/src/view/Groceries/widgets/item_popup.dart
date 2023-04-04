@@ -29,7 +29,9 @@ class GroceriesItemPopup extends StatefulWidget {
 class _GroceriesItemPopupState extends StateX<GroceriesItemPopup> {
   _GroceriesItemPopupState() : super(ItemPopupController()) {
     popupController = controller! as ItemPopupController;
-    popupController.nameError = "";
+    popupController
+      ..apiError = ""
+      ..nameError = "";
   }
   late ItemPopupController popupController;
 

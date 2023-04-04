@@ -23,13 +23,10 @@ def get_groceries():
     """
     This endpoint returns groceries list.
     """
-    return (
-        jsonify(
-            groceriesList=[
-                item.to_dict() | {"id": item.id} for item in database.groceries.stream()
-            ]
-        ),
-        200,
+    return jsonify(
+        groceriesList=[
+            item.to_dict() | {"id": item.id} for item in database.groceries.stream()
+        ]
     )
 
 
@@ -55,10 +52,10 @@ def add_groceries_item(item_id: str):
 
     if database.groceries_item_exists(new_item["name"]):
         # This item already exists (maybe a desynchronization between the local and the server)
-        return jsonify(success=False, exists=True), 200
+        return jsonify(success=False, exists=True)
 
     item_doc.set(new_item)
-    return jsonify(success=True, exists=False), 200
+    return jsonify(success=True, exists=False)
 
 
 @app.put("/groceries/<item_id>")
@@ -79,14 +76,14 @@ def update_groceries_item(item_id: str):
     item_doc = database.groceries.document(item_id)
 
     if not item_doc.get().exists:
-        return jsonify(error="This item already exists"), 400
+        return jsonify(success=False, deleted=True)
 
-    if not database.groceries_item_exists(updated_item["name"]):
+    if database.groceries_item_exists(updated_item["name"]):
         # This item not exists (maybe a desynchronization between the local and the server)
-        return jsonify(success=False, exists=False), 200
+        return jsonify(success=False, exists=False)
 
     item_doc.set(updated_item)
-    return jsonify(success=True, exists=True), 200
+    return jsonify(success=True, exists=True)
 
 
 @app.delete("/groceries")
