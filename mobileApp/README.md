@@ -1,14 +1,23 @@
+# Mathiflo mobile app
+
 ## Icons
 
-# App icon
+### App icon
+
 ```bash
 flutter pub run flutter_launcher_icons
 ```
 
-# Launch icon
+### Launch icon
+
 ```bash
 flutter pub run flutter_native_splash:create
 ```
 
-# Widgets
+## Widgets
+
 - WillPopScope --> Allows to prevent the user from using the return key of the device.
+
+## Secrets
+
+- Google Cloud credentials of mathiflo project : /android/credentials.json
