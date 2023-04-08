@@ -3,6 +3,7 @@ This module contains util functions.
 """
 import json
 import plistlib
+import os
 import subprocess
 from xml.etree import ElementTree as et
 
@@ -30,21 +31,6 @@ def get_environnement() -> str:
     return "prod" if branch_name() == "main" else "dev"
 
 
-def get_devices() -> list[str]:
-    """
-    This function returns a list that contains connected devices.
-    """
-    devices = subprocess.getoutput("flutter devices").split("\n")[2:]
-    result = []
-    for device in devices:
-        splited_device = device.split("•")
-        device_name = splited_device[0].strip()
-        device_id = splited_device[1].strip()
-        result.append(f"{device_name} - {device_id}")
-
-    return result
-
-
 def push(message: str):
     """
     This functions commits and pushs.
@@ -53,9 +39,32 @@ def push(message: str):
     subprocess.call("git push", shell=True)
 
 
-def rename_app():
+def rename_app_bundle():
     """
-    This function renames app to "Mathiflo" (production name).
+    This function renames app bundle to "com.mathiflo" (production name).
+    """
+    # Android
+    replace_file_string(
+        "com.mathiflo.dev", "com.mathiflo", "android/app/src/debug/AndroidManifest.xml"
+    )
+    replace_file_string(
+        "com.mathiflo.dev", "com.mathiflo", "android/app/src/main/AndroidManifest.xml"
+    )
+    replace_file_string(
+        "com.mathiflo.dev",
+        "com.mathiflo",
+        "android/app/src/profile/AndroidManifest.xml",
+    )
+    replace_file_string(
+        "com.mathiflo.dev",
+        "com.mathiflo",
+        "android/app/src/main/kotlin/com/mathiflo/MainActivity.kt",
+    )
+
+
+def rename_app_name():
+    """
+    This function renames app name to "Mathiflo" (production name).
     """
     # Android
     et.register_namespace("android", "http://schemas.android.com/apk/res/android")
@@ -74,6 +83,21 @@ def rename_app():
 
     with open("ios/Runner/Info.plist", "wb") as file:
         plistlib.dump(ios_config, file)
+
+
+def replace_file_string(old_string: str, new_string: str, file_path: str):
+    """
+    This function replaces string in file.
+    """
+    current_directory = os.getcwd()
+    splitted_path = file_path.split("/")
+
+    if len(splitted_path) > 1:
+        os.chdir("/".join(splitted_path[:-1]))
+
+    subprocess.call(f"sed -i '' 's/{old_string}/{new_string}/' {splitted_path[-1]}")
+
+    os.chdir(current_directory)
 
 
 def reset():

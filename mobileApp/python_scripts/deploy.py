@@ -18,12 +18,27 @@ def deploy(target_device: str):
     subprocess.call(f"flutter run -d {target_device}", shell=True)
 
 
+def get_devices() -> list[str]:
+    """
+    This function returns a list that contains connected devices.
+    """
+    devices = subprocess.getoutput("flutter devices").split("\n")[2:]
+    result = []
+    for device in devices:
+        splited_device = device.split("•")
+        device_name = splited_device[0].strip()
+        device_id = splited_device[1].strip()
+        result.append(f"{device_name} - {device_id}")
+
+    return result
+
+
 def select_menu() -> str:
     """
     This function shows select menu and returns the target device.
     """
     title = "Choose the target device :"
-    options = ["None", *utils.get_devices()]
+    options = ["None", *get_devices()]
     chosen_device, _ = pick(options, title)
 
     if chosen_device != "None":
@@ -51,7 +66,8 @@ def main():
         sys.exit()
 
     utils.set_config(environment)
-    utils.rename_app()
+    utils.rename_app_name()
+    utils.rename_app_bundle()
     deploy(target_device)
 
 
