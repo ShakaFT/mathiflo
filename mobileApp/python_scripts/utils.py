@@ -2,10 +2,8 @@
 This module contains util functions.
 """
 import json
-import plistlib
 import os
 import subprocess
-from xml.etree import ElementTree as et
 
 
 def branch_name() -> str:
@@ -67,22 +65,15 @@ def rename_app_name():
     This function renames app name to "Mathiflo" (production name).
     """
     # Android
-    et.register_namespace("android", "http://schemas.android.com/apk/res/android")
-    tree = et.parse("android/app/src/main/AndroidManifest.xml")
-    application = tree.getroot().find("application")
-    application.attrib[  # type: ignore
-        "{http://schemas.android.com/apk/res/android}label"
-    ] = "Mathiflo"
-    tree.write("android/app/src/main/AndroidManifest.xml")
+    replace_file_string(
+        "Mathiflo-dev", "Mathiflo", "web/index.html"
+    )
 
     # IOS
-    with open("ios/Runner/Info.plist", "rb") as file:
-        ios_config = plistlib.load(file)
+    replace_file_string("Mathiflo-dev", "Mathiflo", "ios/Runner/Info.plist")
 
-    ios_config["CFBundleName"] = "Mathiflo"
-
-    with open("ios/Runner/Info.plist", "wb") as file:
-        plistlib.dump(ios_config, file)
+    # Web
+    replace_file_string("Mathiflo-dev", "Mathiflo", "ios/Runner/Info.plist")
 
 
 def replace_file_string(old_string: str, new_string: str, file_path: str):
@@ -94,7 +85,9 @@ def replace_file_string(old_string: str, new_string: str, file_path: str):
 
     if len(splitted_path) > 1:
         os.chdir("/".join(splitted_path[:-1]))
-    subprocess.call(f"sed -i '' s/{old_string}/{new_string}/ {splitted_path[-1]}", shell=True)
+    subprocess.call(
+        f"sed -i '' s/{old_string}/{new_string}/ {splitted_path[-1]}", shell=True
+    )
 
     os.chdir(current_directory)
 
