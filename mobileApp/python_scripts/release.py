@@ -53,7 +53,8 @@ def main():
 
     upgrade_version()
     utils.set_config(environment)
-    utils.rename_app()
+    utils.rename_app_name()
+    utils.rename_app_bundle()
     release()
 
 

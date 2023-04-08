@@ -1,4 +1,4 @@
-package com.mathiflo
+package com.mathiflo.dev
 
 import io.flutter.embedding.android.FlutterActivity
 
