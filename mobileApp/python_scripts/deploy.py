@@ -15,7 +15,7 @@ def deploy(target_device: str):
     This function deploys app on target device.
     """
     shell_print(f"[green]Will run on device : {target_device}")
-    subprocess.call(f"flutter run -d {target_device}", shell=True)
+    subprocess.call(f"flutter run -d {target_device} --web-browser-flag '--disable-web-security'", shell=True)
 
 
 def get_devices() -> list[str]:
