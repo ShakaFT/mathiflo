@@ -94,8 +94,7 @@ def replace_file_string(old_string: str, new_string: str, file_path: str):
 
     if len(splitted_path) > 1:
         os.chdir("/".join(splitted_path[:-1]))
-
-    subprocess.call(f"sed -i '' 's/{old_string}/{new_string}/' {splitted_path[-1]}")
+    subprocess.call(f"sed -i '' s/{old_string}/{new_string}/ {splitted_path[-1]}", shell=True)
 
     os.chdir(current_directory)
 
