@@ -39,10 +39,12 @@ class ListItemWidget extends StatelessWidget {
                     ),
                   ),
                   onTap: () async {
+                    final item = items[index];
                     await controller.checkItem(
-                      items[index].id,
+                      item.id,
                       index,
-                      checked: false,
+                      checked: (await controller.checkedItems()).isNotEmpty &&
+                          !item.checked,
                     );
                   },
                   onLongPress: () async {

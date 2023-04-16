@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/localstore/groceries.dart';
@@ -63,12 +64,11 @@ class GroceriesController extends StateXController {
 
     if (!checkedItems.contains(id) && checked) {
       await addCheckedItem(id);
+      await _udateCheckItem(index, checked: checked);
     } else if (checkedItems.contains(id) && !checked) {
       await removeCheckedItem(id);
+      await _udateCheckItem(index, checked: checked);
     }
-
-    _groceriesList.updateCheck(index, checked: checked);
-    await Vibration.vibrate(duration: 100);
   }
 
   Future<bool> refreshGroceries() async {
@@ -105,5 +105,14 @@ class GroceriesController extends StateXController {
 
     pendingAPI.value = false;
     return error;
+  }
+
+  Future<void> _udateCheckItem(int index, {required bool checked}) async {
+    try {
+      await Vibration.vibrate(duration: 100);
+      // Empty block to skip MissingPluginException if device has not vibration plugin
+      // ignore: empty_catches
+    } on MissingPluginException {}
+    _groceriesList.updateCheck(index, checked: checked);
   }
 }

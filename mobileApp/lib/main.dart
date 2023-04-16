@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/view/home_view.dart';
+import 'package:mathiflo/src/view/Groceries/groceries_view.dart';
 import 'package:state_extended/state_extended.dart';
 
 void main() async {
@@ -39,7 +39,7 @@ class _MathifloState extends AppStateX<Mathiflo> {
   static _MathifloState? _this;
 
   @override
-  Widget buildIn(BuildContext context) => const HomeView();
+  Widget buildIn(BuildContext context) => const GroceriesView();
 }
 
 _theme() => ThemeData(
