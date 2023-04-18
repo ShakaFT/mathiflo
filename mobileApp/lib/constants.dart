@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+int apiTimeout = 300;
 String unknownError =
     "Une erreur inconnue est survenue... Vérifie ta connexion internet.";
 String urlGroceries = "https://groceries-dot-mathiflo.ew.r.appspot.com";
