@@ -1,23 +1,23 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:mathiflo/config.dart' as config;
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 
+final dio = Dio(
+  BaseOptions(
+    baseUrl: config.groceriesRestApiUrl,
+    connectTimeout: Duration(seconds: apiTimeout),
+    receiveTimeout: Duration(seconds: apiTimeout),
+  ),
+);
+
+/// If returns null, API call has not worked.
 Future<List<Item>?> getNetworkGroceries() async {
-  // If returns null, API call has not worked
-  final uri = Uri.tryParse(
-    '${config.groceriesRestApiUrl}/groceries?debug=true',
-  )!;
-
   try {
-    final response = await http.get(uri);
-
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      return null;
-    }
+    final response = await dio.get<Map<String, dynamic>>('/groceries');
     final groceriesList = <Item>[];
-    for (final item in json.decode(response.body)["groceriesList"]) {
+
+    for (final item in response.data!['groceriesList']) {
       groceriesList.add(Item.fromMap(item));
     }
     return groceriesList;
@@ -27,18 +27,13 @@ Future<List<Item>?> getNetworkGroceries() async {
 }
 
 Future<String> addNetworkGroceriesItem(Item item) async {
-  final uri = Uri.tryParse(
-    '${config.groceriesRestApiUrl}/groceries/${item.id}',
-  )!;
-
-  final encodedPayload = jsonEncode(item.toMap());
   try {
-    final response = await http.post(uri, body: encodedPayload);
-    if (response.statusCode <= 200 && response.statusCode >= 299) {
-      return unknownError;
-    }
+    final response = await dio.post<Map<String, dynamic>>(
+      '/groceries/${item.id}',
+      data: item.toMap(),
+    );
 
-    if (json.decode(response.body)["exists"]) {
+    if (response.data!['exists']) {
       return "Cet article existe déjà, mets à jour ta liste de courses.";
     }
 
@@ -49,23 +44,17 @@ Future<String> addNetworkGroceriesItem(Item item) async {
 }
 
 Future<String> updateNetworkGroceriesItem(Item item) async {
-  final uri = Uri.tryParse(
-    '${config.groceriesRestApiUrl}/groceries/${item.id}',
-  )!;
-
-  final encodedPayload = jsonEncode(item.toMap());
   try {
-    final response = await http.put(uri, body: encodedPayload);
-    if (response.statusCode <= 200 && response.statusCode >= 299) {
-      return unknownError;
-    }
+    final response = await dio.put<Map<String, dynamic>>(
+      '/groceries/${item.id}',
+      data: item.toMap(),
+    );
 
-    final payload = json.decode(response.body);
-
-    if (payload["exists"] == false) {
+    final groceriesData = response.data!;
+    if (groceriesData["exists"] == false) {
       return "Un article possède déjà ce nom, mets à jour ta liste de courses.";
     }
-    if (payload["deleted"] == true) {
+    if (groceriesData["deleted"] == true) {
       return "Cet article a été supprimé, mets à jour ta liste de courses.";
     }
 
@@ -79,14 +68,10 @@ Future<bool> deleteNetworkGroceriesItems(
   List<String> toDelete, {
   all = false,
 }) async {
-  final uri = Uri.tryParse(
-    '${config.groceriesRestApiUrl}/groceries',
-  )!;
-
-  final encodedPayload = jsonEncode({'all': all, 'groceriesItems': toDelete});
   try {
-    final response = await http.delete(uri, body: encodedPayload);
-    return response.statusCode >= 200 && response.statusCode <= 299;
+    await dio
+        .delete('/groceries', data: {'all': all, 'groceriesItems': toDelete});
+    return true;
   } catch (e) {
     return false;
   }
