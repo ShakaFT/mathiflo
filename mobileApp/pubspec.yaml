@@ -21,7 +21,8 @@ environment:
   sdk: '>=2.18.5 <3.0.0'
 flutter:
   assets:
-  - assets/config/config.json
+  - assets/config/
+  - assets/home_page/
   uses-material-design: true
 flutter_icons:
   android: launcher_icon
