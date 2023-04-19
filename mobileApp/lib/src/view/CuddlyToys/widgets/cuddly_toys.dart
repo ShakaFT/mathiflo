@@ -107,30 +107,32 @@ class CuddlyToysWidget extends StatelessWidget {
     final result = <TableRow>[];
 
     for (var i = 0; i < mathilde.length + florent.length; i++) {
-      final forMathilde = mathilde.length > i
-          ? mathilde.elementAt(i)
-          : {'name': '', 'image_url': ''};
-      final forFlorent = florent.length > i
-          ? florent.elementAt(i)
-          : {'name': '', 'image_url': ''};
+      final forMathilde = mathilde.length > i ? mathilde.elementAt(i) : '';
+      final forFlorent = florent.length > i ? florent.elementAt(i) : '';
 
-      if (forMathilde["name"]!.isEmpty && forFlorent["name"]!.isEmpty) break;
+      if (forMathilde.isEmpty && forFlorent.isEmpty) break;
 
       result.add(
         TableRow(
           children: [
             Row(
               children: [
-                if (forMathilde["name"]! != "")
-                  avatarImage(context, forMathilde["image_url"]!),
-                centerText(forMathilde["name"]!),
+                if (forMathilde.isNotEmpty)
+                  avatarImage(
+                    context,
+                    controller.getCuddlyToyImage(forMathilde),
+                  ),
+                centerText(forMathilde),
               ],
             ),
             Row(
               children: [
-                if (forFlorent["name"]! != "")
-                  avatarImage(context, forFlorent["image_url"]!),
-                centerText(forFlorent["name"]!),
+                if (forFlorent.isNotEmpty)
+                  avatarImage(
+                    context,
+                    controller.getCuddlyToyImage(forFlorent),
+                  ),
+                centerText(forFlorent),
               ],
             ),
           ],

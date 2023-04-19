@@ -1,9 +1,9 @@
 # Requirements used for local development
-black==23.1.0
+black==23.3.0
 pick==2.2.0
-pylint==2.17.0
-rich==13.3.2
-sourcery==1.0.7
+pylint==2.17.2
+rich==13.3.4
+sourcery==1.2.0
 
 # Requirements used by services
 firebase-admin==6.1.0

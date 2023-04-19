@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories_list.dart';
+import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_network.dart';
 import 'package:state_extended/state_extended.dart';
 
 class CuddlyToysController extends StateXController {
@@ -12,6 +13,7 @@ class CuddlyToysController extends StateXController {
   // Model
   static CuddlyToysController? _this;
   final CuddlyToysHistoriesNotifier _cuddlyToys;
+  final Map<String, Image> _cuddlyToysImages = {};
 
   int _currentIndex = 0;
   final ValueNotifier _pendingAPI = ValueNotifier(false);
@@ -20,14 +22,25 @@ class CuddlyToysController extends StateXController {
   bool get disabledNextButton => _currentIndex == 0;
   bool get disabledPreviousButton => !_cuddlyToys.getAt(_currentIndex).hasMore;
   CuddlyToysHistoriesNotifier get cuddlyToys => _cuddlyToys;
-  List<Map<String, dynamic>> get florentCuddlyToys =>
+  List<String> get florentCuddlyToys =>
       _cuddlyToys.getAt(_currentIndex).florent;
-  List<Map<String, dynamic>> get mathildeCuddlyToys =>
+  List<String> get mathildeCuddlyToys =>
       _cuddlyToys.getAt(_currentIndex).mathilde;
   ValueNotifier get pendingAPI => _pendingAPI;
 
   // Methods
+  Image getCuddlyToyImage(String name) => _cuddlyToysImages[name]!;
+
   Future<bool> refreshCuddlyToys() async {
+    if (_cuddlyToysImages.isEmpty) {
+      final startedData = await getStartedData();
+      if (startedData == null) {
+        return false;
+      }
+      startedData["cuddly_toys"].forEach((cuddlyToy, imageUrl) {
+        _cuddlyToysImages[cuddlyToy] = Image.network(imageUrl);
+      });
+    }
     _currentIndex = 0;
     return _cuddlyToys.refresh();
   }

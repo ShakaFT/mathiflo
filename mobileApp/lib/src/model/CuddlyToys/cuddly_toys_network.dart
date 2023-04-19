@@ -1,29 +1,40 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:mathiflo/config.dart' as config;
+import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories.dart';
 
+final dio = Dio(
+  BaseOptions(
+    baseUrl: config.cuddlyToysRestApiUrl,
+    connectTimeout: Duration(seconds: apiTimeout),
+    receiveTimeout: Duration(seconds: apiTimeout),
+  ),
+);
+
+Future<Map<String, dynamic>?> getStartedData() async {
+  try {
+    final response = await dio.get<Map<String, dynamic>>('/start');
+    return response.data;
+  } catch (e) {
+    return null;
+  }
+}
+
+/// If returns null, API call has not worked.
 Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
   String token = "",
 }) async {
-  // If returns null, API call has not worked
-  final uri = Uri.tryParse(
-    '${config.cuddlyToysRestApiUrl}/history?token=$token',
-  )!;
-
   try {
-    final response = await http.get(uri);
+    final response =
+        await dio.get<Map<String, dynamic>>('/history?token=$token');
+    final cuddlyToysData = response.data!;
 
-    if (response.statusCode < 200 || response.statusCode > 299) {
-      return null;
-    }
-    final Map<String, dynamic> decodedPayload = json.decode(response.body);
     return CuddlyToysHistory(
-      List<Map<String, dynamic>>.from(decodedPayload["Florent"]),
-      List<Map<String, dynamic>>.from(decodedPayload["Mathilde"]),
-      decodedPayload["timestamp"],
-      hasMore: decodedPayload["hasMore"],
-      token: decodedPayload["token"],
+      List<String>.from(cuddlyToysData["Florent"]),
+      List<String>.from(cuddlyToysData["Mathilde"]),
+      cuddlyToysData["timestamp"],
+      hasMore: cuddlyToysData["hasMore"],
+      token: cuddlyToysData["token"],
     );
   } catch (e) {
     return null;
