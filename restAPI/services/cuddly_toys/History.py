@@ -2,6 +2,7 @@
 This module contains History class.
 """
 from collections import defaultdict
+from datetime import datetime, timedelta
 import os
 import random
 from time import time
@@ -9,6 +10,8 @@ from typing import Any
 from unidecode import unidecode
 
 from firebase_admin import firestore, storage
+from google.auth import compute_engine
+import google.auth.transport.requests
 
 import constants
 from FirestoreClient import database
@@ -35,7 +38,7 @@ class History:
         - TypeError if token is invalid.
         """
         query = database.history.order_by(
-            "timestamp", direction=firestore.Query.DESCENDING # type: ignore
+            "timestamp", direction=firestore.Query.DESCENDING  # type: ignore
         ).limit(1)
 
         if token:
@@ -99,7 +102,7 @@ class History:
             .get()
         )
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING) # type: ignore
+            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
             .limit(1)
             .start_after(snapshot)
         )
@@ -196,7 +199,7 @@ class History:
         This static method returns a list that contains latest history.
         """
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING) # type: ignore
+            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
             .limit(constants.LIMIT_NIGHT_IN_A_ROW)
             .stream()
         )
@@ -236,14 +239,20 @@ class History:
         )
 
     def __get_urls(self, cuddly_toys: list[str]) -> list[dict[str, str]]:
-        bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}-public")
+        bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
+        expires_at_ms = datetime.now() + timedelta(minutes=1)
+
+        auth_request = google.auth.transport.requests.Request()
+        signing_credentials = compute_engine.IDTokenCredentials(auth_request, "")
 
         return [
             {
                 "name": cuddly_toy,
                 "image_url": bucket.blob(
                     f"cuddly_toys_pictures/{unidecode(cuddly_toy)}.png"
-                ).public_url,
+                ).generate_signed_url(
+                    expiration=expires_at_ms, credentials=signing_credentials
+                ),
             }
             for cuddly_toy in cuddly_toys
         ]
