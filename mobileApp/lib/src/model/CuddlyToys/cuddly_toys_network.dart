@@ -11,6 +11,15 @@ final dio = Dio(
   ),
 );
 
+Future<Map<String, dynamic>?> getStartedData() async {
+  try {
+    final response = await dio.get<Map<String, dynamic>>('/start');
+    return response.data;
+  } catch (e) {
+    return null;
+  }
+}
+
 /// If returns null, API call has not worked.
 Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
   String token = "",
@@ -21,8 +30,8 @@ Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
     final cuddlyToysData = response.data!;
 
     return CuddlyToysHistory(
-      List<Map<String, dynamic>>.from(cuddlyToysData["Florent"]),
-      List<Map<String, dynamic>>.from(cuddlyToysData["Mathilde"]),
+      List<String>.from(cuddlyToysData["Florent"]),
+      List<String>.from(cuddlyToysData["Mathilde"]),
       cuddlyToysData["timestamp"],
       hasMore: cuddlyToysData["hasMore"],
       token: cuddlyToysData["token"],
