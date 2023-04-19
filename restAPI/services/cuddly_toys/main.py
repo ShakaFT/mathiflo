@@ -1,9 +1,17 @@
 """
-Test module
+This module contains main endpoints of cuddly_toys service.
 """
+from datetime import datetime, timedelta
+import os
+
+from firebase_admin import storage
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from google.auth import compute_engine
+import google.auth.transport.requests
+from unidecode import unidecode
 
+from FirestoreClient import database
 from History import History
 
 app = Flask(__name__)
@@ -16,6 +24,29 @@ def default():
     main endpoint.
     """
     return jsonify(success=True)
+
+
+@app.get("/start")
+def start():
+    """
+    This endpoint returns data to load when CuddlyToys page is launched.
+    """
+    bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
+    expires_at_ms = datetime.now() + timedelta(minutes=1)
+
+    auth_request = google.auth.transport.requests.Request()
+    signing_credentials = compute_engine.IDTokenCredentials(auth_request, "")
+
+    return jsonify(
+        cuddly_toys={
+            cuddly_toy: bucket.blob(
+                f"cuddly_toys_pictures/{unidecode(cuddly_toy)}.png"
+            ).generate_signed_url(
+                expiration=expires_at_ms, credentials=signing_credentials
+            )
+            for cuddly_toy in database.cuddly_toys
+        }
+    )
 
 
 @app.get("/history")
