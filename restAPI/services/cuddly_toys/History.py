@@ -2,16 +2,12 @@
 This module contains History class.
 """
 from collections import defaultdict
-from datetime import datetime, timedelta
-import os
+
 import random
 from time import time
 from typing import Any
-from unidecode import unidecode
 
-from firebase_admin import firestore, storage
-from google.auth import compute_engine
-import google.auth.transport.requests
+from firebase_admin import firestore
 
 import constants
 from FirestoreClient import database
@@ -61,20 +57,20 @@ class History:
         return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
 
     @property
-    def florent(self) -> list[dict[str, str]]:
+    def florent(self) -> list[str]:
         """
         This method returns a list that contains the cuddly
         toys with which Florent has sleeped this night.
         """
-        return self.__get_urls(self.__history_data["Florent"])
+        return self.__history_data["Florent"]
 
     @property
-    def mathilde(self) -> list[dict[str, str]]:
+    def mathilde(self) -> list[str]:
         """
         This method returns a list that contains the cuddly
         toys with which Mathilde has sleeped this night.
         """
-        return self.__get_urls(self.__history_data["Mathilde"])
+        return self.__history_data["Mathilde"]
 
     @property
     def timestamp(self) -> int:
@@ -237,25 +233,6 @@ class History:
                 if number == constants.LIMIT_NIGHT_IN_A_ROW
             ],
         )
-
-    def __get_urls(self, cuddly_toys: list[str]) -> list[dict[str, str]]:
-        bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
-        expires_at_ms = datetime.now() + timedelta(minutes=1)
-
-        auth_request = google.auth.transport.requests.Request()
-        signing_credentials = compute_engine.IDTokenCredentials(auth_request, "")
-
-        return [
-            {
-                "name": cuddly_toy,
-                "image_url": bucket.blob(
-                    f"cuddly_toys_pictures/{unidecode(cuddly_toy)}.png"
-                ).generate_signed_url(
-                    expiration=expires_at_ms, credentials=signing_credentials
-                ),
-            }
-            for cuddly_toy in cuddly_toys
-        ]
 
     def __check_data(self, data: dict):
         if "Florent" not in data or "Mathilde" not in data or "timestamp" not in data:

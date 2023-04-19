@@ -12,6 +12,7 @@ class CuddlyToysController extends StateXController {
   // Model
   static CuddlyToysController? _this;
   final CuddlyToysHistoriesNotifier _cuddlyToys;
+  Map<String, Image>? _cuddlyToysImages;
 
   int _currentIndex = 0;
   final ValueNotifier _pendingAPI = ValueNotifier(false);
@@ -20,6 +21,7 @@ class CuddlyToysController extends StateXController {
   bool get disabledNextButton => _currentIndex == 0;
   bool get disabledPreviousButton => !_cuddlyToys.getAt(_currentIndex).hasMore;
   CuddlyToysHistoriesNotifier get cuddlyToys => _cuddlyToys;
+  Map<String, Image> get cuddlyToysImages => _cuddlyToysImages!;
   List<Map<String, dynamic>> get florentCuddlyToys =>
       _cuddlyToys.getAt(_currentIndex).florent;
   List<Map<String, dynamic>> get mathildeCuddlyToys =>
@@ -28,6 +30,9 @@ class CuddlyToysController extends StateXController {
 
   // Methods
   Future<bool> refreshCuddlyToys() async {
+    if (_cuddlyToysImages == null) {
+      // TODO call API
+    }
     _currentIndex = 0;
     return _cuddlyToys.refresh();
   }
