@@ -33,6 +33,7 @@ def run_service(service: str):
     This function sets GAC and executes main.py of selected service.
     """
     root_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    os.environ["GOOGLE_CLOUD_PROJECT"] = "mathiflo-dev"
     os.environ[
         "GOOGLE_APPLICATION_CREDENTIALS"
     ] = f"{root_path}/services/credentials.json"
