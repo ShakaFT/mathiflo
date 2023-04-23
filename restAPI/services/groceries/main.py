@@ -75,9 +75,6 @@ def update_groceries_item(item_id: str):
 
     item_doc = database.groceries.document(item_id)
 
-    if not item_doc.get().exists:
-        return jsonify(success=False, deleted=True)
-
     if database.groceries_item_exists(updated_item["name"]):
         # This item not exists (maybe a desynchronization between the local and the server)
         return jsonify(success=False, exists=False)

@@ -51,9 +51,6 @@ Future<String> updateNetworkGroceriesItem(Item item) async {
     );
 
     final groceriesData = response.data!;
-    if (groceriesData["exists"] == false) {
-      return "Un article possède déjà ce nom, mets à jour ta liste de courses.";
-    }
     if (groceriesData["deleted"] == true) {
       return "Cet article a été supprimé, mets à jour ta liste de courses.";
     }

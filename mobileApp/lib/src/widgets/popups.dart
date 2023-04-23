@@ -69,11 +69,11 @@ snackbar(BuildContext context, String text, {bool error = false}) =>
       ),
     );
 
-avatarImage(BuildContext context, Image image) => Padding(
+avatarImage(BuildContext context, ImageProvider image) => Padding(
       padding: const EdgeInsets.all(8.0),
       child: CircleAvatar(
         radius: 20,
-        backgroundImage: image.image,
+        backgroundImage: image,
         child: GestureDetector(
           onTap: () async {
             await showDialog(
@@ -88,7 +88,7 @@ avatarImage(BuildContext context, Image image) => Padding(
                   height: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: image.image,
+                      image: image,
                       fit: BoxFit.cover,
                     ),
                   ),
