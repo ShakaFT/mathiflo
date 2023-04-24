@@ -23,6 +23,10 @@ def get_history():
     """
     This endpoint returns the 5 last nights.
     """
+    print("---")
+    print(request.headers)
+    print(request.headers.get("User-Agent", "not found"))
+    print("---")
     try:
         history = History.from_token(request.args.get("token"))
         return jsonify(history.to_dict())
