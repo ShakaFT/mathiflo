@@ -49,9 +49,7 @@ class History:
         )
 
         if token:
-            snapshot = (
-                database.collection(constants.COLLECTION_HISTORY).document(token).get()
-            )
+            snapshot = database.document(constants.COLLECTION_HISTORY, token).get()
             query = query.start_after(snapshot)
 
         latest_history = next(query.stream())
@@ -98,9 +96,9 @@ class History:
         This method adds history in database.
         """
         if self.__history_token:
-            self.__database.document(
-                constants.COLLECTION_HISTORY, self.__history_token
-            ).update(self.__history_data)
+            self.__database.update(
+                constants.COLLECTION_HISTORY, self.__history_token, self.__history_data
+            )
         else:
             self.__database.collection(constants.COLLECTION_HISTORY).add(
                 self.__history_data
@@ -183,12 +181,8 @@ class History:
         """
         This static method fills florent mathilde lists.
         """
-        cuddly_toys_data = (
-            database.document(
-                constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
-            )
-            .get()
-            .to_dict()
+        cuddly_toys_data = database.get(
+            constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
         )
 
         if not cuddly_toys_data:

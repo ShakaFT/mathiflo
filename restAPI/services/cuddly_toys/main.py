@@ -20,14 +20,6 @@ from restAPI.FirestoreClient import FirestoreClient
 app = create_app(__name__)
 
 
-@app.get("/")
-def default():
-    """
-    main endpoint.
-    """
-    return jsonify(success=True)
-
-
 @app.get("/start")
 def start():
     """
@@ -48,11 +40,10 @@ def start():
             ).generate_signed_url(
                 expiration=expires_at_ms, credentials=signing_credentials
             )
-            for cuddly_toy in database.document(
+            for cuddly_toy in database.get(
                 constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
             )
-            .get()
-            .to_dict()  # type: ignore
+            or {}
         }
     )
 
