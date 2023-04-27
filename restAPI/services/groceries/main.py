@@ -1,18 +1,28 @@
 """
 This module contains main endpoints of groceries service.
 """
+import os
+
+from dotenv import load_dotenv
 from flask import current_app, jsonify, request
+
+load_dotenv()
 
 from Item import Item
 
 from restAPI.config import create_app
+from restAPI.decorators import check_header
 from restAPI.FirestoreClient import FirestoreClient
 
+
+API_KEY_HEADER = os.environ["MATHIFLO_API_KEY_HEADER"]
+API_KEY = os.environ["MATHIFLO_API_KEY"]
 
 app = create_app(__name__)
 
 
 @app.get("/groceries")
+@check_header(API_KEY_HEADER, API_KEY)
 def get_groceries():
     """
     This endpoint returns groceries list.
@@ -22,6 +32,7 @@ def get_groceries():
 
 
 @app.post("/groceries/<item_id>")
+@check_header(API_KEY_HEADER, API_KEY)
 def add_groceries_item(item_id: str):
     """
     This endpoint adds item in groceries list.
@@ -46,6 +57,7 @@ def add_groceries_item(item_id: str):
 
 
 @app.put("/groceries/<item_id>")
+@check_header(API_KEY_HEADER, API_KEY)
 def update_groceries_item(item_id: str):
     """
     This endpoint updates item from groceries list.
@@ -70,6 +82,7 @@ def update_groceries_item(item_id: str):
 
 
 @app.delete("/groceries")
+@check_header(API_KEY_HEADER, API_KEY)
 def delete_groceries_items():
     """
     This endpoint deletes multiple items from groceries list.

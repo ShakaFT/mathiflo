@@ -231,7 +231,7 @@ class History:
         - tuple[0] : The cuddly toys that must necessarily sleep with Florent
         - tuple[1] : The cuddly toys that must necessarily sleep with Mathilde
         """
-        latest_histories = History.__get_latest_histories(database)
+        latest_histories: list[History] = History.__get_latest_histories(database)
 
         # Get the number of times we slept with each cuddly toys
         # in latest nights
@@ -240,9 +240,9 @@ class History:
 
         for history in latest_histories:
             for cuddly_toy in history.florent:
-                florent_counter[cuddly_toy["name"]] += 1
+                florent_counter[cuddly_toy] += 1
             for cuddly_toy in history.mathilde:
-                mathilde_counter[cuddly_toy["name"]] += 1
+                mathilde_counter[cuddly_toy] += 1
 
         return (
             [

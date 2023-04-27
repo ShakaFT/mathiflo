@@ -1,6 +1,10 @@
 """
 This module contains main endpoints of default services.
 """
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from restAPI.config import create_app
 
 
