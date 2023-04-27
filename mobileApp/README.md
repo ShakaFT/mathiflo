@@ -17,7 +17,3 @@ flutter pub run flutter_native_splash:create
 ## Widgets
 
 - WillPopScope --> Allows to prevent the user from using the return key of the device.
-
-## Secrets
-
-- Google Cloud credentials of mathiflo project : /android/credentials.json

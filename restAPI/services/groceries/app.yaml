@@ -2,5 +2,5 @@ runtime: python310
 service: groceries
 
 env_variables:
-  MATHIFLO_API_KEY_HEADER: ""
   MATHIFLO_API_KEY: ""
+  MATHIFLO_API_KEY_HEADER: ""
