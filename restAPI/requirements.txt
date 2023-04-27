@@ -4,6 +4,7 @@
 black==23.3.0
 pick==2.2.0
 pylint==2.17.3
+PyYAML==6.0
 rich==13.3.4
 sourcery==1.2.0
 

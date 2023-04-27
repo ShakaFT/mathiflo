@@ -12,6 +12,13 @@ def branch_name() -> str:
     return subprocess.getoutput("git symbolic-ref --short HEAD")
 
 
+def committed_directory() -> bool:
+    """
+    This function returns False if you didn't commit, else return True.
+    """
+    return not subprocess.getoutput("git status --porcelain")
+
+
 def is_prod() -> bool:
     """
     This function returns :
@@ -26,6 +33,13 @@ def get_services() -> list[str]:
     This function returns a list that contains services.
     """
     return sorted(next(os.walk("services"))[1])
+
+
+def reset():
+    """
+    This function executes `git reset --hard` command.
+    """
+    subprocess.call("git reset --hard", shell=True)
 
 
 def run_service(service: str):
@@ -45,3 +59,11 @@ def set_project(project_id: str):
     This function sets gcloud project.
     """
     subprocess.call(f"gcloud config set project {project_id}", shell=True)
+
+
+def verify_environment():
+    """
+    This function verifies if your environment is ready to deploy.
+    """
+    if not committed_directory():
+        raise SystemExit("Exit : Uncomitted changes in the repository.")
