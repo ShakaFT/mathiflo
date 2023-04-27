@@ -4,4 +4,3 @@
 
 # Secrets
 .env
-**/credentials.json
