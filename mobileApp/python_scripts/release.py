@@ -15,7 +15,7 @@ def release():
     """
     This function sends a new release on Play Store.
     """
-    subprocess.call("flutter build appbundle --dart-define-from-file=env.json", shell=True)
+    subprocess.call("flutter build appbundle", shell=True)
     os.chdir("android")
     subprocess.call("fastlane deploy", shell=True)
 
