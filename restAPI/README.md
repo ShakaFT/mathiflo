@@ -6,4 +6,6 @@
 pip install git+https://<username>:<token>@github.com/ShakaFT/restAPI-package.git
 ```
 
+## Secrets
+
 - .env file contain all secrets

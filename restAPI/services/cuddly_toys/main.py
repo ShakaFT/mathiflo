@@ -50,8 +50,9 @@ def start():
             )
             for cuddly_toy in database.get(
                 constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
-            )
-            or {}
+            )[  # type: ignore
+                "cuddly_toys"
+            ]
         }
     )
 
