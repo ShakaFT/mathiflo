@@ -17,7 +17,7 @@ def release():
     """
     subprocess.call("flutter build appbundle --dart-define-from-file=env.json", shell=True)
     os.chdir("android")
-    # subprocess.call("fastlane deploy", shell=True)
+    subprocess.call("fastlane deploy", shell=True)
 
 
 def upgrade_version():
@@ -59,10 +59,10 @@ def main():
 
 
 if __name__ == "__main__":
-    # utils.verify_environment()
+    utils.verify_environment()
     try:
         main()
     except Exception as e:  # pylint: disable=broad-except
         shell_print(f"[bold red]Exit with error : {str(e)}")
-    # finally:
-    #     utils.reset()
+    finally:
+        utils.reset()
