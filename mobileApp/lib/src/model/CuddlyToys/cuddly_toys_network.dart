@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mathiflo/config.dart' as config;
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories.dart';
@@ -8,6 +9,9 @@ final dio = Dio(
     baseUrl: config.cuddlyToysRestApiUrl,
     connectTimeout: Duration(seconds: apiTimeout),
     receiveTimeout: Duration(seconds: apiTimeout),
+    headers: {
+      dotenv.env["MATHIFLO_API_KEY_HEADER"]!: dotenv.env["MATHIFLO_API_KEY"]
+    },
   ),
 );
 
@@ -28,7 +32,6 @@ Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
     final response =
         await dio.get<Map<String, dynamic>>('/history?token=$token');
     final cuddlyToysData = response.data!;
-
     return CuddlyToysHistory(
       List<String>.from(cuddlyToysData["Florent"]),
       List<String>.from(cuddlyToysData["Mathilde"]),

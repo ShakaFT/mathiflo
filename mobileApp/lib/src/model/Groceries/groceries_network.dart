@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mathiflo/config.dart' as config;
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
@@ -8,6 +9,9 @@ final dio = Dio(
     baseUrl: config.groceriesRestApiUrl,
     connectTimeout: Duration(seconds: apiTimeout),
     receiveTimeout: Duration(seconds: apiTimeout),
+    headers: {
+      dotenv.env["MATHIFLO_API_KEY_HEADER"]!: dotenv.env["MATHIFLO_API_KEY"]
+    },
   ),
 );
 
