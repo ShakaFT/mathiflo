@@ -17,7 +17,7 @@ def release():
     """
     subprocess.call("flutter build appbundle --dart-define-from-file=env.json", shell=True)
     os.chdir("android")
-    subprocess.call("fastlane deploy", shell=True)
+    # subprocess.call("fastlane deploy", shell=True)
 
 
 def upgrade_version():
