@@ -46,7 +46,7 @@ class Item:
         This method returns the list of groceries items.
         """
         return [
-            item.to_dict() or {} | {"id": item.id}
+            (item.to_dict() or {}) | {"id": item.id}
             for item in database.collection(constants.COLLECTION_GROCERIES).stream()
         ]
 
