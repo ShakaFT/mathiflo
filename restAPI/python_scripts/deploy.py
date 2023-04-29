@@ -21,14 +21,14 @@ def deploy_services(services_to_deploy: list[str]):
     """
     This function deploys services.
     """
+    command_to_deploy = f"gcloud app deploy --quiet --project {PROJECT_ID}"
+
     for service in services_to_deploy:
         set_environment_variables(service)
         set_package(service)
-        shell_print(f"[bold][magenta]\nI will deploy service : [green]{service}\n")
-        subprocess.call(
-            f"gcloud app deploy --quiet --project {PROJECT_ID} services/{service}/app.yaml",
-            shell=True,
-        )
+        command_to_deploy += f" services/{service}/app.yaml"
+
+    subprocess.call(command_to_deploy, shell=True)
 
 
 def select_menu() -> list:
@@ -81,8 +81,12 @@ def set_package(service: str):
     """
     token = os.environ["RESTAPI_PACKAGE_TOKEN"]
     username = os.environ["RESTAPI_PACKAGE_USERNAME"]
-    with open(f"services/{service}/requirements.txt", mode="a", encoding="UTF-8") as file:
-        file.write(f"\ngit+https://{username}:{token}@github.com/ShakaFT/restAPI-package.git")
+    with open(
+        f"services/{service}/requirements.txt", mode="a", encoding="UTF-8"
+    ) as file:
+        file.write(
+            f"\ngit+https://{username}:{token}@github.com/ShakaFT/restAPI-package.git"
+        )
 
 
 def main():
