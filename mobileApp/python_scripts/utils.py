@@ -1,23 +1,9 @@
 """
-This module contains util functions.
+This module contains util functions used by Python scripts.
 """
 import json
 import os
 import subprocess
-
-
-def branch_name() -> str:
-    """
-    This function returns current branch name.
-    """
-    return subprocess.getoutput("git symbolic-ref --short HEAD")
-
-
-def committed_directory() -> bool:
-    """
-    This function returns False if you didn't commit, else return True.
-    """
-    return not subprocess.getoutput("git status --porcelain")
 
 
 def get_environnement() -> str:
@@ -26,15 +12,39 @@ def get_environnement() -> str:
     - 'prod' : if main branch is active.
     - 'dev' : else
     """
-    return "prod" if branch_name() == "main" else "dev"
+    return (
+        "prod"
+        if subprocess.getoutput("git symbolic-ref --short HEAD") == "main"
+        else "dev"
+    )
 
 
-def push(message: str):
+def git_cancel_commits(number_commits: int):
     """
-    This functions commits and pushs.
+    This function cancel last {number_commits} commits.
+    """
+    subprocess.call(f"git reset HEAD~{number_commits}", shell=True)
+
+
+def git_commit(message: str):
+    """
+    This function executes git commit.
     """
     subprocess.call(f"git commit -am '{message}'", shell=True)
+
+
+def git_push():
+    """
+    This function executes git push.
+    """
     subprocess.call("git push", shell=True)
+
+
+def git_reset():
+    """
+    This function executes `git reset --hard` command.
+    """
+    subprocess.call("git reset --hard", shell=True)
 
 
 def rename_app_bundle():
@@ -66,14 +76,14 @@ def rename_app_name():
     """
     # Android
     replace_file_string(
-        "Mathiflo-dev", "Mathiflo", "web/index.html"
+        "Mathiflo-dev", "Mathiflo", "android/app/src/main/AndroidManifest.xml"
     )
 
     # IOS
     replace_file_string("Mathiflo-dev", "Mathiflo", "ios/Runner/Info.plist")
 
     # Web
-    replace_file_string("Mathiflo-dev", "Mathiflo", "ios/Runner/Info.plist")
+    replace_file_string("Mathiflo-dev", "Mathiflo", "web/index.html")
 
 
 def replace_file_string(old_string: str, new_string: str, file_path: str):
@@ -90,13 +100,6 @@ def replace_file_string(old_string: str, new_string: str, file_path: str):
     )
 
     os.chdir(current_directory)
-
-
-def reset():
-    """
-    This function executes `git reset --hard` command.
-    """
-    subprocess.call("git reset --hard", shell=True)
 
 
 def set_config(environnement: str):
@@ -118,5 +121,5 @@ def verify_environment():
     This function verifies if your environment is ready to deploy,
     else raise SystemError.
     """
-    if not committed_directory():
+    if subprocess.getoutput("git status --porcelain"):
         raise SystemExit("Exit : Uncomitted changes in the repository.")

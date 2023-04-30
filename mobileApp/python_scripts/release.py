@@ -11,48 +11,59 @@ import yaml
 import utils
 
 
+ENVIRONMENT = utils.get_environnement()
+
+
 def release():
     """
     This function sends a new release on Play Store.
     """
-    subprocess.call("flutter build appbundle --dart-define-from-file=env.json", shell=True)
+    subprocess.call(
+        "flutter build appbundle --dart-define-from-file=env.json", shell=True
+    )
     os.chdir("android")
-    subprocess.call("fastlane deploy", shell=True)
+    fastlane_work = subprocess.call("fastlane deploy", shell=True)
+    utils.git_reset()
 
+    if fastlane_work:
+        utils.git_push()
+    else:
+        utils.git_cancel_commits(1)
 
 def upgrade_version():
     """
     This function increments code version.
     """
     with open("pubspec.yaml", "r", encoding="UTF-8") as file:
-        pubspec = yaml.load(file, Loader=yaml.FullLoader)
+        pubspec_data = yaml.load(file, Loader=yaml.FullLoader)
 
-    splited_version = pubspec["version"].split("+")
-    pubspec["version"] = f"{splited_version[0]}+{int(splited_version[1]) + 1}"
+    app_version, code_version = pubspec_data["version"].split("+")
+    new_code_version = int(code_version) + 1
+    pubspec_data["version"] = f"{app_version}+{new_code_version}"
 
     with open("pubspec.yaml", "w", encoding="UTF-8") as file:
-        yaml.dump(pubspec, file)
+        yaml.dump(pubspec_data, file)
 
-    utils.push("chore: new release --> upgrade code version")
+    utils.git_commit(
+        f"chore: new release --> upgrade code version to {new_code_version}"
+    )
 
 
 def main():
     """
-    main function
+    main function.
     """
-    environment = utils.get_environnement()
-
-    if environment == "prod":
+    if ENVIRONMENT == "prod":
         shell_print(
             "[bold italic yellow on red blink]You really want to send release in production ?"
         )
         input("Press Enter to continue...")
     else:
-        shell_print("[red]Exit ! You can send release only on main...")
+        shell_print("[red]Exit ! You can send release only on main branch...")
         sys.exit()
 
     upgrade_version()
-    utils.set_config(environment)
+    utils.set_config(ENVIRONMENT)
     utils.rename_app_name()
     utils.rename_app_bundle()
     release()
@@ -63,6 +74,6 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:  # pylint: disable=broad-except
-        shell_print(f"[bold red]Exit with error : {str(e)}")
-    finally:
-        utils.reset()
+        shell_print(f"[bold red]Exit with error : {e}")
+        shell_print("[bold magenta]Reset using git.")
+        utils.git_reset()
