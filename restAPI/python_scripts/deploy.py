@@ -13,49 +13,48 @@ import yaml
 import utils
 
 
-PROJECT_ID = "mathiflo" if utils.is_prod() else "mathiflo-dev"
 load_dotenv()
+ENVIRONMENT = utils.environment()
+SERVICES = utils.get_services()
 
 
 def deploy_services(services_to_deploy: list[str]):
     """
     This function deploys services.
     """
-    command_to_deploy = f"gcloud app deploy --quiet --project {PROJECT_ID}"
+    command_to_deploy = (
+        f"gcloud app deploy --quiet --project {os.environ['GCP_PROJECT_ID']}"
+    )
 
     for service in services_to_deploy:
-        set_environment_variables(service)
+        set_flask_environment_variables(service)
         set_package(service)
         command_to_deploy += f" services/{service}/app.yaml"
 
     subprocess.call(command_to_deploy, shell=True)
 
 
-def select_menu() -> list:
+def select_menu() -> list[str]:
     """
     This function shows select menus and returns the services to deploy.
     """
-    services = utils.get_services()
-
     title = "Choose the service you want to deploy: "
     options = ["None", "All"]
-    options.extend(services)
+    options.extend(SERVICES)
     service_to_deploy, _ = pick(options, title)
 
     match service_to_deploy:
         case "All":
-            services_to_deploy = services
+            services_to_deploy = SERVICES
         case "None":
             services_to_deploy = []
         case _:
-            services_to_deploy = [service_to_deploy]
-
-    shell_print(f"services_to_deploy : {services_to_deploy}")
+            services_to_deploy = [str(service_to_deploy)]
 
     return services_to_deploy
 
 
-def set_environment_variables(service: str):
+def set_flask_environment_variables(service: str):
     """
     This function sets environment variables in app.yaml.
     """
@@ -93,19 +92,32 @@ def main():
     """
     main function
     """
-    if utils.is_prod():
+    if ENVIRONMENT == "prod":
         shell_print(
             "[bold italic yellow on red blink]You really want to deploy in production ?"
         )
         input("Press Enter to continue...")
 
-    services_to_deploy = select_menu()
+    param_service = sys.argv[1].lower() if len(sys.argv) >= 2 else None
+
+    if param_service == "all":
+        services_to_deploy = SERVICES
+    elif param_service in SERVICES:
+        services_to_deploy = [param_service]
+    elif not param_service:
+        services_to_deploy = select_menu()
+    else:
+        shell_print(f"[bold red]Unknown `{param_service}` service...")
+        return
 
     if not services_to_deploy:
-        shell_print("Exit, no service to deploy...")
-        sys.exit()
+        shell_print("[bold red]Exit, no service to deploy...")
+        return
 
-    utils.set_project(PROJECT_ID)
+    shell_print(f"services_to_deploy : {services_to_deploy}")
+
+    utils.set_env_var(ENVIRONMENT)
+    utils.set_project()
     deploy_services(services_to_deploy)
 
 
