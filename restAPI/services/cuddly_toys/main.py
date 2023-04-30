@@ -15,20 +15,19 @@ load_dotenv()
 
 import constants
 from History import History
+from scheduler import scheduler
 
 from restAPI.config import create_app
-from restAPI.decorators import check_header
 from restAPI.FirestoreClient import FirestoreClient
 
 
-API_KEY_HEADER = os.environ["MATHIFLO_API_KEY_HEADER"]
-API_KEY = os.environ["MATHIFLO_API_KEY"]
-
-app = create_app(__name__)
+app = create_app(
+    __name__, os.environ["MATHIFLO_API_KEY_HEADER"], os.environ["MATHIFLO_API_KEY"]
+)
+app.register_blueprint(scheduler)
 
 
 @app.get("/start")
-@check_header(API_KEY_HEADER, API_KEY)
 def start():
     """
     This endpoint returns data to load when CuddlyToys page is launched.
@@ -58,30 +57,17 @@ def start():
 
 
 @app.get("/history")
-@check_header(API_KEY_HEADER, API_KEY)
 def get_history():
     """
     This endpoint returns the 5 last nights.
     """
+    print("hello")
     database: FirestoreClient = current_app.config["database"]
     try:
         history = History.from_token(database, request.args.get("token"))
         return jsonify(history.to_dict())
     except TypeError:
         return jsonify(error="Invalid token"), 400
-
-
-@app.post("/new-night")
-@check_header(API_KEY_HEADER, API_KEY)
-def new_night():
-    """
-    This endpoint generates a new night and stores it in history.
-    It called by Scheduler Job every 24 hours at 20:00 pm.
-    """
-    database: FirestoreClient = current_app.config["database"]
-    history = History.new_night(database)
-    history.update_database()
-    return jsonify(), 204
 
 
 if __name__ == "__main__":
