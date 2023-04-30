@@ -2,27 +2,23 @@ require 'discordrb/webhooks'
 
 default_platform(:android)
 
-platform :android do
+lane :deploy do
+  # Deploy on Play Store
+  result = supply(
+    aab: '../build/app/outputs/bundle/release/app-release.aab',
+    track: 'internal',
+    skip_upload_metadata: true
+  )
 
-  desc 'Deploy a new internal version to the Google Play Store'
-  lane :deploy do
-    result = supply(
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
-      track: 'internal',
-      skip_upload_metadata: true
-    )
-    if result == true
-      lane :discord do
-        client = Discordrb::Webhooks::Client.new(url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz")
-        client.execute do |builder|
-          builder.add_embed do |embed|
-            embed.title = 'Mise à jour Mathiflo'
-            embed.description = 'Dépêche-toi ! Une nouvelle mise à jour de Mathiflo est disponible !'
-            embed.timestamp = Time.now
-          end
-        end
+  if result == true
+    # Send message on Discord
+    client = Discordrb::Webhooks::Client.new(url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz")
+    client.execute do |builder|
+      builder.add_embed do |embed|
+        embed.title = 'Mise à jour Mathiflo'
+        embed.description = 'Dépêche-toi ! Une nouvelle mise à jour de Mathiflo est disponible !'
+        embed.timestamp = Time.now
       end
     end
   end
-
 end
