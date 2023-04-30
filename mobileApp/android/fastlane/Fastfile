@@ -14,6 +14,7 @@ platform :android do
         message: "Une nouvelle mise à jour de Mathiflo est disponible !",
         webhook_url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz"
       )
+    end
   end
 
 end
