@@ -4,11 +4,16 @@ platform :android do
 
   desc 'Deploy a new internal version to the Google Play Store'
   lane :deploy do
-    supply(
+    result = supply(
       aab: '../build/app/outputs/bundle/release/app-release.aab',
       track: 'internal',
       skip_upload_metadata: true
     )
+    if result == true
+      discord_message(
+        message: "Une nouvelle mise à jour de Mathiflo est disponible !",
+        webhook_url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz"
+      )
   end
 
 end
