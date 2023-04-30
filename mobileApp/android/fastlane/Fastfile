@@ -1,3 +1,5 @@
+require 'discordrb/webhooks'
+
 default_platform(:android)
 
 platform :android do
@@ -10,10 +12,16 @@ platform :android do
       skip_upload_metadata: true
     )
     if result == true
-      discord_message(
-        message: "Une nouvelle mise à jour de Mathiflo est disponible !",
-        webhook_url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz"
-      )
+      lane :discord do
+        client = Discordrb::Webhooks::Client.new(url: "https://discord.com/api/webhooks/1102366229915783188/YC1qHs-B9-yeQvRnFOImH8BZU2TIAe48oDjCDgNHL13pbbGXHW_jOEgmoX0PmlDfv4sz")
+        client.execute do |builder|
+          builder.add_embed do |embed|
+            embed.title = 'Mise à jour Mathiflo'
+            embed.description = 'Dépêche-toi ! Une nouvelle mise à jour de Mathiflo est disponible !'
+            embed.timestamp = Time.now
+          end
+        end
+      end
     end
   end
 

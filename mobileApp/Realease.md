@@ -22,3 +22,7 @@ We use keystore.jsk to sign our aab/apf files. If we create new keystore.jsk fil
 - Release : <https://docs.fastlane.tools/getting-started/android/release-deployment/>
 
 - We use supply : <http://docs.fastlane.tools/actions/supply/>
+
+- To send message with discord :
+  - gem install discordrb
+  - Documentation : <https://www.rubydoc.info/gems/discordrb/>
