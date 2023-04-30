@@ -39,8 +39,7 @@ def select_menu() -> list[str]:
     This function shows select menus and returns the services to deploy.
     """
     title = "Choose the service you want to deploy: "
-    options = ["None", "All"]
-    options.extend(SERVICES)
+    options = ["None", "All", *SERVICES]
     service_to_deploy, _ = pick(options, title)
 
     match service_to_deploy:
@@ -90,7 +89,7 @@ def set_package(service: str):
 
 def main():
     """
-    main function
+    main function.
     """
     if ENVIRONMENT == "prod":
         shell_print(
@@ -129,4 +128,4 @@ if __name__ == "__main__":
         shell_print(f"[bold red]Unknown error : {e}")
     finally:
         shell_print("[bold magenta]Reset using git.")
-        utils.reset()
+        utils.git_reset()

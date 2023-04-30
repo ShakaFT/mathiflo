@@ -26,8 +26,7 @@ def select_menu() -> str:
     This function shows select menus and returns the services to deploy.
     """
     title = "Choose the service you want to run locally:"
-    options = ["None"]
-    options.extend(SERVICES)
+    options = ["None", *SERVICES]
     service_to_run, _ = pick(options, title)
 
     return str(service_to_run)

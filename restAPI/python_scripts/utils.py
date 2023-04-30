@@ -26,7 +26,7 @@ def get_services() -> list[str]:
     return sorted(next(os.walk("services"))[1])
 
 
-def reset():
+def git_reset():
     """
     This function executes `git reset --hard` command.
     """
