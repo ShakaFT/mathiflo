@@ -62,12 +62,6 @@ def main():
     """
     main function.
     """
-    if ENVIRONMENT == "prod":
-        shell_print(
-            "[bold italic yellow on red blink]You really want to deploy in production ?"
-        )
-        input("Press Enter to continue...")
-
     target_device = select_menu()
 
     if target_device == "None":
