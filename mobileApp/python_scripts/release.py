@@ -22,10 +22,10 @@ def release():
         "flutter build appbundle --dart-define-from-file=env.json", shell=True
     )
     os.chdir("android")
-    fastlane_work = subprocess.call("fastlane deploy", shell=True)
+    fastlane_code = subprocess.call("fastlane deploy", shell=True) == 0
     utils.git_reset()
 
-    if fastlane_work:
+    if fastlane_code == 0:
         utils.git_push()
     else:
         utils.git_cancel_commits(1)
