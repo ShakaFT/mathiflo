@@ -51,23 +51,17 @@ def rename_app_bundle():
     """
     This function renames app bundle to "com.mathiflo" (production name).
     """
-    # Android
-    replace_file_string(
-        "com.mathiflo.dev", "com.mathiflo", "android/app/src/debug/AndroidManifest.xml"
-    )
-    replace_file_string(
-        "com.mathiflo.dev", "com.mathiflo", "android/app/src/main/AndroidManifest.xml"
-    )
-    replace_file_string(
-        "com.mathiflo.dev",
-        "com.mathiflo",
-        "android/app/src/profile/AndroidManifest.xml",
-    )
-    replace_file_string(
-        "com.mathiflo.dev",
-        "com.mathiflo",
-        "android/app/src/main/kotlin/com/mathiflo/MainActivity.kt",
-    )
+    dev_bundle = "com.mathiflo.dev"
+    prod_bundle = "com.mathiflo"
+    file_to_rename = [
+        "android/app/src/debug/AndroidManifest.xml",  # Android
+        "android/app/src/main/AndroidManifest.xml",  # Android
+        "android/app/src/profile/AndroidManifest.xml",  # Android
+        "android/app/src/main/kotlin/com/mathiflo/MainActivity.kt",  # Android
+        "android/app/build.gradle",  # Android
+    ]
+    for file in file_to_rename:
+        replace_file_string(dev_bundle, prod_bundle, file)
 
 
 def rename_app_name():
