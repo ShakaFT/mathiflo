@@ -4,7 +4,7 @@
         "GCP_PROJECT_ID": "mathiflo-dev"
     },
     "prod": {
-        "GOOGLE_APPLICATION_CREDENTIALS": "MATHIFLO_GCP",
+        "GOOGLE_APPLICATION_CREDENTIALS": "MATHIFLO_GCP_PROD",
         "GCP_PROJECT_ID": "mathiflo"
     }
 }
