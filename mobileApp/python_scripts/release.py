@@ -75,5 +75,6 @@ if __name__ == "__main__":
         main()
     except Exception as e:  # pylint: disable=broad-except
         shell_print(f"[bold red]Exit with error : {e}")
+    finally:
         shell_print("[bold magenta]Reset using git.")
         utils.git_reset()
