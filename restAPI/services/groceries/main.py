@@ -28,7 +28,7 @@ def get_groceries():
     This endpoint returns groceries list.
     """
     database: FirestoreClient = current_app.config["database"]
-    return jsonify(groceriesList=Item.groceries_item(database))
+    return jsonify(groceries_list=Item.groceries_item(database))
 
 
 @app.post("/groceries/<item_id>")
@@ -73,7 +73,7 @@ def update_groceries_item(item_id: str):
         item.name = str(payload["name"])
         item.quantity = int(payload["quantity"])
     except (KeyError, TypeError):
-        return jsonify(error="groceriesItem format is not valid."), 400
+        return jsonify(error="groceries item format is not valid."), 400
 
     item.update_database()
     return jsonify(success=True, exists=True)
@@ -91,9 +91,9 @@ def delete_groceries_items():
         Item.delete_all(database)
         return jsonify(), 204
 
-    items_to_delete = payload.get("groceriesItems")
+    items_to_delete = payload.get("groceries_items")
     if not isinstance(items_to_delete, list):
-        return jsonify(error="groceriesItems format is not valid."), 400
+        return jsonify(error="groceries_items format is not valid."), 400
 
     for item_id in items_to_delete:
         if item := Item.from_database(database, item_id):

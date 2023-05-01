@@ -1,5 +1,5 @@
 """
-This module contains contants.
+This module contains constants used by cuddly_toys service.
 """
 COLLECTION_CUDDLY_TOYS = "cuddly_toys"
 DOCUMENT_CUDDLY_TOYS = "cuddly_toys"
