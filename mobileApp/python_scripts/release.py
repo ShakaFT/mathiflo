@@ -28,6 +28,7 @@ def release(app_version: str, code_version: str):
 
     if fastlane_code == 0:
         utils.git_push()
+        shell_print(f"[bold magenta]\nWill update network app version")
         update_network_app_version(app_version, code_version, environment="prod")
         update_network_app_version(app_version, code_version, environment="dev")
     else:
@@ -45,7 +46,15 @@ def update_network_app_version(app_version: str, code_version: str, environment:
     )
     headers = {os.environ["MATHIFLO_API_KEY_HEADER"]: os.environ["MATHIFLO_API_KEY"]}
     payload = {"app_version": app_version, "code_version": code_version}
-    requests.put(url, headers=headers, json=payload, timeout=60)
+
+    response = requests.put(url, headers=headers, json=payload, timeout=60)
+    if response.status_code not in range(200, 300):
+        shell_print(
+            "[bold red]\nError : Error during update network app version process..."
+        )
+        shell_print(
+            f"[bold red]    {environment} : {response.status_code} => {response.text}\n"
+        )
 
 
 def upgrade_version() -> tuple[str, str]:
