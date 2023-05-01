@@ -18,7 +18,7 @@ Future<List<Item>?> getNetworkGroceries() async {
     final response = await dio.get<Map<String, dynamic>>('/groceries');
     final groceriesList = <Item>[];
 
-    for (final item in response.data!['groceriesList']) {
+    for (final item in response.data!['groceries_list']) {
       groceriesList.add(Item.fromMap(item));
     }
     return groceriesList;
@@ -71,7 +71,7 @@ Future<bool> deleteNetworkGroceriesItems(
 }) async {
   try {
     await dio
-        .delete('/groceries', data: {'all': all, 'groceriesItems': toDelete});
+        .delete('/groceries', data: {'all': all, 'groceries_items': toDelete});
     return true;
   } catch (e) {
     return false;

@@ -61,7 +61,6 @@ def get_history():
     """
     This endpoint returns the 5 last nights.
     """
-    print("hello")
     database: FirestoreClient = current_app.config["database"]
     try:
         history = History.from_token(database, request.args.get("token"))
