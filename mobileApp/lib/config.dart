@@ -11,6 +11,9 @@ final localDatabase = Localstore.instance;
 // is waiting for a response from the restAPI
 final ValueNotifier pendingAPI = ValueNotifier(false);
 
+const apiKeyHeader = String.fromEnvironment("MATHIFLO_API_KEY_HEADER");
+const apiKey = String.fromEnvironment("MATHIFLO_API_KEY");
+
 // Url to call rest API
 late String defaultRestApiUrl;
 late String cuddlyToysRestApiUrl;

@@ -1,5 +1,4 @@
-firebase-admin==6.1.0
-Flask==2.2.3
-Flask-Cors==3.0.10
-google.cloud==0.34.0
+# Some dependencies are already installed by restAPI-package
+
+python-dotenv==1.0.0
 Unidecode==1.3.6

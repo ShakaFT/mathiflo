@@ -18,6 +18,9 @@ flutter pub run flutter_native_splash:create
 
 - WillPopScope --> Allows to prevent the user from using the return key of the device.
 
-## Secrets
+## Secrets file not pushed on repository
 
-- Google Cloud credentials of mathiflo project : /android/credentials.json
+- .env
+- android/key.properties
+- android/keystore
+- android/local.properties

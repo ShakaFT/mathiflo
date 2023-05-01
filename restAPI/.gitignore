@@ -3,4 +3,4 @@
 **/.venv
 
 # Secrets
-**/credentials.json
+.env

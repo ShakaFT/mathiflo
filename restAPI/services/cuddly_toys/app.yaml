@@ -1,2 +1,6 @@
 runtime: python310
 service: cuddly-toys
+
+env_variables:
+  MATHIFLO_API_KEY: ""
+  MATHIFLO_API_KEY_HEADER: ""

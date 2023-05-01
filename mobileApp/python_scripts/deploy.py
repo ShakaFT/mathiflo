@@ -10,17 +10,28 @@ from rich import print as shell_print
 import utils
 
 
+ENVIRONMENT = utils.get_environnement()
+
+
 def deploy(target_device: str):
     """
     This function deploys app on target device.
     """
-    shell_print(f"[green]Will run on device : {target_device}")
-    subprocess.call(f"flutter run -d {target_device} --web-browser-flag '--disable-web-security'", shell=True)
+    shell_print(f"[green]Will deploy on device : {target_device}")
+    args = [
+        "--dart-define-from-file=env.json",
+        "--web-browser-flag",
+        "'--disable-web-security'",
+    ]
+    subprocess.call(
+        f"flutter run -d {target_device} {' '.join(args)}",
+        shell=True,
+    )
 
 
 def get_devices() -> list[str]:
     """
-    This function returns a list that contains connected devices.
+    This function returns the list of connected devices.
     """
     devices = subprocess.getoutput("flutter devices").split("\n")[2:]
     result = []
@@ -49,25 +60,20 @@ def select_menu() -> str:
 
 def main():
     """
-    main function
+    main function.
     """
-    environment = utils.get_environnement()
-
-    if environment == "prod":
-        shell_print(
-            "[bold italic yellow on red blink]You really want to deploy in production ?"
-        )
-        input("Press Enter to continue...")
-
     target_device = select_menu()
 
     if target_device == "None":
         shell_print("[red]Exit, no service to deploy...")
         sys.exit()
 
-    utils.set_config(environment)
-    utils.rename_app_name()
-    utils.rename_app_bundle()
+    utils.set_config(ENVIRONMENT)
+
+    if ENVIRONMENT == "prod":
+        # By default, app name & app bundle are the ones of the dev version.
+        utils.rename_app_name()
+        utils.rename_app_bundle()
     deploy(target_device)
 
 
@@ -76,6 +82,7 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:  # pylint: disable=broad-except
-        shell_print(f"[bold red]Exit with error : {str(e)}")
+        shell_print(f"[bold red]Exit with error : {e}")
     finally:
-        utils.reset()
+        shell_print("[bold magenta]Reset using git.")
+        utils.git_reset()

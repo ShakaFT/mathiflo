@@ -3,6 +3,9 @@
         "**/.*": true,
         "**/__pycache__": true
     },
+    "python.analysis.typeCheckingMode": "basic",
     "python.formatting.provider": "black",
-    "python.analysis.typeCheckingMode": "basic"
+    "python.linting.enabled": true,
+    "python.linting.lintOnSave" : true,
+    "python.linting.pylintEnabled": true
 }

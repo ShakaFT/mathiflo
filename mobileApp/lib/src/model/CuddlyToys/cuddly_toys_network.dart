@@ -8,6 +8,7 @@ final dio = Dio(
     baseUrl: config.cuddlyToysRestApiUrl,
     connectTimeout: Duration(seconds: apiTimeout),
     receiveTimeout: Duration(seconds: apiTimeout),
+    headers: {config.apiKeyHeader: config.apiKey},
   ),
 );
 
@@ -28,7 +29,6 @@ Future<CuddlyToysHistory?> getNetworkCuddlyToysNight({
     final response =
         await dio.get<Map<String, dynamic>>('/history?token=$token');
     final cuddlyToysData = response.data!;
-
     return CuddlyToysHistory(
       List<String>.from(cuddlyToysData["Florent"]),
       List<String>.from(cuddlyToysData["Mathilde"]),

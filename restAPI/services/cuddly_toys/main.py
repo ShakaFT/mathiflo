@@ -4,26 +4,27 @@ This module contains main endpoints of cuddly_toys service.
 from datetime import datetime, timedelta
 import os
 
+from dotenv import load_dotenv
 from firebase_admin import storage
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import current_app, jsonify, request
 from google.auth import compute_engine
 import google.auth.transport.requests
 from unidecode import unidecode
 
-from FirestoreClient import database
+load_dotenv()
+
+import constants
 from History import History
+from scheduler import scheduler
 
-app = Flask(__name__)
-CORS(app)
+from restAPI.config import create_app
+from restAPI.FirestoreClient import FirestoreClient
 
 
-@app.get("/")
-def default():
-    """
-    main endpoint.
-    """
-    return jsonify(success=True)
+app = create_app(
+    __name__, os.environ["MATHIFLO_API_KEY_HEADER"], os.environ["MATHIFLO_API_KEY"]
+)
+app.register_blueprint(scheduler)
 
 
 @app.get("/start")
@@ -31,6 +32,8 @@ def start():
     """
     This endpoint returns data to load when CuddlyToys page is launched.
     """
+    database: FirestoreClient = current_app.config["database"]
+
     bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
     expires_at_ms = datetime.now() + timedelta(minutes=1)
 
@@ -44,7 +47,11 @@ def start():
             ).generate_signed_url(
                 expiration=expires_at_ms, credentials=signing_credentials
             )
-            for cuddly_toy in database.cuddly_toys
+            for cuddly_toy in database.get(
+                constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
+            )[  # type: ignore
+                "cuddly_toys"
+            ]
         }
     )
 
@@ -54,26 +61,12 @@ def get_history():
     """
     This endpoint returns the 5 last nights.
     """
-    print("---")
-    print(request.headers)
-    print(request.headers.get("User-Agent", "not found"))
-    print("---")
+    database: FirestoreClient = current_app.config["database"]
     try:
-        history = History.from_token(request.args.get("token"))
+        history = History.from_token(database, request.args.get("token"))
         return jsonify(history.to_dict())
     except TypeError:
         return jsonify(error="Invalid token"), 400
-
-
-@app.post("/new-night")
-def new_night():
-    """
-    This endpoint generates a new night and stores it in history.
-    It called by Scheduler Job every 24 hours at 20:00 pm.
-    """
-    history = History.new_night()
-    history.update_database()
-    return jsonify(), 204
 
 
 if __name__ == "__main__":

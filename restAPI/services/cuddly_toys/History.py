@@ -10,7 +10,10 @@ from typing import Any
 from firebase_admin import firestore
 
 import constants
-from FirestoreClient import database
+
+from restAPI.FirestoreClient import FirestoreClient
+
+# from FirestoreClient import database
 
 
 class History:
@@ -18,43 +21,52 @@ class History:
     This class represents an history.
     """
 
-    def __init__(self, history_data: dict[str, Any], history_token: str | None = None):
+    def __init__(
+        self,
+        database: FirestoreClient,
+        history_data: dict[str, Any],
+        history_token: str | None = None,
+    ):
         """
         This method creates an instance of an History object.
         """
         self.__check_data(history_data)
+        self.__database = database
         self.__history_data = history_data
         self.__history_token = history_token
 
     @classmethod
-    def from_token(cls, token: str | None = None):
+    def from_token(cls, database: FirestoreClient, token: str | None = None):
         """
         This method creates an instance of history from token.
         Raises :
         - TypeError if token is invalid.
         """
-        query = database.history.order_by(
-            "timestamp", direction=firestore.Query.DESCENDING  # type: ignore
-        ).limit(1)
+        query = (
+            database.collection(constants.COLLECTION_HISTORY)
+            .order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
+            .limit(1)
+        )
 
         if token:
-            snapshot = (
-                database.collection(constants.COLLECTION_HISTORY).document(token).get()
-            )
+            snapshot = database.document(constants.COLLECTION_HISTORY, token).get()
             query = query.start_after(snapshot)
 
         latest_history = next(query.stream())
-        return cls(latest_history.to_dict(), latest_history.id)
+        return cls(database, latest_history.to_dict() or {}, latest_history.id)
 
     @classmethod
-    def new_night(cls):
+    def new_night(cls, database: FirestoreClient):
         """
         This method creates an instance by generation a new night.
         """
-        florent, mathilde = cls.__get_obligation()
-        florent, mathilde = cls.__generate_night(florent, mathilde)
+        florent, mathilde = cls.__get_obligation(database)
+        florent, mathilde = cls.__generate_night(database, florent, mathilde)
         florent, mathilde = cls.__Bukowski_Martha(florent, mathilde)
-        return cls({"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())})
+        return cls(
+            database,
+            {"Florent": florent, "Mathilde": mathilde, "timestamp": int(time())},
+        )
 
     @property
     def florent(self) -> list[str]:
@@ -84,21 +96,24 @@ class History:
         This method adds history in database.
         """
         if self.__history_token:
-            database.history.document(self.__history_token).update(self.__history_data)
+            self.__database.update(
+                constants.COLLECTION_HISTORY, self.__history_token, self.__history_data
+            )
         else:
-            database.history.add(self.__history_data)
+            self.__database.collection(constants.COLLECTION_HISTORY).add(
+                self.__history_data
+            )
 
     def to_dict(self) -> dict[str, Any]:
         """
         This method returns a dict that represents the history information.
         """
-        snapshot = (
-            database.collection(constants.COLLECTION_HISTORY)
-            .document(self.__history_token)
-            .get()
-        )
+        snapshot = self.__database.document(
+            constants.COLLECTION_HISTORY, self.__history_token  # type: ignore
+        ).get()
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
+            self.__database.collection(constants.COLLECTION_HISTORY)
+            .order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
             .limit(1)
             .start_after(snapshot)
         )
@@ -161,12 +176,19 @@ class History:
 
     @staticmethod
     def __generate_night(
-        florent: list[str], mathilde: list[str]
+        database: FirestoreClient, florent: list[str], mathilde: list[str]
     ) -> tuple[list[str], list[str]]:
         """
         This static method fills florent mathilde lists.
         """
-        cuddly_toys = database.cuddly_toys
+        cuddly_toys_data = database.get(
+            constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
+        )
+
+        if not cuddly_toys_data:
+            raise ValueError("Missing cuddly toys from database.")
+
+        cuddly_toys = cuddly_toys_data["cuddly_toys"]
 
         mathilde_min = len(mathilde) if mathilde else 1
         mathilde_max = (
@@ -190,25 +212,26 @@ class History:
         return florent, mathilde
 
     @staticmethod
-    def __get_latest_histories() -> list:
+    def __get_latest_histories(database: FirestoreClient) -> list:
         """
         This static method returns a list that contains latest history.
         """
         query = (
-            database.history.order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
+            database.collection(constants.COLLECTION_HISTORY)
+            .order_by("timestamp", direction=firestore.Query.DESCENDING)  # type: ignore
             .limit(constants.LIMIT_NIGHT_IN_A_ROW)
             .stream()
         )
-        return [History(doc.to_dict(), doc.id) for doc in query]
+        return [History(database, doc.to_dict() or {}, doc.id) for doc in query]
 
     @staticmethod
-    def __get_obligation() -> tuple[list[str], list[str]]:
+    def __get_obligation(database: FirestoreClient) -> tuple[list[str], list[str]]:
         """
         This method returns a tuple that contains 2 lists :
         - tuple[0] : The cuddly toys that must necessarily sleep with Florent
         - tuple[1] : The cuddly toys that must necessarily sleep with Mathilde
         """
-        latest_histories = History.__get_latest_histories()
+        latest_histories: list[History] = History.__get_latest_histories(database)
 
         # Get the number of times we slept with each cuddly toys
         # in latest nights
@@ -217,9 +240,9 @@ class History:
 
         for history in latest_histories:
             for cuddly_toy in history.florent:
-                florent_counter[cuddly_toy["name"]] += 1
+                florent_counter[cuddly_toy] += 1
             for cuddly_toy in history.mathilde:
-                mathilde_counter[cuddly_toy["name"]] += 1
+                mathilde_counter[cuddly_toy] += 1
 
         return (
             [
