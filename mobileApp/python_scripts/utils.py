@@ -110,6 +110,17 @@ def set_config(environnement: str):
         json.dump(python_config[environnement], file)
 
 
+def set_env_var():
+    """
+    This function sets environment variables.
+    """
+    with open("env.json", encoding="UTF-8") as file:
+        env_var: dict = json.load(file)
+
+    for env_var_name, env_var_value in env_var.items():
+        os.environ[env_var_name] = env_var_value
+
+
 def verify_environment():
     """
     This function verifies if your environment is ready to deploy,

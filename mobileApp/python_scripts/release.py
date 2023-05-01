@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 
+import requests
 from rich import print as shell_print
 import yaml
 
@@ -14,7 +15,7 @@ import utils
 ENVIRONMENT = utils.get_environnement()
 
 
-def release():
+def release(app_version: str, code_version: str):
     """
     This function sends a new release on Play Store.
     """
@@ -27,18 +28,37 @@ def release():
 
     if fastlane_code == 0:
         utils.git_push()
+        update_network_app_version(app_version, code_version, environment="prod")
+        update_network_app_version(app_version, code_version, environment="dev")
     else:
         utils.git_cancel_commits(1)
 
-def upgrade_version():
+
+def update_network_app_version(app_version: str, code_version: str, environment: str):
     """
-    This function increments code version.
+    This function updates app version from database.
+    """
+    url = (
+        "https://mathiflo.ew.r.appspot.com/app-version"
+        if environment == "prod"
+        else "https://mathiflo-dev.ew.r.appspot.com/app-version"
+    )
+    headers = {os.environ["MATHIFLO_API_KEY_HEADER"]: os.environ["MATHIFLO_API_KEY"]}
+    payload = {"app_version": app_version, "code_version": code_version}
+    requests.put(url, headers=headers, json=payload, timeout=60)
+
+
+def upgrade_version() -> tuple[str, str]:
+    """
+    This function increments code version. It returns a tuple :
+    - tuple[0] : new app version
+    - tuple[1] : new code version
     """
     with open("pubspec.yaml", "r", encoding="UTF-8") as file:
         pubspec_data = yaml.load(file, Loader=yaml.FullLoader)
 
     app_version, code_version = pubspec_data["version"].split("+")
-    new_code_version = int(code_version) + 1
+    new_code_version = str(int(code_version) + 1)
     pubspec_data["version"] = f"{app_version}+{new_code_version}"
 
     with open("pubspec.yaml", "w", encoding="UTF-8") as file:
@@ -47,6 +67,7 @@ def upgrade_version():
     utils.git_commit(
         f"chore: new release --> upgrade code version to {new_code_version}"
     )
+    return app_version, new_code_version
 
 
 def main():
@@ -62,11 +83,12 @@ def main():
         shell_print("[red]Exit ! You can send release only on main branch...")
         sys.exit()
 
-    upgrade_version()
+    utils.set_env_var()
+    app_version, code_version = upgrade_version()
     utils.set_config(ENVIRONMENT)
     utils.rename_app_name()
     utils.rename_app_bundle()
-    release()
+    release(app_version, code_version)
 
 
 if __name__ == "__main__":
