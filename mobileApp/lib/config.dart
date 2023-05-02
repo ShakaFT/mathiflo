@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:localstore/localstore.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 // Instance of local database
 final localDatabase = Localstore.instance;
@@ -18,6 +19,7 @@ const apiKey = String.fromEnvironment("MATHIFLO_API_KEY");
 late String defaultRestApiUrl;
 late String cuddlyToysRestApiUrl;
 late String groceriesRestApiUrl;
+late PackageInfo packageInfo;
 
 Future<void> loadConfigData() async {
   // Load config data
@@ -28,4 +30,7 @@ Future<void> loadConfigData() async {
   defaultRestApiUrl = data['restAPI']['default'];
   cuddlyToysRestApiUrl = data['restAPI']['cuddlyToys'];
   groceriesRestApiUrl = data['restAPI']['groceries'];
+
+  // Set mobile app info
+  packageInfo = await PackageInfo.fromPlatform();
 }

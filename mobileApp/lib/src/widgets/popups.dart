@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AlertPopup extends StatelessWidget {
   const AlertPopup({
@@ -99,3 +100,42 @@ avatarImage(BuildContext context, ImageProvider image) => Padding(
         ),
       ),
     );
+
+needUpdateAppPopup({
+  required String bundleId,
+  bool display = true,
+  Widget? child,
+}) =>
+    display
+        ? Stack(
+            children: [
+              IgnorePointer(
+                child: child,
+              ),
+              Positioned.fill(
+                child: Align(
+                  child: AlertDialog(
+                    title: const Text("Une mise à jour est disponible"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Text(
+                          "Une mise à jour est disponible, veuillez effectuer la mise à jour pour continuer...",
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 25.0),
+                          child: button("Mise à jour", () async {
+                            print(bundleId);
+                            await launchUrl(
+                              Uri.parse("market://details?id=com.mathiflo"),
+                            );
+                          }),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : child;
