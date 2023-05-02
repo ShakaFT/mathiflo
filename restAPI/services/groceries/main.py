@@ -10,16 +10,16 @@ load_dotenv()
 
 from Item import Item
 
-from restAPI.config import create_app
+from restAPI.FlaskApp import FlaskApp
 from restAPI.FirestoreClient import FirestoreClient
 
 
 API_KEY_HEADER = os.environ["MATHIFLO_API_KEY_HEADER"]
 API_KEY = os.environ["MATHIFLO_API_KEY"]
 
-app = create_app(
-    __name__, os.environ["MATHIFLO_API_KEY_HEADER"], os.environ["MATHIFLO_API_KEY"]
-)
+app = FlaskApp(os.environ["GAE_SERVICE"], os.environ["GCP_PROJECT"])
+app.api_key(os.environ["MATHIFLO_API_KEY_HEADER"], os.environ["MATHIFLO_API_KEY"])
+app.discord(os.environ["DISCORD_ERROR_WEBHOOK"])
 
 
 @app.get("/groceries")
