@@ -17,7 +17,7 @@ from restAPI.FirestoreClient import FirestoreClient
 API_KEY_HEADER = os.environ["MATHIFLO_API_KEY_HEADER"]
 API_KEY = os.environ["MATHIFLO_API_KEY"]
 
-app = FlaskApp(os.environ["GAE_SERVICE"], os.environ["GCP_PROJECT"])
+app = FlaskApp(os.environ["GAE_SERVICE"], os.environ["GOOGLE_CLOUD_PROJECT"])
 app.api_key(os.environ["MATHIFLO_API_KEY_HEADER"], os.environ["MATHIFLO_API_KEY"])
 app.discord(os.environ["DISCORD_ERROR_WEBHOOK"])
 
