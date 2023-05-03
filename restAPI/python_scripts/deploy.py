@@ -23,7 +23,7 @@ def deploy_services(services_to_deploy: list[str]):
     This function deploys services.
     """
     command_to_deploy = (
-        f"gcloud app deploy --quiet --project {os.environ['GCP_PROJECT']}"
+        f"gcloud app deploy --quiet --project {os.environ['GOOGLE_CLOUD_PROJECT']}"
     )
 
     for service in services_to_deploy:

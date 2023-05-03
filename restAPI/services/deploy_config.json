@@ -1,10 +1,10 @@
 {
     "dev": {
         "GOOGLE_APPLICATION_CREDENTIALS": "MATHIFLO_GCP_DEV",
-        "GCP_PROJECT": "mathiflo-dev"
+        "GOOGLE_CLOUD_PROJECT": "mathiflo-dev"
     },
     "prod": {
         "GOOGLE_APPLICATION_CREDENTIALS": "MATHIFLO_GCP_PROD",
-        "GCP_PROJECT": "mathiflo"
+        "GOOGLE_CLOUD_PROJECT": "mathiflo"
     }
 }

@@ -59,7 +59,7 @@ def set_project():
     This function sets gcloud project.
     """
     subprocess.call(
-        f"gcloud config set project {os.environ['GCP_PROJECT']}",
+        f"gcloud config set project {os.environ['GOOGLE_CLOUD_PROJECT']}",
         shell=True,
         stderr=subprocess.DEVNULL,
     )
