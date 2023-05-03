@@ -1,6 +1,7 @@
 """
 This module allows to run locally services.
 """
+import os
 import subprocess
 import sys
 
@@ -18,6 +19,7 @@ def run_service(service: str):
     """
     This function sets GAC and executes main.py of selected service.
     """
+    os.environ["GAE_SERVICE"] = service
     subprocess.call(f"python services/{service}/main.py", shell=True)
 
 

@@ -2,5 +2,6 @@ runtime: python310
 service: groceries
 
 env_variables:
+  DISCORD_ERROR_WEBHOOK: ""
   MATHIFLO_API_KEY: ""
   MATHIFLO_API_KEY_HEADER: ""
