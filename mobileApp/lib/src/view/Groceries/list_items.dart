@@ -4,7 +4,7 @@ import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
 import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
-import 'package:mathiflo/src/view/Groceries/widgets/item_popup.dart';
+import 'package:mathiflo/src/view/Groceries/item_popup.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
 

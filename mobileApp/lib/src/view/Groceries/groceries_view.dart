@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Groceries/groceries_controller.dart';
-import 'package:mathiflo/src/view/Groceries/widgets/item_popup.dart';
-import 'package:mathiflo/src/view/Groceries/widgets/list_items.dart';
+import 'package:mathiflo/src/view/Groceries/item_popup.dart';
+import 'package:mathiflo/src/view/Groceries/list_items.dart';
 import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';

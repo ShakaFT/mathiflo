@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/CuddlyToys/cuddly_toys_controller.dart';
-import 'package:mathiflo/src/view/CuddlyToys/widgets/cuddly_toys.dart';
+import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys.dart';
 import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';

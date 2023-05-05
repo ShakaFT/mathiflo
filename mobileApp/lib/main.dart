@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
+import 'package:mathiflo/src/view/Calendar/calendar_view.dart';
 import 'package:state_extended/state_extended.dart';
 
 void main() async {
@@ -39,7 +39,7 @@ class _MathifloState extends AppStateX<Mathiflo> {
   static _MathifloState? _this;
 
   @override
-  Widget buildIn(BuildContext context) => const CuddlyToysView();
+  Widget buildIn(BuildContext context) => const CalendarView();
 }
 
 _theme() => ThemeData(
