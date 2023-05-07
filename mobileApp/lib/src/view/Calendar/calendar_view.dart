@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/calendar_controller.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
+import 'package:mathiflo/src/view/Calendar/event_popup.dart';
 import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
@@ -29,7 +31,6 @@ class _CalendarViewState extends StateX<CalendarView> {
               daysOfWeekStyle: const DaysOfWeekStyle(
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(width: 0.5),
                     bottom: BorderSide(width: 0.5),
                   ),
                 ),
@@ -38,7 +39,7 @@ class _CalendarViewState extends StateX<CalendarView> {
                 defaultBuilder: (context, day, focusedDay) =>
                     _getDefaultDay(day),
                 markerBuilder: (context, day, events) =>
-                    _getMarkers(context, events as List<Map<String, dynamic>>),
+                    _getMarkers(context, events as List<Event>),
                 selectedBuilder: (context, day, focusedDay) =>
                     _getSelectedDay(day),
                 todayBuilder: (context, day, focusedDay) => _getTodayDay(day),
@@ -52,6 +53,7 @@ class _CalendarViewState extends StateX<CalendarView> {
               firstDay: DateTime.utc(2023, 05),
               focusedDay: DateTime.now(),
               headerStyle: HeaderStyle(
+                decoration: const BoxDecoration(color: Colors.orange),
                 // decoration: const BoxDecoration(color: Colors.red),
                 formatButtonVisible: false,
                 titleCentered: true,
@@ -61,7 +63,16 @@ class _CalendarViewState extends StateX<CalendarView> {
               ),
               lastDay: DateTime.utc(2024, 12, 31),
               locale: 'fr_FR',
-              onDaySelected: (selectedDay, _) {
+              onDaySelected: (selectedDay, _) async {
+                if (isSameDay(_controller.selectedDay, selectedDay)) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) => EventPopup(
+                      calendarController: _controller,
+                      date: selectedDay,
+                    ),
+                  );
+                }
                 _controller.onDaySelected(selectedDay);
               },
               onPageChanged: (focusedDay) {
@@ -84,8 +95,7 @@ class _CalendarViewState extends StateX<CalendarView> {
         child: _getDayText(day, Colors.black),
       );
 
-  Widget _getMarkers(BuildContext context, List<Map<String, dynamic>> events) =>
-      Padding(
+  Widget _getMarkers(BuildContext context, List<Event> events) => Padding(
         padding: const EdgeInsets.only(top: 25.0),
         child: ListView.builder(
           itemCount: events.length,
@@ -96,7 +106,7 @@ class _CalendarViewState extends StateX<CalendarView> {
               child: Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: Text(
-                  events[index]["title"],
+                  events[index].title,
                   maxLines: 1,
                   overflow: TextOverflow.fade,
                   style: const TextStyle(

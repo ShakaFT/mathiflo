@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:state_extended/state_extended.dart';
 
 class CalendarController extends StateXController {
@@ -8,8 +9,12 @@ class CalendarController extends StateXController {
   // Model
   static CalendarController? _this;
 
-  final List<Map<String, dynamic>> events = [];
+  final List<Event> events = [];
   DateTime selectedDay = DateTime.now();
+
+  void addEvent(Event event) => setState(() {
+        events.add(event);
+      });
 
   String formattedHeaderTitle(DateTime date, String locale) {
     final formattedDate = DateFormat.yMMMM(locale).format(date);
@@ -18,22 +23,25 @@ class CalendarController extends StateXController {
     return '${firstLetter.toUpperCase()}${restOfMonth.toLowerCase()}';
   }
 
-  matchEvents(DateTime date) => events
-      .where(
-        (event) => event["timestamp"] == date.millisecondsSinceEpoch,
-      )
-      .toList();
+  List<Event> matchEvents(DateTime date) {
+    final startDateTimestamp = date.millisecondsSinceEpoch;
+    final endDateTimestamp =
+        date.add(const Duration(days: 1)).millisecondsSinceEpoch - 1;
+    return events
+        .where(
+          (event) =>
+              (startDateTimestamp <= event.startTimestamp &&
+                  event.startTimestamp <= endDateTimestamp) ||
+              (startDateTimestamp <= event.endTimestamp &&
+                  event.endTimestamp <= endDateTimestamp),
+        )
+        .toList();
+  }
 
   onDaySelected(DateTime newSelectedDay) {
+    selectedDay = newSelectedDay;
     setState(() {
-      if (newSelectedDay != selectedDay) {
-        selectedDay = newSelectedDay;
-      } else {
-        events.add({
-          "title": "Événement aléatoire",
-          "timestamp": newSelectedDay.millisecondsSinceEpoch
-        });
-      }
+      selectedDay = newSelectedDay;
     });
   }
 }
