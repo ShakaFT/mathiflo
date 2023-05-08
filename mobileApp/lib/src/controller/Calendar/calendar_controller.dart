@@ -9,7 +9,10 @@ class CalendarController extends StateXController {
   // Model
   static CalendarController? _this;
 
-  final List<Event> events = [];
+  final firstDate = DateTime.utc(2023, 05);
+  final lastDate = DateTime.utc(2025, 12, 31);
+
+  final events = <Event>[];
   DateTime selectedDay = DateTime.now();
 
   void addEvent(Event event) => setState(() {

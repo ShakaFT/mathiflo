@@ -50,7 +50,7 @@ class _CalendarViewState extends StateX<CalendarView> {
                 weekendTextStyle: TextStyle(),
               ),
               eventLoader: (date) => _controller.matchEvents(date),
-              firstDay: DateTime.utc(2023, 05),
+              firstDay: _controller.firstDate,
               focusedDay: DateTime.now(),
               headerStyle: HeaderStyle(
                 decoration: const BoxDecoration(color: Colors.orange),
@@ -61,7 +61,7 @@ class _CalendarViewState extends StateX<CalendarView> {
                     // Add first letter to upper case
                     _controller.formattedHeaderTitle(date, locale),
               ),
-              lastDay: DateTime.utc(2024, 12, 31),
+              lastDay: _controller.lastDate,
               locale: 'fr_FR',
               onDaySelected: (selectedDay, _) async {
                 if (isSameDay(_controller.selectedDay, selectedDay)) {

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
-int apiTimeout = 300;
-String unknownError =
-    "Une erreur inconnue est survenue... Vérifie ta connexion internet.";
-String urlGroceries = "https://groceries-dot-mathiflo.ew.r.appspot.com";
+const users = {
+  "Florent": {"color": Colors.purple},
+  "Mathilde": {"color": Colors.amber}
+};
 
-Color mainColor = Colors.orange.shade700;
-Color errorColor = Colors.red;
-Color popupColor = Colors.grey.shade600;
-Color textColor = Colors.white;
+const int apiTimeout = 300;
+const String unknownError =
+    "Une erreur inconnue est survenue... Vérifie ta connexion internet.";
+
+final Color mainColor = Colors.orange.shade700;
+const Color errorColor = Colors.red;
+final Color popupColor = Colors.grey.shade600;
+const Color textColor = Colors.white;

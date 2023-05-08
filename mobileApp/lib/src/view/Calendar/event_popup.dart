@@ -38,42 +38,40 @@ class _EventPopupState extends StateX<EventPopup> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    print('go');
-    return StatefulBuilder(
-      builder: (context, setPopupState) => AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              DateFormat('EEEE d MMMM', 'fr_FR').format(popupController.date),
-              style: TextStyle(color: popupColor),
-            ),
-            plusButton(() async {
-              final newEvent = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddEventView(
-                    date: popupController.date,
-                  ),
-                ),
-              );
-              if (newEvent != null) {
-                popupController.calendarController.addEvent(newEvent);
-                setState(() {
-                  popupController.events.add(newEvent);
-                });
-              }
-            })
-          ],
-        ),
-        content: popupController.events.isEmpty
-            ? centerText("Aucun événement")
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const <Widget>[Text("ok")],
+  Widget build(BuildContext context) => StatefulBuilder(
+        builder: (context, setPopupState) => AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat('EEEE d MMMM', 'fr_FR').format(popupController.date),
+                style: TextStyle(color: popupColor),
               ),
-      ),
-    );
-  }
+              plusButton(() async {
+                final newEvent = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddEventView(
+                      popupController: popupController,
+                      date: popupController.date,
+                    ),
+                  ),
+                );
+                if (newEvent != null) {
+                  popupController.calendarController.addEvent(newEvent);
+                  setState(() {
+                    popupController.events.add(newEvent);
+                  });
+                }
+              })
+            ],
+          ),
+          content: popupController.events.isEmpty
+              ? centerText("Aucun événement")
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const <Widget>[Text("ok")],
+                ),
+        ),
+      );
 }

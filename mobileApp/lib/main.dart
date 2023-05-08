@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/view/Calendar/calendar_view.dart';
@@ -9,7 +9,6 @@ import 'package:state_extended/state_extended.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await loadConfigData();
-  await initializeDateFormatting();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -17,6 +16,12 @@ void main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('fr')],
       title: 'mathiflo',
       theme: _theme(),
       darkTheme: _theme(),
@@ -43,6 +48,5 @@ class _MathifloState extends AppStateX<Mathiflo> {
 }
 
 _theme() => ThemeData(
-      // primarySwatch: Colors.orange,
       primaryColor: mainColor,
     );

@@ -15,7 +15,7 @@ errorText(String message) => Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Text(
         message,
-        style: TextStyle(
+        style: const TextStyle(
           color: errorColor,
           fontWeight: FontWeight.bold,
         ),
