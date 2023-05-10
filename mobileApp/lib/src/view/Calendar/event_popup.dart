@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/calendar_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:mathiflo/src/view/Calendar/add_event.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
@@ -68,10 +69,71 @@ class _EventPopupState extends StateX<EventPopup> {
           ),
           content: popupController.events.isEmpty
               ? centerText("Aucun événement")
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[Text("ok")],
+              : SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    itemCount: popupController.events.length,
+                    itemBuilder: (context, index) => IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 15.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 30,
+                              child: Text(
+                                popupController.events[index]
+                                    .timeToDisplay(popupController.date),
+                                maxLines: 2,
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            ),
+                            VerticalDivider(
+                              thickness: 2,
+                              color: mainColor,
+                            ),
+                            Expanded(
+                              child: Text(
+                                popupController.events[index].title,
+                                maxLines: 2,
+                                overflow: TextOverflow.fade,
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            ..._userAvatars(popupController.events[index])
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
+        ),
+      );
+
+  List<Widget> _userAvatars(Event event) {
+    final result = <Widget>[];
+    for (var _ = 0; _ < users.length - event.users.length; _++) {
+      result.add(_avatar("", {"color": Colors.white}));
+    }
+    event.users.forEach((name, info) {
+      result.add(_avatar(name, info));
+    });
+    return result;
+  }
+
+  _avatar(String name, Map<String, dynamic> info) => Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: CircleAvatar(
+          backgroundColor: info["color"],
+          radius: 15,
+          child: Text(
+            name.isEmpty ? "" : name.substring(0, 1),
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ),
       );
 }

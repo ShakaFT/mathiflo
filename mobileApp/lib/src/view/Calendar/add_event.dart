@@ -43,13 +43,16 @@ class _AddEventViewState extends StateX<AddEventView> {
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () {
-                Navigator.of(context).pop(
-                  Event(
-                    "Événement",
-                    _controller.startDate.millisecondsSinceEpoch,
-                    _controller.endDate.millisecondsSinceEpoch,
-                  ),
-                );
+                if (!_controller.checkError()) {
+                  Navigator.of(context).pop(
+                    Event(
+                      _controller.titleController.text.trim(),
+                      _controller.startDate.millisecondsSinceEpoch,
+                      _controller.endDate.millisecondsSinceEpoch,
+                      _controller.assignedUsers,
+                    ),
+                  );
+                }
               },
             )
           ],
@@ -61,6 +64,7 @@ class _AddEventViewState extends StateX<AddEventView> {
               TextField(
                 controller: _controller.titleController,
                 decoration: InputDecoration(
+                  errorText: _controller.titleError,
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: mainColor),
                   ),
@@ -85,9 +89,7 @@ class _AddEventViewState extends StateX<AddEventView> {
                 onTap: () async {
                   final newStartDate = await _selectDate(_controller.startDate);
                   if (newStartDate != null) {
-                    setState(() {
-                      _controller.startDate = newStartDate;
-                    });
+                    _controller.startDate = newStartDate;
                   }
                 },
                 children: [
@@ -102,11 +104,9 @@ class _AddEventViewState extends StateX<AddEventView> {
               _row(
                 icon: Icons.event_busy,
                 onTap: () async {
-                  final newEndDate = await _selectDate(_controller.startDate);
+                  final newEndDate = await _selectDate(_controller.endDate);
                   if (newEndDate != null) {
-                    setState(() {
-                      _controller.endDate = newEndDate;
-                    });
+                    _controller.endDate = newEndDate;
                   }
                 },
                 children: [
@@ -163,9 +163,13 @@ class _AddEventViewState extends StateX<AddEventView> {
     );
 
     if (newTime == null) return null;
-
-    return DateTime(newDate.year, newDate.month, newDate.minute, newTime.hour,
-        newTime.minute);
+    return DateTime(
+      newDate.year,
+      newDate.month,
+      newDate.day,
+      newTime.hour,
+      newTime.minute,
+    );
   }
 
   _row({
