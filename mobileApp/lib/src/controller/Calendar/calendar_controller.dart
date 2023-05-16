@@ -29,14 +29,12 @@ class CalendarController extends StateXController {
   List<Event> matchEvents(DateTime date) {
     final startDateTimestamp = date.millisecondsSinceEpoch;
     final endDateTimestamp =
-        date.add(const Duration(days: 1)).millisecondsSinceEpoch - 1;
+        date.add(const Duration(days: 1)).millisecondsSinceEpoch;
     return events
         .where(
           (event) =>
-              (startDateTimestamp <= event.startTimestamp &&
-                  event.startTimestamp <= endDateTimestamp) ||
-              (startDateTimestamp <= event.endTimestamp &&
-                  event.endTimestamp <= endDateTimestamp),
+              event.startTimestamp < endDateTimestamp &&
+              event.endTimestamp > startDateTimestamp,
         )
         .toList();
   }

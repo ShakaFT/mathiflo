@@ -10,19 +10,17 @@ class Event {
   DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endTimestamp);
   DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startTimestamp);
 
-  bool isAllDay(DateTime currentDate) {
-    final currentTimestamp = currentDate.millisecondsSinceEpoch;
-    final timestampNextDay =
-        currentDate.add(const Duration(days: 1)).millisecondsSinceEpoch;
-    return startTimestamp <= currentTimestamp &&
-        endTimestamp >= timestampNextDay;
-  }
-
   String timeToDisplay(DateTime currentDate) {
-    final startTimeString = DateFormat('HH:mm').format(startDate);
-    final endTimeString = DateFormat('HH:mm').format(endDate);
+    final startTimeString =
+        startDate.millisecondsSinceEpoch < currentDate.millisecondsSinceEpoch
+            ? "00:00"
+            : DateFormat('HH:mm').format(startDate);
+    final endTimeString = endDate.millisecondsSinceEpoch >
+            currentDate.add(const Duration(days: 1)).millisecondsSinceEpoch
+        ? "00:00"
+        : DateFormat('HH:mm').format(endDate);
 
-    return isAllDay(currentDate)
+    return startTimeString == "00:00" && endTimeString == "00:00"
         ? "Jour entier"
         : "$startTimeString\n$endTimeString";
   }

@@ -36,13 +36,16 @@ class _CalendarViewState extends StateX<CalendarView> {
                 ),
               ),
               calendarBuilders: CalendarBuilders(
-                defaultBuilder: (context, day, focusedDay) =>
-                    _getDefaultDay(day),
+                defaultBuilder: (context, day, focusedDay) => _getDay(day),
                 markerBuilder: (context, day, events) =>
                     _getMarkers(context, events as List<Event>),
-                selectedBuilder: (context, day, focusedDay) =>
-                    _getSelectedDay(day),
-                todayBuilder: (context, day, focusedDay) => _getTodayDay(day),
+                selectedBuilder: (context, day, focusedDay) => _getDay(
+                  day,
+                  selected: true,
+                  today: isSameDay(day, DateTime.now()),
+                ),
+                todayBuilder: (context, day, focusedDay) =>
+                    _getDay(day, today: true),
               ),
               calendarStyle: const CalendarStyle(
                 outsideDaysVisible:
@@ -90,10 +93,41 @@ class _CalendarViewState extends StateX<CalendarView> {
         onWillPop: () async => false,
       );
 
-  Widget _getDefaultDay(DateTime day) => Container(
-        alignment: Alignment.topCenter,
-        child: _getDayText(day, Colors.black),
-      );
+  Widget _getDay(DateTime day, {bool selected = false, bool today = false}) {
+    final boxColor = selected ? Colors.grey.withOpacity(0.6) : null;
+    final circleColor = today ? Colors.black : null;
+    final textColor = selected || today ? Colors.white : Colors.black;
+    return Container(
+      alignment: Alignment.topCenter,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: boxColor,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: circleColor,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text(
+                  '${day.day}',
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _getMarkers(BuildContext context, List<Event> events) => Padding(
         padding: const EdgeInsets.only(top: 25.0),
@@ -140,7 +174,7 @@ class _CalendarViewState extends StateX<CalendarView> {
       );
 
   Widget _getDayText(DateTime day, Color color) => Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(2.0),
         child: Text(
           '${day.day}',
           style: TextStyle(
