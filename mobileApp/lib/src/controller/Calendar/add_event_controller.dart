@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:state_extended/state_extended.dart';
 
 class AddEventController extends StateXController {
@@ -9,18 +10,22 @@ class AddEventController extends StateXController {
 
   static AddEventController? _this;
 
+  late bool _allDay;
+  late DateTime _currentDay;
   late DateTime _endDate;
   late DateTime _startDate;
   late Map<String, Map<String, dynamic>> assignedUsers;
+  late String titleError;
 
-  bool _allDay = false;
   final titleController = TextEditingController();
-  String titleError = "";
 
-  void init(DateTime date) {
+  void init(DateTime day) {
+    _allDay = false;
+    _currentDay = day;
+
     final now = DateTime.now();
-    _endDate = DateTime(date.year, date.month, date.day, now.hour + 2);
-    _startDate = DateTime(date.year, date.month, date.day, now.hour + 1);
+    _endDate = DateTime(day.year, day.month, day.day, now.hour + 2);
+    _startDate = DateTime(day.year, day.month, day.day, now.hour + 1);
 
     assignedUsers = Map<String, Map<String, dynamic>>.from(users);
 
@@ -32,6 +37,20 @@ class AddEventController extends StateXController {
   bool get allDay => _allDay;
   DateTime get endDate => _endDate;
   DateTime get startDate => _startDate;
+
+  Event get newEvent {
+    final event = Event(
+      titleController.text.trim(),
+      allDay
+          ? _currentDay.millisecondsSinceEpoch
+          : startDate.millisecondsSinceEpoch,
+      allDay
+          ? _currentDay.add(const Duration(days: 1)).millisecondsSinceEpoch
+          : endDate.millisecondsSinceEpoch,
+      assignedUsers,
+    );
+    return event;
+  }
 
   set endDate(DateTime newEndDate) {
     setState(() {
@@ -69,7 +88,19 @@ class AddEventController extends StateXController {
     return false;
   }
 
-  void updateAllDay() => setState(() => _allDay = !_allDay);
+  void updateAllDay() {
+    final now = DateTime.now();
+    _endDate =
+        DateTime(_endDate.year, _endDate.month, _endDate.day, now.hour + 2);
+    _startDate = DateTime(
+      _startDate.year,
+      _startDate.month,
+      _startDate.day,
+      now.hour + 1,
+    );
+    setState(() => _allDay = !_allDay);
+  }
+
   void updateAssignedUsers(String name, Map<String, dynamic> info) =>
       setState(() {
         assignedUsers.containsKey(name)

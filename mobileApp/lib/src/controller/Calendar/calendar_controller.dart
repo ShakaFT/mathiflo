@@ -17,6 +17,7 @@ class CalendarController extends StateXController {
 
   void addEvent(Event event) => setState(() {
         events.add(event);
+        _sortEvents();
       });
 
   String formattedHeaderTitle(DateTime date, String locale) {
@@ -27,9 +28,10 @@ class CalendarController extends StateXController {
   }
 
   List<Event> matchEvents(DateTime date) {
-    final startDateTimestamp = date.millisecondsSinceEpoch;
+    final midnightDate = DateTime(date.year, date.month, date.day);
+    final startDateTimestamp = midnightDate.millisecondsSinceEpoch;
     final endDateTimestamp =
-        date.add(const Duration(days: 1)).millisecondsSinceEpoch;
+        midnightDate.add(const Duration(days: 1)).millisecondsSinceEpoch;
     return events
         .where(
           (event) =>
@@ -39,10 +41,22 @@ class CalendarController extends StateXController {
         .toList();
   }
 
-  onDaySelected(DateTime newSelectedDay) {
+  void onDaySelected(DateTime newSelectedDay) {
     selectedDay = newSelectedDay;
     setState(() {
       selectedDay = newSelectedDay;
+    });
+  }
+
+  void _sortEvents() {
+    events.sort((e1, e2) {
+      if (e1.startTimestamp != e2.startTimestamp) {
+        return e1.startTimestamp.compareTo(e2.startTimestamp);
+      }
+      if (e1.endTimestamp != e2.endTimestamp) {
+        return e1.endTimestamp.compareTo(e2.endTimestamp);
+      }
+      return e1.title.compareTo(e2.title);
     });
   }
 }

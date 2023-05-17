@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/add_event_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
-import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
 import 'package:state_extended/state_extended.dart';
@@ -44,14 +43,7 @@ class _AddEventViewState extends StateX<AddEventView> {
               icon: const Icon(Icons.check),
               onPressed: () {
                 if (!_controller.checkError()) {
-                  Navigator.of(context).pop(
-                    Event(
-                      _controller.titleController.text.trim(),
-                      _controller.startDate.millisecondsSinceEpoch,
-                      _controller.endDate.millisecondsSinceEpoch,
-                      _controller.assignedUsers,
-                    ),
-                  );
+                  Navigator.of(context).pop(_controller.newEvent);
                 }
               },
             )

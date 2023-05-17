@@ -12,10 +12,10 @@ class Event {
 
   String timeToDisplay(DateTime currentDate) {
     final startTimeString =
-        startDate.millisecondsSinceEpoch < currentDate.millisecondsSinceEpoch
+        startDate.millisecondsSinceEpoch <= currentDate.millisecondsSinceEpoch
             ? "00:00"
             : DateFormat('HH:mm').format(startDate);
-    final endTimeString = endDate.millisecondsSinceEpoch >
+    final endTimeString = endDate.millisecondsSinceEpoch >=
             currentDate.add(const Duration(days: 1)).millisecondsSinceEpoch
         ? "00:00"
         : DateFormat('HH:mm').format(endDate);

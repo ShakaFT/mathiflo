@@ -49,7 +49,7 @@ class _EventPopupState extends StateX<EventPopup> {
                 style: TextStyle(color: popupColor),
               ),
               plusButton(() async {
-                final newEvent = await Navigator.push(
+                final Event newEvent = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddEventView(
@@ -58,12 +58,10 @@ class _EventPopupState extends StateX<EventPopup> {
                     ),
                   ),
                 );
-                if (newEvent != null) {
-                  popupController.calendarController.addEvent(newEvent);
-                  setState(() {
-                    popupController.events.add(newEvent);
-                  });
-                }
+                popupController.calendarController.addEvent(newEvent);
+                setState(() {
+                  popupController.events.add(newEvent);
+                });
               })
             ],
           ),

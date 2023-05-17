@@ -37,6 +37,21 @@ class _CalendarViewState extends StateX<CalendarView> {
               ),
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, focusedDay) => _getDay(day),
+                headerTitleBuilder: (context, day) => Center(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: mainColor,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        _controller.formattedHeaderTitle(day, "fr_FR"),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
                 markerBuilder: (context, day, events) =>
                     _getMarkers(context, events as List<Event>),
                 selectedBuilder: (context, day, focusedDay) => _getDay(
@@ -52,12 +67,11 @@ class _CalendarViewState extends StateX<CalendarView> {
                     false, // Hide days outside the current month
                 weekendTextStyle: TextStyle(),
               ),
+              daysOfWeekHeight: 25,
               eventLoader: (date) => _controller.matchEvents(date),
               firstDay: _controller.firstDate,
               focusedDay: DateTime.now(),
               headerStyle: HeaderStyle(
-                decoration: const BoxDecoration(color: Colors.orange),
-                // decoration: const BoxDecoration(color: Colors.red),
                 formatButtonVisible: false,
                 titleCentered: true,
                 titleTextFormatter: (date, locale) =>
@@ -149,36 +163,6 @@ class _CalendarViewState extends StateX<CalendarView> {
                 ),
               ),
             ),
-          ),
-        ),
-      );
-
-  Widget _getSelectedDay(DateTime day) => Container(
-        alignment: Alignment.topCenter,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Colors.grey.withOpacity(0.6),
-        ),
-        child: _getDayText(day, Colors.white),
-      );
-
-  Widget _getTodayDay(DateTime day) => Container(
-        alignment: Alignment.topCenter,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: Colors.black,
-            shape: BoxShape.circle,
-          ),
-          child: _getDayText(day, Colors.white),
-        ),
-      );
-
-  Widget _getDayText(DateTime day, Color color) => Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Text(
-          '${day.day}',
-          style: TextStyle(
-            color: color,
           ),
         ),
       );
