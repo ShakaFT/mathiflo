@@ -10,6 +10,11 @@ class Event {
   DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endTimestamp);
   DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startTimestamp);
 
+  bool get isMultipleDays =>
+      startDate.year != endDate.year ||
+      startDate.month != endDate.month ||
+      startDate.day != endDate.subtract(const Duration(milliseconds: 1)).day;
+
   String timeToDisplay(DateTime currentDate) {
     final startTimeString =
         startDate.millisecondsSinceEpoch <= currentDate.millisecondsSinceEpoch

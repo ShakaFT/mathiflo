@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/calendar_controller.dart';
+import 'package:mathiflo/src/extensions/date_time_extension.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:mathiflo/src/view/Calendar/event_popup.dart';
 import 'package:mathiflo/src/widgets/async.dart';
@@ -36,7 +37,8 @@ class _CalendarViewState extends StateX<CalendarView> {
                 ),
               ),
               calendarBuilders: CalendarBuilders(
-                defaultBuilder: (context, day, focusedDay) => _getDay(day),
+                defaultBuilder: (context, day, focusedDay) =>
+                    _getDay(day.midnight),
                 headerTitleBuilder: (context, day) => Center(
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -46,21 +48,21 @@ class _CalendarViewState extends StateX<CalendarView> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        _controller.formattedHeaderTitle(day, "fr_FR"),
+                        _controller.formattedHeaderTitle(day.midnight, "fr_FR"),
                         style: const TextStyle(fontSize: 18),
                       ),
                     ),
                   ),
                 ),
                 markerBuilder: (context, day, events) =>
-                    _getMarkers(context, events as List<Event>),
+                    _getMarkers(context, day, events as List<Event>),
                 selectedBuilder: (context, day, focusedDay) => _getDay(
-                  day,
+                  day.midnight,
                   selected: true,
-                  today: isSameDay(day, DateTime.now()),
+                  today: isSameDay(day.midnight, DateTime.now()),
                 ),
                 todayBuilder: (context, day, focusedDay) =>
-                    _getDay(day, today: true),
+                    _getDay(day.midnight, today: true),
               ),
               calendarStyle: const CalendarStyle(
                 outsideDaysVisible:
@@ -68,35 +70,23 @@ class _CalendarViewState extends StateX<CalendarView> {
                 weekendTextStyle: TextStyle(),
               ),
               daysOfWeekHeight: 25,
-              eventLoader: (date) => _controller.matchEvents(date),
+              eventLoader: (day) => _controller.matchEvents(day.midnight),
               firstDay: _controller.firstDate,
-              focusedDay: DateTime.now(),
+              focusedDay: _controller.selectedDay,
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
                 titleTextFormatter: (date, locale) =>
                     // Add first letter to upper case
-                    _controller.formattedHeaderTitle(date, locale),
+                    _controller.formattedHeaderTitle(date.midnight, locale),
               ),
               lastDay: _controller.lastDate,
               locale: 'fr_FR',
-              onDaySelected: (selectedDay, _) async {
-                if (isSameDay(_controller.selectedDay, selectedDay)) {
-                  await showDialog(
-                    context: context,
-                    builder: (context) => EventPopup(
-                      calendarController: _controller,
-                      date: selectedDay,
-                    ),
-                  );
-                }
-                _controller.onDaySelected(selectedDay);
-              },
               onPageChanged: (focusedDay) {
                 // Call API to log events
               },
               selectedDayPredicate: (day) =>
-                  isSameDay(_controller.selectedDay, day),
+                  isSameDay(_controller.selectedDay, day.midnight),
               shouldFillViewport:
                   true, // The calendar takes up the entire screen
               startingDayOfWeek: StartingDayOfWeek.monday,
@@ -143,22 +133,50 @@ class _CalendarViewState extends StateX<CalendarView> {
     );
   }
 
-  Widget _getMarkers(BuildContext context, List<Event> events) => Padding(
-        padding: const EdgeInsets.only(top: 25.0),
-        child: ListView.builder(
-          itemCount: events.length,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.all(1.0),
-            child: ColoredBox(
-              color: mainColor,
-              child: Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: Text(
-                  events[index].title,
-                  maxLines: 1,
-                  overflow: TextOverflow.fade,
-                  style: const TextStyle(
-                    fontSize: 8,
+  Widget _getMarkers(BuildContext context, DateTime day, List<Event> events) =>
+      InkWell(
+        onTap: () async => {
+          if (isSameDay(_controller.selectedDay, day))
+            {
+              await showDialog(
+                context: context,
+                builder: (context) => EventPopup(
+                  calendarController: _controller,
+                  date: day,
+                ),
+              )
+            },
+          _controller.onDaySelected(day)
+        },
+        onLongPress: () async => showDialog(
+          context: context,
+          builder: (context) => EventPopup(
+            calendarController: _controller,
+            date: day,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 25.0),
+          child: ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: ColoredBox(
+                color: events[index].isMultipleDays
+                    ? mainColor
+                    : Colors.grey.shade300,
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(
+                    events[index].title,
+                    maxLines: 2,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                      color: events[index].isMultipleDays
+                          ? Colors.white
+                          : mainColor,
+                      fontSize: 8,
+                    ),
                   ),
                 ),
               ),

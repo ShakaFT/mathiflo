@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:mathiflo/src/extensions/date_time_extension.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:state_extended/state_extended.dart';
 
@@ -28,10 +29,9 @@ class CalendarController extends StateXController {
   }
 
   List<Event> matchEvents(DateTime date) {
-    final midnightDate = DateTime(date.year, date.month, date.day);
-    final startDateTimestamp = midnightDate.millisecondsSinceEpoch;
+    final startDateTimestamp = date.midnight.millisecondsSinceEpoch;
     final endDateTimestamp =
-        midnightDate.add(const Duration(days: 1)).millisecondsSinceEpoch;
+        date.midnight.add(const Duration(days: 1)).millisecondsSinceEpoch;
     return events
         .where(
           (event) =>
@@ -42,7 +42,6 @@ class CalendarController extends StateXController {
   }
 
   void onDaySelected(DateTime newSelectedDay) {
-    selectedDay = newSelectedDay;
     setState(() {
       selectedDay = newSelectedDay;
     });

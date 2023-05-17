@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/src/extensions/date_time_extension.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:state_extended/state_extended.dart';
 
@@ -11,7 +12,6 @@ class AddEventController extends StateXController {
   static AddEventController? _this;
 
   late bool _allDay;
-  late DateTime _currentDay;
   late DateTime _endDate;
   late DateTime _startDate;
   late Map<String, Map<String, dynamic>> assignedUsers;
@@ -21,11 +21,10 @@ class AddEventController extends StateXController {
 
   void init(DateTime day) {
     _allDay = false;
-    _currentDay = day;
 
     final now = DateTime.now();
-    _endDate = DateTime(day.year, day.month, day.day, now.hour + 2);
-    _startDate = DateTime(day.year, day.month, day.day, now.hour + 1);
+    _endDate = day.midnight.add(Duration(hours: now.hour + 2));
+    _startDate = day.midnight.add(Duration(hours: now.hour + 1));
 
     assignedUsers = Map<String, Map<String, dynamic>>.from(users);
 
@@ -42,10 +41,10 @@ class AddEventController extends StateXController {
     final event = Event(
       titleController.text.trim(),
       allDay
-          ? _currentDay.millisecondsSinceEpoch
+          ? startDate.midnight.millisecondsSinceEpoch
           : startDate.millisecondsSinceEpoch,
       allDay
-          ? _currentDay.add(const Duration(days: 1)).millisecondsSinceEpoch
+          ? endDate.midnight.add(const Duration(days: 1)).millisecondsSinceEpoch
           : endDate.millisecondsSinceEpoch,
       assignedUsers,
     );
@@ -90,14 +89,8 @@ class AddEventController extends StateXController {
 
   void updateAllDay() {
     final now = DateTime.now();
-    _endDate =
-        DateTime(_endDate.year, _endDate.month, _endDate.day, now.hour + 2);
-    _startDate = DateTime(
-      _startDate.year,
-      _startDate.month,
-      _startDate.day,
-      now.hour + 1,
-    );
+    _endDate = _endDate.midnight.add(Duration(hours: now.hour + 2));
+    _startDate = _startDate.midnight.add(Duration(hours: now.hour + 1));
     setState(() => _allDay = !_allDay);
   }
 
