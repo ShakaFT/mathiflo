@@ -14,7 +14,9 @@ class CalendarController extends StateXController {
   final lastDate = DateTime.utc(2025, 12, 31);
 
   final events = <Event>[];
-  DateTime selectedDay = DateTime.now();
+  DateTime _selectedDay = DateTime.now();
+
+  DateTime get selectedDay => _selectedDay;
 
   void addEvent(Event event) => setState(() {
         events.add(event);
@@ -43,7 +45,7 @@ class CalendarController extends StateXController {
 
   void onDaySelected(DateTime newSelectedDay) {
     setState(() {
-      selectedDay = newSelectedDay;
+      _selectedDay = newSelectedDay;
     });
   }
 

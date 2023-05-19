@@ -40,17 +40,11 @@ class _CalendarViewState extends StateX<CalendarView> {
                 defaultBuilder: (context, day, focusedDay) =>
                     _getDay(day.midnight),
                 headerTitleBuilder: (context, day) => Center(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: mainColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        _controller.formattedHeaderTitle(day.midnight, "fr_FR"),
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _controller.formattedHeaderTitle(day.midnight, "fr_FR"),
+                      style: const TextStyle(fontSize: 18),
                     ),
                   ),
                 ),
@@ -106,7 +100,6 @@ class _CalendarViewState extends StateX<CalendarView> {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: boxColor,
-          borderRadius: BorderRadius.circular(10.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(2.0),
@@ -148,13 +141,16 @@ class _CalendarViewState extends StateX<CalendarView> {
             },
           _controller.onDaySelected(day)
         },
-        onLongPress: () async => showDialog(
-          context: context,
-          builder: (context) => EventPopup(
-            calendarController: _controller,
-            date: day,
-          ),
-        ),
+        onLongPress: () async {
+          await showDialog(
+            context: context,
+            builder: (context) => EventPopup(
+              calendarController: _controller,
+              date: day,
+            ),
+          );
+          _controller.onDaySelected(day);
+        },
         child: Padding(
           padding: const EdgeInsets.only(top: 25.0),
           child: ListView.builder(
@@ -176,6 +172,7 @@ class _CalendarViewState extends StateX<CalendarView> {
                           ? Colors.white
                           : mainColor,
                       fontSize: 8,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

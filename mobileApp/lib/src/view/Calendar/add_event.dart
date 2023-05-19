@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/add_event_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
@@ -25,6 +28,8 @@ class _AddEventViewState extends StateX<AddEventView> {
     _controller = controller! as AddEventController;
   }
   late AddEventController _controller;
+  final FocusNode _focusTitle = FocusNode();
+  late StreamSubscription<bool> _keyboardSubscription;
   late EventPopupController popupController;
 
   @override
@@ -32,6 +37,21 @@ class _AddEventViewState extends StateX<AddEventView> {
     super.initState();
     _controller.init(widget.date);
     popupController = widget.popupController;
+    _focusTitle.requestFocus();
+
+    // Unfocus Title TextField when keyboard is closed
+    _keyboardSubscription =
+        KeyboardVisibilityController().onChange.listen((visible) {
+      if (!visible) {
+        _focusTitle.unfocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _keyboardSubscription.cancel();
   }
 
   @override
@@ -55,13 +75,13 @@ class _AddEventViewState extends StateX<AddEventView> {
             children: [
               TextField(
                 controller: _controller.titleController,
+                cursorColor: mainColor,
                 decoration: InputDecoration(
                   errorText: _controller.titleError,
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: mainColor),
-                  ),
                   hintText: "Titre",
                 ),
+                focusNode: _focusTitle,
+                textCapitalization: TextCapitalization.sentences,
               ),
               _row(
                 icon: Icons.access_time_filled,
