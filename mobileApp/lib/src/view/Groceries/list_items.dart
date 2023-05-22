@@ -103,7 +103,7 @@ class ListItemWidget extends StatelessWidget {
         ),
         // Remove button
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.close,
             color: errorColor,
           ),

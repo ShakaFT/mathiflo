@@ -3,40 +3,46 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/controller/Calendar/add_event_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
+import 'package:mathiflo/src/controller/Calendar/handle_event_controller.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
+import 'package:mathiflo/src/widgets/popups.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
 import 'package:state_extended/state_extended.dart';
 
-class AddEventView extends StatefulWidget {
-  const AddEventView({
+class HandleEventView extends StatefulWidget {
+  const HandleEventView({
     super.key,
     required this.popupController,
     required this.date,
+    this.event,
   });
 
   final DateTime date;
+  final Event? event;
   final EventPopupController popupController;
 
   @override
-  State createState() => _AddEventViewState();
+  State createState() => _HandleEventViewState();
 }
 
-class _AddEventViewState extends StateX<AddEventView> {
-  _AddEventViewState() : super(AddEventController()) {
-    _controller = controller! as AddEventController;
+class _HandleEventViewState extends StateX<HandleEventView> {
+  _HandleEventViewState() : super(HandleEventController()) {
+    _controller = controller! as HandleEventController;
   }
-  late AddEventController _controller;
   final FocusNode _focusTitle = FocusNode();
+
+  late HandleEventController _controller;
   late StreamSubscription<bool> _keyboardSubscription;
   late EventPopupController popupController;
 
   @override
   void initState() {
     super.initState();
-    _controller.init(widget.date);
+    _controller.init(widget.date, widget.event);
     popupController = widget.popupController;
+
     _focusTitle.requestFocus();
 
     // Unfocus Title TextField when keyboard is closed
@@ -49,21 +55,42 @@ class _AddEventViewState extends StateX<AddEventView> {
   }
 
   @override
-  void dispose() {
+  Future<void> dispose() async {
     super.dispose();
-    _keyboardSubscription.cancel();
+    await _keyboardSubscription.cancel();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: appBar(
-          "Ajouter un événement",
+          _controller.title,
           icons: [
+            Visibility(
+              visible: _controller.isUpdate,
+              child: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertPopup(
+                      title: "Supprimer l'événement",
+                      message: "Voulez-vous vraiment supprimer cet événement ?",
+                      confirmation: () {},
+                      popCurrentWidget: true,
+                      popParameters: const {"action": "delete"},
+                    ),
+                  );
+                },
+              ),
+            ),
             IconButton(
               icon: const Icon(Icons.check),
               onPressed: () {
                 if (!_controller.checkError()) {
-                  Navigator.of(context).pop(_controller.newEvent);
+                  Navigator.pop(context, {
+                    "action": _controller.isUpdate ? "update" : "add",
+                    "event": _controller.event
+                  });
                 }
               },
             )
@@ -81,6 +108,7 @@ class _AddEventViewState extends StateX<AddEventView> {
                   hintText: "Titre",
                 ),
                 focusNode: _focusTitle,
+                onChanged: (value) => _controller.updateTitle(value),
                 textCapitalization: TextCapitalization.sentences,
               ),
               _row(

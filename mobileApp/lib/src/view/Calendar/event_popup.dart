@@ -4,7 +4,7 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/calendar_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
-import 'package:mathiflo/src/view/Calendar/add_event.dart';
+import 'package:mathiflo/src/view/Calendar/handle_event.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
 import 'package:state_extended/state_extended.dart';
@@ -49,19 +49,19 @@ class _EventPopupState extends StateX<EventPopup> {
                 style: TextStyle(color: popupColor),
               ),
               plusButton(() async {
-                final Event newEvent = await Navigator.push(
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddEventView(
+                    builder: (context) => HandleEventView(
                       popupController: popupController,
                       date: popupController.date,
                     ),
                   ),
                 );
-                popupController.calendarController.addEvent(newEvent);
-                setState(() {
-                  popupController.events.add(newEvent);
-                });
+                if (result == null) return;
+                if (result["action"] == "add") {
+                  popupController.addEvent(result["event"]);
+                }
               })
             ],
           ),
@@ -75,31 +75,55 @@ class _EventPopupState extends StateX<EventPopup> {
                     itemBuilder: (context, index) => IntrinsicHeight(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 15.0),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                              child: Text(
-                                popupController.events[index]
-                                    .timeToDisplay(popupController.date),
-                                maxLines: 2,
-                                style: const TextStyle(fontSize: 10),
+                        child: InkWell(
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HandleEventView(
+                                  popupController: popupController,
+                                  date: popupController.date,
+                                  event: popupController.events[index],
+                                ),
                               ),
-                            ),
-                            VerticalDivider(
-                              thickness: 2,
-                              color: mainColor,
-                            ),
-                            Expanded(
-                              child: Text(
-                                popupController.events[index].title,
-                                maxLines: 2,
-                                overflow: TextOverflow.fade,
-                                style: const TextStyle(fontSize: 15),
+                            );
+                            if (result == null) return;
+                            if (result["action"] == "update") {
+                              popupController.updateEvent(
+                                popupController.events[index],
+                                result["event"],
+                              );
+                            } else if (result["action"] == "delete") {
+                              popupController
+                                  .removeEvent(popupController.events[index]);
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 30,
+                                child: Text(
+                                  popupController.events[index]
+                                      .timeToDisplay(popupController.date),
+                                  maxLines: 2,
+                                  style: const TextStyle(fontSize: 10),
+                                ),
                               ),
-                            ),
-                            ..._userAvatars(popupController.events[index])
-                          ],
+                              VerticalDivider(
+                                thickness: 2,
+                                color: mainColor,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  popupController.events[index].title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.fade,
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              ..._userAvatars(popupController.events[index])
+                            ],
+                          ),
                         ),
                       ),
                     ),

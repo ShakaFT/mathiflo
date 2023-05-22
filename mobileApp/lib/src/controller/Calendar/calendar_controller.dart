@@ -49,6 +49,16 @@ class CalendarController extends StateXController {
     });
   }
 
+  void removeEvent(Event event) => setState(() {
+        events.remove(event);
+      });
+
+  void updateEvent(Event oldEvent, Event newEvent) => setState(() {
+        events
+          ..remove(oldEvent)
+          ..add(newEvent);
+      });
+
   void _sortEvents() {
     events.sort((e1, e2) {
       if (e1.startTimestamp != e2.startTimestamp) {

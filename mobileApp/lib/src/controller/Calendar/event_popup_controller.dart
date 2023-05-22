@@ -11,4 +11,27 @@ class EventPopupController extends StateXController {
   late CalendarController calendarController;
   late DateTime date;
   late List<Event> events;
+
+  void addEvent(Event event) {
+    calendarController.addEvent(event);
+    setState(() {
+      events.add(event);
+    });
+  }
+
+  void removeEvent(Event event) {
+    calendarController.removeEvent(event);
+    setState(() {
+      events.remove(event);
+    });
+  }
+
+  void updateEvent(Event oldEvent, Event newEvent) {
+    calendarController.updateEvent(oldEvent, newEvent);
+    setState(() {
+      events
+        ..remove(oldEvent)
+        ..add(newEvent);
+    });
+  }
 }

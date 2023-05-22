@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:mathiflo/src/extensions/date_time_extension.dart';
 
 class Event {
   Event(this.title, this.startTimestamp, this.endTimestamp, this.users);
@@ -9,6 +10,9 @@ class Event {
 
   DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endTimestamp);
   DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startTimestamp);
+
+  bool get isAllDay =>
+      startDate.midnight == startDate && endDate.midnight == endDate;
 
   bool get isMultipleDays =>
       startDate.year != endDate.year ||

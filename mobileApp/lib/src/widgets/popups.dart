@@ -8,11 +8,15 @@ class AlertPopup extends StatelessWidget {
     required this.title,
     required this.message,
     required this.confirmation,
+    this.popCurrentWidget = false,
+    this.popParameters,
   });
 
   final String title;
   final String message;
   final void Function()? confirmation;
+  final bool popCurrentWidget;
+  final dynamic popParameters;
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -44,6 +48,11 @@ class AlertPopup extends StatelessWidget {
               : () {
                   action();
                   Navigator.pop(context); // close popup
+
+                  if (popCurrentWidget) {
+                    // close current widget
+                    Navigator.pop(context, popParameters);
+                  }
                 },
         ),
       );
