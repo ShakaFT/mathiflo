@@ -28,7 +28,7 @@ def get_groceries():
     This endpoint returns groceries list.
     """
     database: FirestoreClient = current_app.config["database"]
-    return jsonify(groceries_list=Item.groceries_item(database))
+    return jsonify(groceries_list=Item.groceries_items(database))
 
 
 @app.post("/groceries/<item_id>")
@@ -41,8 +41,8 @@ def add_groceries_item(item_id: str):
 
     try:
         item = Item(database, item_id, payload)
-    except (KeyError, TypeError):
-        return jsonify(error="groceriesItem format is not valid."), 400
+    except (KeyError, ValueError) as e:
+        return jsonify(error=f"Item format is not valid : {e}"), 400
 
     if item.exists:
         return jsonify(error="This item already exists"), 400
@@ -72,8 +72,8 @@ def update_groceries_item(item_id: str):
     try:
         item.name = str(payload["name"])
         item.quantity = int(payload["quantity"])
-    except (KeyError, TypeError):
-        return jsonify(error="groceries item format is not valid."), 400
+    except (KeyError, ValueError) as e:
+        return jsonify(error=f"Item format is not valid : {e}"), 400
 
     item.update_database()
     return jsonify(success=True, exists=True)

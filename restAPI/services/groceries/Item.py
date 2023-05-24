@@ -41,7 +41,7 @@ class Item:
             document.reference.delete()
 
     @staticmethod
-    def groceries_item(database: FirestoreClient) -> list[dict[str, Any]]:
+    def groceries_items(database: FirestoreClient) -> list[dict[str, Any]]:
         """
         This method returns the list of groceries items.
         """
