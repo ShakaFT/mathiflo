@@ -3,6 +3,8 @@ This module contains Event class.
 """
 from typing import Any
 
+from google.cloud.firestore_v1.base_query import FieldFilter
+
 import constants
 
 from restAPI.FirestoreClient import FirestoreClient
@@ -32,6 +34,22 @@ class Event:
         """
         if event_data := database.get(constants.COLLECTION_CALENDAR, event_id):
             return cls(database, event_id, event_data)
+
+    @staticmethod
+    def paging_events(
+        database: FirestoreClient, start_timestamp: int, end_timestamp: int
+    ) -> list[dict[str, Any]]:
+        """
+        This method returns paging events.
+        """
+        query = database.collection(constants.COLLECTION_CALENDAR).where(
+            filter=FieldFilter("end_timestamp", ">=", start_timestamp)
+        )
+        return [
+            document.to_dict() | {"id": document.id}  # type: ignore
+            for document in query.stream()
+            if document.to_dict()["start_timestamp"] <= end_timestamp  # type: ignore
+        ]
 
     @property
     def exists(self) -> bool:

@@ -6,7 +6,7 @@ import os
 
 from dotenv import load_dotenv
 from firebase_admin import storage
-from flask import current_app, jsonify, request
+from flask import jsonify, request
 from google.auth import compute_engine
 import google.auth.transport.requests
 from unidecode import unidecode
@@ -18,7 +18,6 @@ from History import History
 from scheduler import scheduler
 
 from restAPI.FlaskApp import FlaskApp
-from restAPI.FirestoreClient import FirestoreClient
 
 
 app = FlaskApp(os.environ["GAE_SERVICE"], os.environ["GOOGLE_CLOUD_PROJECT"])
@@ -33,8 +32,6 @@ def start():
     """
     This endpoint returns data to load when CuddlyToys page is launched.
     """
-    database: FirestoreClient = current_app.config["database"]
-
     bucket = storage.bucket(f"{os.environ['GOOGLE_CLOUD_PROJECT']}.appspot.com")
     expires_at_ms = datetime.now() + timedelta(minutes=1)
 
@@ -48,7 +45,7 @@ def start():
             ).generate_signed_url(
                 expiration=expires_at_ms, credentials=signing_credentials
             )
-            for cuddly_toy in database.get(
+            for cuddly_toy in app.database.get(
                 constants.COLLECTION_CUDDLY_TOYS, constants.DOCUMENT_CUDDLY_TOYS
             )[  # type: ignore
                 "cuddly_toys"
@@ -62,9 +59,8 @@ def get_history():
     """
     This endpoint returns the 5 last nights.
     """
-    database: FirestoreClient = current_app.config["database"]
     try:
-        history = History.from_token(database, request.args.get("token"))
+        history = History.from_token(app.database, request.args.get("token"))
         return jsonify(history.to_dict())
     except TypeError:
         return jsonify(error="Invalid token"), 400

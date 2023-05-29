@@ -4,14 +4,13 @@ This module contains main endpoints of default services.
 import os
 
 from dotenv import load_dotenv
-from flask import current_app, jsonify, request
+from flask import jsonify, request
 
 load_dotenv()
 
 import constants
 
 from restAPI.FlaskApp import FlaskApp
-from restAPI.FirestoreClient import FirestoreClient
 
 
 app = FlaskApp(os.environ["GAE_SERVICE"], os.environ["GOOGLE_CLOUD_PROJECT"])
@@ -24,9 +23,8 @@ def get_app_version():
     """
     This endpoint returns app version.
     """
-    database: FirestoreClient = current_app.config["database"]
     mobile_app_info = (
-        database.get(constants.COLLECTION_MOBILE_APP, constants.DOCUMENT_MOBILE_APP)
+        app.database.get(constants.COLLECTION_MOBILE_APP, constants.DOCUMENT_MOBILE_APP)
         or {}
     )
     return jsonify(
@@ -40,11 +38,10 @@ def update_app_version():
     """
     This endpoint updates app version.
     """
-    database: FirestoreClient = current_app.config["database"]
     payload = request.get_json(force=True)
 
     try:
-        database.update(
+        app.database.update(
             constants.COLLECTION_MOBILE_APP,
             constants.DOCUMENT_MOBILE_APP,
             {

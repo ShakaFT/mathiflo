@@ -3,6 +3,8 @@ This module contains Item class.
 """
 from typing import Any
 
+from google.cloud.firestore_v1.base_query import FieldFilter
+
 import constants
 
 from restAPI.FirestoreClient import FirestoreClient
@@ -63,7 +65,7 @@ class Item:
         This method returns True if there is already an item with same name, else False.
         """
         query = self.__database.collection(constants.COLLECTION_GROCERIES).where(
-            "name", "==", self.name
+            filter=FieldFilter("name", "==", self.name)
         )
         return next(query.stream(), None) is not None
 
