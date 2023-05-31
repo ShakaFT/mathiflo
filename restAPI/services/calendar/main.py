@@ -38,7 +38,10 @@ def get_events():
         return jsonify(error=f"Invalid format : {e}"), 400
 
     if start_timestamp > end_timestamp:
-        return jsonify(error="`start_timestamp` must be lower than `end_timestamp`"), 400
+        return (
+            jsonify(error="`start_timestamp` must be lower than `end_timestamp`"),
+            400,
+        )
 
     events = Event.paging_events(app.database, start_timestamp, end_timestamp)
     return jsonify(events=events)
@@ -71,7 +74,6 @@ def update_event(event_id: str):
     payload = request.get_json(force=True)
 
     event = Event.from_database(app.database, event_id)
-
     if not event:
         return jsonify(error=f"There is no event with id : {event_id}"), 400
 
@@ -79,6 +81,7 @@ def update_event(event_id: str):
         event.title = str(payload["title"])
         event.start_timestamp = int(payload["start_timestamp"])
         event.end_timestamp = int(payload["end_timestamp"])
+        event.users = payload["users"]
     except (KeyError, ValueError) as e:
         return jsonify(error=f"Event format is not valid : {e}"), 400
 

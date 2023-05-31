@@ -24,6 +24,7 @@ class Event:
             "title": str(event_data["title"]),
             "start_timestamp": int(event_data["start_timestamp"]),
             "end_timestamp": int(event_data["end_timestamp"]),
+            "users": event_data["users"],
         }
 
     @classmethod
@@ -68,7 +69,7 @@ class Event:
     @end_timestamp.setter
     def end_timestamp(self, new_end_timestamp: int):
         """
-        This function set event end_timestamp to {new_end_timestamp}.
+        This function sets event end_timestamp to {new_end_timestamp}.
         """
         self.__event__data["end_timestamp"] = new_end_timestamp
 
@@ -82,7 +83,7 @@ class Event:
     @start_timestamp.setter
     def start_timestamp(self, new_start_timestamp: int):
         """
-        This function set event start_timestamp to {new_start_timestamp}.
+        This function sets event start_timestamp to {new_start_timestamp}.
         """
         self.__event__data["start_timestamp"] = new_start_timestamp
 
@@ -96,9 +97,23 @@ class Event:
     @title.setter
     def title(self, new_title: str):
         """
-        This function set event title to {new_title}.
+        This function sets event title to {new_title}.
         """
         self.__event__data["title"] = new_title
+
+    @property
+    def users(self) -> str:
+        """
+        This method returns event users.
+        """
+        return self.__event__data["users"]
+
+    @users.setter
+    def users(self, new_users: str):
+        """
+        This function sets event users to {new_users}.
+        """
+        self.__event__data["users"] = new_users
 
     def delete(self):
         """
