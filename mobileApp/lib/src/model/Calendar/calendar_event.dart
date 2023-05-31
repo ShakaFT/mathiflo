@@ -2,7 +2,14 @@ import 'package:intl/intl.dart';
 import 'package:mathiflo/src/extensions/date_time_extension.dart';
 
 class Event {
-  Event(this.title, this.startTimestamp, this.endTimestamp, this.users);
+  Event(
+    this.id,
+    this.title,
+    this.startTimestamp,
+    this.endTimestamp,
+    this.users,
+  );
+  String id;
   String title;
   int startTimestamp;
   int endTimestamp;
@@ -33,4 +40,19 @@ class Event {
         ? "Jour entier"
         : "$startTimeString\n$endTimeString";
   }
+
+  static Event fromMap(Map<String, dynamic> map) => Event(
+        map["id"],
+        map["title"],
+        map["startTimestamp"],
+        map["endTimestamp"],
+        map["users"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "title": title,
+        "start_timestamp": startTimestamp,
+        "end_timestamp": endTimestamp,
+        "users": users,
+      };
 }

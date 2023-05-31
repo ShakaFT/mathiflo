@@ -18,6 +18,7 @@ const apiKey = String.fromEnvironment("MATHIFLO_API_KEY");
 late String defaultRestApiUrl;
 late String cuddlyToysRestApiUrl;
 late String groceriesRestApiUrl;
+late String calendarRestApiUrl;
 
 Future<void> loadConfigData() async {
   // Load config data
@@ -28,4 +29,5 @@ Future<void> loadConfigData() async {
   defaultRestApiUrl = data['restAPI']['default'];
   cuddlyToysRestApiUrl = data['restAPI']['cuddlyToys'];
   groceriesRestApiUrl = data['restAPI']['groceries'];
+  calendarRestApiUrl = data['restAPI']['calendar'];
 }

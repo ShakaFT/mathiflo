@@ -3,14 +3,16 @@
         "restAPI": {
             "cuddlyToys": "https://cuddly-toys-dot-mathiflo-dev.ew.r.appspot.com",
             "default": "https://mathiflo-dev.ew.r.appspot.com",
-            "groceries": "https://groceries-dot-mathiflo-dev.ew.r.appspot.com"
+            "groceries": "https://groceries-dot-mathiflo-dev.ew.r.appspot.com",
+            "calendar": "https://calendar-dot-mathiflo-dev.ew.r.appspot.com"
         }
     },
     "prod":  {
         "restAPI": {
             "cuddlyToys": "https://cuddly-toys-dot-mathiflo.ew.r.appspot.com",
             "default": "https://mathiflo.ew.r.appspot.com",
-            "groceries": "https://groceries-dot-mathiflo.ew.r.appspot.com"
+            "groceries": "https://groceries-dot-mathiflo.ew.r.appspot.com",
+            "calendar": "https://calendar-dot-mathiflo.ew.r.appspot.com"
         }
     }
 }

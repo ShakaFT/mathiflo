@@ -6,8 +6,8 @@ import 'package:mathiflo/src/model/Groceries/groceries_item.dart';
 final dio = Dio(
   BaseOptions(
     baseUrl: config.groceriesRestApiUrl,
-    connectTimeout: Duration(seconds: apiTimeout),
-    receiveTimeout: Duration(seconds: apiTimeout),
+    connectTimeout: const Duration(seconds: apiTimeout),
+    receiveTimeout: const Duration(seconds: apiTimeout),
     headers: {config.apiKeyHeader: config.apiKey},
   ),
 );

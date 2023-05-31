@@ -29,6 +29,7 @@ class HandleEventController extends StateXController {
             : currentEvent.endTimestamp;
 
     _event = Event(
+      currentEvent?.id ?? Uuid().generateV4(),
       currentEvent?.title ?? "",
       currentEvent?.startTimestamp ??
           day.midnight
