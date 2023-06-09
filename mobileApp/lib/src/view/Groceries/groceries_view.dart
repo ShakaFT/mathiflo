@@ -26,7 +26,7 @@ class _GroceriesViewState extends StateX<GroceriesView> {
   Widget build(BuildContext context) => WillPopScope(
         child: WaitingApi(
           child: Scaffold(
-            appBar: appBar("Liste de courses", icons: _appBarIcons()),
+            appBar: appBar(context, "Liste de courses", icons: _appBarIcons()),
             body: FutureBuilder(
               // ignore: discarded_futures
               future: _loadGroceriesList(),

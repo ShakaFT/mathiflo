@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AlertPopup extends StatelessWidget {
   const AlertPopup({
@@ -28,8 +29,8 @@ class AlertPopup extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _actionButton(context, "Annuler", () {}),
-                _actionButton(context, "Confirmer", confirmation),
+                _actionButton(context, "Annuler"),
+                _actionButton(context, "Confirmer", action: confirmation),
               ],
             ),
           ],
@@ -38,13 +39,19 @@ class AlertPopup extends StatelessWidget {
 
   // Private methods
 
-  _actionButton(BuildContext context, String title, void Function()? action) =>
+  _actionButton(
+    BuildContext context,
+    String title, {
+    void Function()? action,
+  }) =>
       Padding(
         padding: const EdgeInsets.only(top: 20),
         child: button(
           title,
           action == null
-              ? null
+              ? () {
+                  Navigator.pop(context);
+                } // close popup
               : () {
                   action();
                   Navigator.pop(context); // close popup
@@ -78,11 +85,11 @@ snackbar(BuildContext context, String text, {bool error = false}) =>
       ),
     );
 
-avatarImage(BuildContext context, Image image) => Padding(
+avatarImage(BuildContext context, ImageProvider image) => Padding(
       padding: const EdgeInsets.all(8.0),
       child: CircleAvatar(
         radius: 20,
-        backgroundImage: image.image,
+        backgroundImage: image,
         child: GestureDetector(
           onTap: () async {
             await showDialog(
@@ -97,7 +104,7 @@ avatarImage(BuildContext context, Image image) => Padding(
                   height: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: image.image,
+                      image: image,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -108,3 +115,41 @@ avatarImage(BuildContext context, Image image) => Padding(
         ),
       ),
     );
+
+needUpdateAppPopup({
+  required String bundleId,
+  bool display = true,
+  Widget? child,
+}) =>
+    display
+        ? Stack(
+            children: [
+              IgnorePointer(
+                child: child,
+              ),
+              Positioned.fill(
+                child: Align(
+                  child: AlertDialog(
+                    title: const Text("Une mise à jour est disponible"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const Text(
+                          "Une mise à jour est disponible, veuillez effectuer la mise à jour pour continuer...",
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 25.0),
+                          child: button("Mise à jour", () async {
+                            await launchUrl(
+                              Uri.parse("market://details?id=com.mathiflo"),
+                            );
+                          }),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : child;

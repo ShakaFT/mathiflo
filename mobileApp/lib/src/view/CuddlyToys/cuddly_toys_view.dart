@@ -24,7 +24,7 @@ class _CuddlyToysViewState extends StateX<CuddlyToysView> {
   @override
   Widget build(BuildContext context) => WillPopScope(
         child: Scaffold(
-          appBar: appBar("Doudous"),
+          appBar: appBar(context, "Doudous"),
           body: FutureBuilder(
             // ignore: discarded_futures
             future: _loadCuddlyToysHistories(),

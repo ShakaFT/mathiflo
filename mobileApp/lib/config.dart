@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:localstore/localstore.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 // Instance of local database
 final localDatabase = Localstore.instance;
@@ -19,6 +20,7 @@ late String defaultRestApiUrl;
 late String cuddlyToysRestApiUrl;
 late String groceriesRestApiUrl;
 late String calendarRestApiUrl;
+late PackageInfo packageInfo;
 
 Future<void> loadConfigData() async {
   // Load config data
@@ -30,4 +32,7 @@ Future<void> loadConfigData() async {
   cuddlyToysRestApiUrl = data['restAPI']['cuddlyToys'];
   groceriesRestApiUrl = data['restAPI']['groceries'];
   calendarRestApiUrl = data['restAPI']['calendar'];
+
+  // Set mobile app info
+  packageInfo = await PackageInfo.fromPlatform();
 }

@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
 
-AppBar appBar(String title, {List<Widget> icons = const []}) => AppBar(
-      title: Text(title, style: TextStyle(color: textColor)),
+AppBar appBar(
+  BuildContext context,
+  String title, {
+  List<Widget> icons = const [],
+  bool backButton = false,
+}) =>
+    AppBar(
+      title: Text(title, style: const TextStyle(color: textColor)),
+      leading: backButton
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
       backgroundColor: mainColor,
-      iconTheme: IconThemeData(color: textColor),
+      iconTheme: const IconThemeData(color: textColor),
       actions: icons,
     );
 

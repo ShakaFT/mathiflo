@@ -28,7 +28,7 @@ def release(app_version: str, code_version: str):
 
     if fastlane_code == 0:
         utils.git_push()
-        shell_print(f"[bold magenta]\nWill update network app version")
+        shell_print("[bold magenta]\nWill update network app version")
         update_network_app_version(app_version, code_version, environment="prod")
         update_network_app_version(app_version, code_version, environment="dev")
     else:
@@ -101,7 +101,7 @@ def main():
 
 
 if __name__ == "__main__":
-    utils.verify_environment()
+    # utils.verify_environment()
     try:
         main()
     except Exception as e:  # pylint: disable=broad-except

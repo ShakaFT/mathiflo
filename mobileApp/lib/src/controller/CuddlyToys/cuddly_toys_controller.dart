@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:mathiflo/src/model/CuddlyToys/cuddly_toys_histories_list.dart';
@@ -13,7 +14,7 @@ class CuddlyToysController extends StateXController {
   // Model
   static CuddlyToysController? _this;
   final CuddlyToysHistoriesNotifier _cuddlyToys;
-  final Map<String, Image> _cuddlyToysImages = {};
+  final Map<String, ImageProvider> _cuddlyToysImages = {};
 
   int _currentIndex = 0;
   final ValueNotifier _pendingAPI = ValueNotifier(false);
@@ -29,7 +30,7 @@ class CuddlyToysController extends StateXController {
   ValueNotifier get pendingAPI => _pendingAPI;
 
   // Methods
-  Image getCuddlyToyImage(String name) => _cuddlyToysImages[name]!;
+  ImageProvider getCuddlyToyImage(String name) => _cuddlyToysImages[name]!;
 
   Future<bool> refreshCuddlyToys() async {
     if (_cuddlyToysImages.isEmpty) {
@@ -38,7 +39,12 @@ class CuddlyToysController extends StateXController {
         return false;
       }
       startedData["cuddly_toys"].forEach((cuddlyToy, imageUrl) {
-        _cuddlyToysImages[cuddlyToy] = Image.network(imageUrl);
+        final image = CachedNetworkImageProvider(imageUrl);
+        _cuddlyToysImages[cuddlyToy] = image;
+        // resolve allow to remove little latence when we reload image
+        image.resolve(ImageConfiguration.empty).addListener(
+              ImageStreamListener((image, synchronousCall) {}),
+            );
       });
     }
     _currentIndex = 0;

@@ -34,7 +34,7 @@ class _CalendarViewState extends StateX<CalendarView> {
   Widget build(BuildContext context) => WillPopScope(
         child: WaitingApi(
           child: Scaffold(
-            appBar: appBar("Calendrier"),
+            appBar: appBar(context, "Calendrier"),
             body: TableCalendar(
               daysOfWeekStyle: const DaysOfWeekStyle(
                 decoration: BoxDecoration(

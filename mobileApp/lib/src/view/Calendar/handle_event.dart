@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/handle_event_controller.dart';
@@ -32,10 +31,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
   _HandleEventViewState() : super(HandleEventController()) {
     _controller = controller! as HandleEventController;
   }
-  final FocusNode _focusTitle = FocusNode();
-
   late HandleEventController _controller;
-  late StreamSubscription<bool> _keyboardSubscription;
   late EventPopupController popupController;
 
   @override
@@ -43,144 +39,129 @@ class _HandleEventViewState extends StateX<HandleEventView> {
     super.initState();
     _controller.init(widget.date, widget.event);
     popupController = widget.popupController;
-
-    _focusTitle.requestFocus();
-
-    // Unfocus Title TextField when keyboard is closed
-    _keyboardSubscription =
-        KeyboardVisibilityController().onChange.listen((visible) {
-      if (!visible) {
-        _focusTitle.unfocus();
-      }
-    });
   }
 
   @override
-  Future<void> dispose() async {
-    super.dispose();
-    await _keyboardSubscription.cancel();
-  }
-
-  @override
-  Widget build(BuildContext context) => WaitingApi(
-        child: Scaffold(
-          appBar: appBar(
-            _controller.title,
-            icons: [
-              Visibility(
-                visible: _controller.isUpdate,
-                child: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (context) => AlertPopup(
-                        title: "Supprimer l'événement",
-                        message:
-                            "Voulez-vous vraiment supprimer cet événement ?",
-                        confirmation: () async {
-                          await _controller.deleteEvent();
-                        },
-                        popCurrentWidget: true,
-                        popParameters: const {"action": "delete"},
-                      ),
-                    );
-                  },
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.check),
-                onPressed: () async {
-                  if (_controller.checkError()) return;
-                  print(0);
-                  if (await (_controller.isUpdate
-                      ? _controller.updateEvent()
-                      : _controller.addEvent())) {
-                    // ignore: use_build_context_synchronously
-                    print(1);
-                    Navigator.pop(context, {
-                      "action": _controller.isUpdate ? "update" : "add",
-                      "event": _controller.event
-                    });
-                    print(2);
-                    return;
-                  }
-                },
-              )
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TextField(
-                  controller: _controller.titleController,
-                  cursorColor: mainColor,
-                  decoration: InputDecoration(
-                    errorText: _controller.titleError,
-                    hintText: "Titre",
+  Widget build(BuildContext context) => WillPopScope(
+        child: WaitingApi(
+          child: Scaffold(
+            appBar: appBar(
+              context,
+              _controller.title,
+              backButton: true,
+              icons: [
+                Visibility(
+                  visible: _controller.isUpdate,
+                  child: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => AlertPopup(
+                          title: "Supprimer l'événement",
+                          message:
+                              "Voulez-vous vraiment supprimer cet événement ?",
+                          confirmation: () async {
+                            await _controller.deleteEvent();
+                          },
+                          popCurrentWidget: true,
+                          popParameters: const {"action": "delete"},
+                        ),
+                      );
+                    },
                   ),
-                  focusNode: _focusTitle,
-                  onChanged: (value) => _controller.updateTitle(value),
-                  textCapitalization: TextCapitalization.sentences,
                 ),
-                _row(
-                  icon: Icons.access_time_filled,
-                  onTap: () => _controller.updateAllDay(),
-                  children: [
-                    const Text("Toute la journée"),
-                    const Spacer(),
-                    Switch(
-                      activeColor: mainColor,
-                      value: _controller.allDay,
-                      onChanged: (_) => _controller.updateAllDay(),
-                    )
-                  ],
-                ),
-                _row(
-                  icon: Icons.event,
-                  onTap: () async {
-                    final newStartDate =
-                        await _selectDate(_controller.startDate);
-                    if (newStartDate != null) {
-                      _controller.startDate = newStartDate;
+                IconButton(
+                  icon: const Icon(Icons.check),
+                  onPressed: () async {
+                    if (_controller.checkError()) return;
+                    if (await (_controller.isUpdate
+                        ? _controller.updateEvent()
+                        : _controller.addEvent())) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context, {
+                        "action": _controller.isUpdate ? "update" : "add",
+                        "event": _controller.event
+                      });
+                      return;
                     }
                   },
-                  children: [
-                    Text(_controller.startDateFormatted),
-                    const Spacer(),
-                    Visibility(
-                      visible: !_controller.allDay,
-                      child: Text(_controller.startTimeFormatted),
-                    )
-                  ],
-                ),
-                _row(
-                  icon: Icons.event_busy,
-                  onTap: () async {
-                    final newEndDate = await _selectDate(_controller.endDate);
-                    if (newEndDate != null) {
-                      _controller.endDate = newEndDate;
-                    }
-                  },
-                  children: [
-                    Text(_controller.endDateFormatted),
-                    const Spacer(),
-                    Visibility(
-                      visible: !_controller.allDay,
-                      child: Text(_controller.endTimeFormatted),
-                    )
-                  ],
-                ),
-                _row(
-                  icon: Icons.people_alt,
-                  onTap: () async => {await _userPopup()},
-                  children: _userAvatars(_controller.assignedUsers),
                 )
               ],
             ),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _controller.titleController,
+                    cursorColor: mainColor,
+                    decoration: InputDecoration(
+                      errorText: _controller.titleError,
+                      hintText: "Titre",
+                    ),
+                    onChanged: (value) => _controller.updateTitle(value),
+                    textCapitalization: TextCapitalization.sentences,
+                  ),
+                  _row(
+                    icon: Icons.access_time_filled,
+                    onTap: () => _controller.updateAllDay(),
+                    children: [
+                      const Text("Toute la journée"),
+                      const Spacer(),
+                      Switch(
+                        activeColor: mainColor,
+                        value: _controller.allDay,
+                        onChanged: (_) => _controller.updateAllDay(),
+                      )
+                    ],
+                  ),
+                  _row(
+                    icon: Icons.event,
+                    onTap: () async {
+                      final newStartDate =
+                          await _selectDate(_controller.startDate);
+                      if (newStartDate != null) {
+                        _controller.startDate = newStartDate;
+                      }
+                    },
+                    children: [
+                      Text(_controller.startDateFormatted),
+                      const Spacer(),
+                      Visibility(
+                        visible: !_controller.allDay,
+                        child: Text(_controller.startTimeFormatted),
+                      )
+                    ],
+                  ),
+                  _row(
+                    icon: Icons.event_busy,
+                    onTap: () async {
+                      final newEndDate = await _selectDate(_controller.endDate);
+                      if (newEndDate != null) {
+                        _controller.endDate = newEndDate;
+                      }
+                    },
+                    children: [
+                      Text(_controller.endDateFormatted),
+                      const Spacer(),
+                      Visibility(
+                        visible: !_controller.allDay,
+                        child: Text(_controller.endTimeFormatted),
+                      )
+                    ],
+                  ),
+                  _row(
+                    icon: Icons.people_alt,
+                    onTap: () async => {await _userPopup()},
+                    children: _userAvatars(_controller.assignedUsers),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
+        onWillPop: () async => false,
       );
 
   Future<DateTime?> _selectDate(DateTime initialDate) async {
@@ -210,7 +191,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
       builder: (context, child) => Theme(
         data: ThemeData(
           colorScheme: ColorScheme.light(
-            primary: mainColor, // Couleur primaire
+            primary: mainColor,
           ),
         ),
         child: child!,

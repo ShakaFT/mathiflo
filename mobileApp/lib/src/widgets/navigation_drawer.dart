@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathiflo/constants.dart';
+import 'package:mathiflo/src/view/Calendar/calendar_view.dart';
 import 'package:mathiflo/src/view/CuddlyToys/cuddly_toys_view.dart';
 import 'package:mathiflo/src/view/Groceries/groceries_view.dart';
 
@@ -32,9 +33,9 @@ class NavigationDrawerWidget extends StatelessWidget {
         children: [
           _tab(
             context,
-            "Doudous",
-            Icon(Icons.hotel_rounded, color: mainColor),
-            const CuddlyToysView(),
+            "Calendrier",
+            Icon(Icons.calendar_month, color: mainColor),
+            const CalendarView(),
           ),
 
           // -----------------------------
@@ -44,6 +45,15 @@ class NavigationDrawerWidget extends StatelessWidget {
             "Liste de courses",
             Icon(Icons.local_grocery_store, color: mainColor),
             const GroceriesView(),
+          ),
+
+          // -----------------------------
+
+          _tab(
+            context,
+            "Doudous",
+            Icon(Icons.hotel_rounded, color: mainColor),
+            const CuddlyToysView(),
           ),
 
           // -----------------------------

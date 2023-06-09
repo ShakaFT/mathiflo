@@ -87,7 +87,6 @@ class _EventPopupState extends StateX<EventPopup> {
                                 ),
                               ),
                             );
-                            print(result);
                             if (result == null) return;
                             if (result["action"] == "update") {
                               popupController.updateEvent(

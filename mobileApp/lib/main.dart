@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
-import 'package:mathiflo/src/view/Calendar/calendar_view.dart';
+import 'package:mathiflo/src/controller/Mathiflo/mathiflo_controller.dart';
+import 'package:mathiflo/src/view/home_view.dart';
 import 'package:state_extended/state_extended.dart';
 
 void main() async {
@@ -12,6 +13,9 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
+  final controller = MathifloController();
+  await controller.initialize();
 
   runApp(
     MaterialApp(
@@ -25,13 +29,14 @@ void main() async {
       title: 'mathiflo',
       theme: _theme(),
       darkTheme: _theme(),
-      home: const Mathiflo(),
+      home: Mathiflo(controller: controller),
     ),
   );
 }
 
 class Mathiflo extends StatefulWidget {
-  const Mathiflo({super.key});
+  const Mathiflo({super.key, required this.controller});
+  final MathifloController controller;
 
   @override
   State createState() => _MathifloState();
@@ -40,11 +45,18 @@ class Mathiflo extends StatefulWidget {
 class _MathifloState extends AppStateX<Mathiflo> {
   factory _MathifloState() => _this ??= _MathifloState._();
   _MathifloState._() : super();
-  // _MathifloState._() : super(controller: MathifloController());
   static _MathifloState? _this;
 
+  late MathifloController _controller;
+
   @override
-  Widget buildIn(BuildContext context) => const CalendarView();
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+  }
+
+  @override
+  Widget buildIn(BuildContext context) => HomeView(controller: _controller);
 }
 
 _theme() => ThemeData(

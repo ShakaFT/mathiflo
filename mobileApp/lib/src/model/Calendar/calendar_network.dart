@@ -21,7 +21,6 @@ Future<List<Event>?> getNetworkEvents(
     final response = await dio.get<Map<String, dynamic>>(
       "/events?start_timestamp=$startTimestamp&end_timestamp=$endTimestamp",
     );
-    await Future.delayed(const Duration(milliseconds: 5000));
     final events = <Event>[];
 
     for (final event in response.data!['events']) {
@@ -36,7 +35,6 @@ Future<List<Event>?> getNetworkEvents(
 Future<bool> addNetworkEvent(Event event) async {
   try {
     await dio.post("/event/${event.id}", data: event.toMap());
-    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;
@@ -46,7 +44,6 @@ Future<bool> addNetworkEvent(Event event) async {
 Future<bool> updateNetworkEvent(Event event) async {
   try {
     await dio.put("/event/${event.id}", data: event.toMap());
-    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;
