@@ -7,6 +7,7 @@ import 'package:mathiflo/src/view/Calendar/event_popup.dart';
 import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/navigation_drawer.dart';
+import 'package:mathiflo/src/widgets/popups.dart';
 import 'package:state_extended/state_extended.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -22,6 +23,12 @@ class _CalendarViewState extends StateX<CalendarView> {
     _controller = controller! as CalendarController;
   }
   late CalendarController _controller;
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    await _controller.loadEvents();
+  }
 
   @override
   Widget build(BuildContext context) => WillPopScope(
@@ -43,7 +50,10 @@ class _CalendarViewState extends StateX<CalendarView> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      _controller.formattedHeaderTitle(day.midnight, "fr_FR"),
+                      _controller.formattedHeaderTitle(
+                        day.midnight,
+                        "fr_FR",
+                      ),
                       style: const TextStyle(fontSize: 18),
                     ),
                   ),
@@ -72,12 +82,16 @@ class _CalendarViewState extends StateX<CalendarView> {
                 titleCentered: true,
                 titleTextFormatter: (date, locale) =>
                     // Add first letter to upper case
-                    _controller.formattedHeaderTitle(date.midnight, locale),
+                    _controller.formattedHeaderTitle(
+                  date.midnight,
+                  locale,
+                ),
               ),
               lastDay: _controller.lastDate,
               locale: 'fr_FR',
-              onPageChanged: (focusedDay) {
-                // Call API to log events
+              onPageChanged: (focusedDay) async {
+                _controller.onDaySelected(focusedDay.midnight);
+                await _controller.loadEvents();
               },
               selectedDayPredicate: (day) =>
                   isSameDay(_controller.selectedDay, day.midnight),
@@ -181,4 +195,10 @@ class _CalendarViewState extends StateX<CalendarView> {
           ),
         ),
       );
+  Future<void> _loadEvents() async {
+    final error = await _controller.loadEvents();
+    if (error.isNotEmpty && context.mounted) {
+      snackbar(context, error, error: true);
+    }
+  }
 }

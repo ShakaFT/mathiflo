@@ -13,7 +13,7 @@ class Event {
   String title;
   int startTimestamp;
   int endTimestamp;
-  Map<String, Map<String, dynamic>> users;
+  List<String> users;
 
   DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endTimestamp);
   DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startTimestamp);
@@ -44,9 +44,9 @@ class Event {
   static Event fromMap(Map<String, dynamic> map) => Event(
         map["id"],
         map["title"],
-        map["startTimestamp"],
-        map["endTimestamp"],
-        map["users"],
+        map["start_timestamp"],
+        map["end_timestamp"],
+        List<String>.from(map["users"]),
       );
 
   Map<String, dynamic> toMap() => {

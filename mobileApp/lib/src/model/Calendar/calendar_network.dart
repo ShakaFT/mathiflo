@@ -5,7 +5,7 @@ import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
 
 final dio = Dio(
   BaseOptions(
-    baseUrl: config.groceriesRestApiUrl,
+    baseUrl: config.calendarRestApiUrl,
     connectTimeout: const Duration(seconds: apiTimeout),
     receiveTimeout: const Duration(seconds: apiTimeout),
     headers: {config.apiKeyHeader: config.apiKey},
@@ -35,6 +35,7 @@ Future<List<Event>?> getNetworkEvents(
 Future<bool> addNetworkEvent(Event event) async {
   try {
     await dio.post("/event/${event.id}", data: event.toMap());
+    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;
@@ -44,6 +45,7 @@ Future<bool> addNetworkEvent(Event event) async {
 Future<bool> updateNetworkEvent(Event event) async {
   try {
     await dio.put("/event/${event.id}", data: event.toMap());
+    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;
@@ -53,6 +55,7 @@ Future<bool> updateNetworkEvent(Event event) async {
 Future<bool> deleteNetworkEvent(Event event) async {
   try {
     await dio.delete("/event/${event.id}");
+    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;

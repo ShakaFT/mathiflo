@@ -6,6 +6,7 @@ import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Calendar/event_popup_controller.dart';
 import 'package:mathiflo/src/controller/Calendar/handle_event_controller.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
+import 'package:mathiflo/src/widgets/async.dart';
 import 'package:mathiflo/src/widgets/bar.dart';
 import 'package:mathiflo/src/widgets/popups.dart';
 import 'package:mathiflo/src/widgets/texts.dart';
@@ -61,109 +62,123 @@ class _HandleEventViewState extends StateX<HandleEventView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: appBar(
-          _controller.title,
-          icons: [
-            Visibility(
-              visible: _controller.isUpdate,
-              child: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (context) => AlertPopup(
-                      title: "Supprimer l'événement",
-                      message: "Voulez-vous vraiment supprimer cet événement ?",
-                      confirmation: () {},
-                      popCurrentWidget: true,
-                      popParameters: const {"action": "delete"},
-                    ),
-                  );
-                },
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.check),
-              onPressed: () {
-                if (!_controller.checkError()) {
-                  Navigator.pop(context, {
-                    "action": _controller.isUpdate ? "update" : "add",
-                    "event": _controller.event
-                  });
-                }
-              },
-            )
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: _controller.titleController,
-                cursorColor: mainColor,
-                decoration: InputDecoration(
-                  errorText: _controller.titleError,
-                  hintText: "Titre",
+  Widget build(BuildContext context) => WaitingApi(
+        child: Scaffold(
+          appBar: appBar(
+            _controller.title,
+            icons: [
+              Visibility(
+                visible: _controller.isUpdate,
+                child: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertPopup(
+                        title: "Supprimer l'événement",
+                        message:
+                            "Voulez-vous vraiment supprimer cet événement ?",
+                        confirmation: () async {
+                          await _controller.deleteEvent();
+                        },
+                        popCurrentWidget: true,
+                        popParameters: const {"action": "delete"},
+                      ),
+                    );
+                  },
                 ),
-                focusNode: _focusTitle,
-                onChanged: (value) => _controller.updateTitle(value),
-                textCapitalization: TextCapitalization.sentences,
               ),
-              _row(
-                icon: Icons.access_time_filled,
-                onTap: () => _controller.updateAllDay(),
-                children: [
-                  const Text("Toute la journée"),
-                  const Spacer(),
-                  Switch(
-                    activeColor: mainColor,
-                    value: _controller.allDay,
-                    onChanged: (_) => _controller.updateAllDay(),
-                  )
-                ],
-              ),
-              _row(
-                icon: Icons.event,
-                onTap: () async {
-                  final newStartDate = await _selectDate(_controller.startDate);
-                  if (newStartDate != null) {
-                    _controller.startDate = newStartDate;
+              IconButton(
+                icon: const Icon(Icons.check),
+                onPressed: () async {
+                  if (_controller.checkError()) return;
+                  print(0);
+                  if (await (_controller.isUpdate
+                      ? _controller.updateEvent()
+                      : _controller.addEvent())) {
+                    // ignore: use_build_context_synchronously
+                    print(1);
+                    Navigator.pop(context, {
+                      "action": _controller.isUpdate ? "update" : "add",
+                      "event": _controller.event
+                    });
+                    print(2);
+                    return;
                   }
                 },
-                children: [
-                  Text(_controller.startDateFormatted),
-                  const Spacer(),
-                  Visibility(
-                    visible: !_controller.allDay,
-                    child: Text(_controller.startTimeFormatted),
-                  )
-                ],
-              ),
-              _row(
-                icon: Icons.event_busy,
-                onTap: () async {
-                  final newEndDate = await _selectDate(_controller.endDate);
-                  if (newEndDate != null) {
-                    _controller.endDate = newEndDate;
-                  }
-                },
-                children: [
-                  Text(_controller.endDateFormatted),
-                  const Spacer(),
-                  Visibility(
-                    visible: !_controller.allDay,
-                    child: Text(_controller.endTimeFormatted),
-                  )
-                ],
-              ),
-              _row(
-                icon: Icons.people_alt,
-                onTap: () async => {await _userPopup()},
-                children: _userAvatars(_controller.assignedUsers),
               )
             ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _controller.titleController,
+                  cursorColor: mainColor,
+                  decoration: InputDecoration(
+                    errorText: _controller.titleError,
+                    hintText: "Titre",
+                  ),
+                  focusNode: _focusTitle,
+                  onChanged: (value) => _controller.updateTitle(value),
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+                _row(
+                  icon: Icons.access_time_filled,
+                  onTap: () => _controller.updateAllDay(),
+                  children: [
+                    const Text("Toute la journée"),
+                    const Spacer(),
+                    Switch(
+                      activeColor: mainColor,
+                      value: _controller.allDay,
+                      onChanged: (_) => _controller.updateAllDay(),
+                    )
+                  ],
+                ),
+                _row(
+                  icon: Icons.event,
+                  onTap: () async {
+                    final newStartDate =
+                        await _selectDate(_controller.startDate);
+                    if (newStartDate != null) {
+                      _controller.startDate = newStartDate;
+                    }
+                  },
+                  children: [
+                    Text(_controller.startDateFormatted),
+                    const Spacer(),
+                    Visibility(
+                      visible: !_controller.allDay,
+                      child: Text(_controller.startTimeFormatted),
+                    )
+                  ],
+                ),
+                _row(
+                  icon: Icons.event_busy,
+                  onTap: () async {
+                    final newEndDate = await _selectDate(_controller.endDate);
+                    if (newEndDate != null) {
+                      _controller.endDate = newEndDate;
+                    }
+                  },
+                  children: [
+                    Text(_controller.endDateFormatted),
+                    const Spacer(),
+                    Visibility(
+                      visible: !_controller.allDay,
+                      child: Text(_controller.endTimeFormatted),
+                    )
+                  ],
+                ),
+                _row(
+                  icon: Icons.people_alt,
+                  onTap: () async => {await _userPopup()},
+                  children: _userAvatars(_controller.assignedUsers),
+                )
+              ],
+            ),
           ),
         ),
       );
@@ -246,16 +261,16 @@ class _HandleEventViewState extends StateX<HandleEventView> {
         ),
       );
 
-  List<Widget> _userAvatars(Map<String, Map<String, dynamic>> users) {
+  List<Widget> _userAvatars(List<String> assignedUsers) {
     final result = <Widget>[];
-    users.forEach((name, info) {
+    for (final username in assignedUsers) {
       result.add(
         Padding(
           padding: const EdgeInsets.all(2.0),
-          child: _userAvatar(name, info["color"]),
+          child: _userAvatar(username, users[username]!["color"]),
         ),
       );
-    });
+    }
     return result;
   }
 
@@ -269,9 +284,9 @@ class _HandleEventViewState extends StateX<HandleEventView> {
             Text(name),
             const Spacer(),
             Checkbox(
-              value: _controller.assignedUsers.containsKey(name),
+              value: _controller.assignedUsers.contains(name),
               onChanged: (_) =>
-                  setState(() => _controller.updateAssignedUsers(name, info)),
+                  setState(() => _controller.updateAssignedUsers(name)),
             )
           ],
         ),
@@ -296,13 +311,9 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                         const Spacer(),
                         Checkbox(
                           activeColor: mainColor,
-                          value:
-                              _controller.assignedUsers.containsKey(user.key),
+                          value: _controller.assignedUsers.contains(user.key),
                           onChanged: (_) => setState(
-                            () => _controller.updateAssignedUsers(
-                              user.key,
-                              user.value,
-                            ),
+                            () => _controller.updateAssignedUsers(user.key),
                           ),
                         )
                       ],

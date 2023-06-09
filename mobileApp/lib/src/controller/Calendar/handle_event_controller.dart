@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/extensions/date_time_extension.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_network.dart';
 import 'package:state_extended/state_extended.dart';
 
 class HandleEventController extends StateXController {
@@ -36,7 +38,7 @@ class HandleEventController extends StateXController {
               .add(Duration(hours: now.hour + 1))
               .millisecondsSinceEpoch,
       endTimestamp,
-      currentEvent?.users ?? Map<String, Map<String, dynamic>>.from(users),
+      currentEvent?.users ?? users.keys.toList(),
     );
 
     titleController = TextEditingController(text: currentEvent?.title);
@@ -44,7 +46,7 @@ class HandleEventController extends StateXController {
   }
 
   bool get allDay => _event.isAllDay;
-  Map<String, Map<String, dynamic>> get assignedUsers => _event.users;
+  List<String> get assignedUsers => _event.users;
   DateTime get endDate => _event.endDate;
   Event get event {
     if (_event.isAllDay) {
@@ -89,6 +91,27 @@ class HandleEventController extends StateXController {
   String get startTimeFormatted =>
       DateFormat("HH:mm", "fr_FR").format(_event.startDate);
 
+  Future<bool> addEvent() async {
+    pendingAPI.value = true;
+    final result = await addNetworkEvent(event);
+    pendingAPI.value = false;
+    return result;
+  }
+
+  Future<bool> updateEvent() async {
+    pendingAPI.value = true;
+    final result = await updateNetworkEvent(event);
+    pendingAPI.value = false;
+    return result;
+  }
+
+  Future<bool> deleteEvent() async {
+    pendingAPI.value = true;
+    final result = await deleteNetworkEvent(event);
+    pendingAPI.value = false;
+    return result;
+  }
+
   bool checkError() {
     if (titleController.text.trim().isEmpty) {
       setState(() {
@@ -115,15 +138,11 @@ class HandleEventController extends StateXController {
     });
   }
 
-  void updateAssignedUsers(String name, Map<String, dynamic> info) =>
-      setState(() {
-        _event.users.containsKey(name)
+  void updateAssignedUsers(String name) => setState(() {
+        _event.users.contains(name)
             ? _event.users.remove(name)
-            : _event.users[name] = info;
-        _event.users = Map.fromEntries(
-          _event.users.entries.toList()
-            ..sort((e1, e2) => e1.key.compareTo(e2.key)),
-        );
+            : _event.users.add(name);
+        _event.users.sort();
       });
 
   void updateTitle(String newTitle) => setState(() => _event.title = newTitle);

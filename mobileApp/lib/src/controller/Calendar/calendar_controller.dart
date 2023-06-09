@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
+import 'package:mathiflo/config.dart';
 import 'package:mathiflo/src/extensions/date_time_extension.dart';
 import 'package:mathiflo/src/model/Calendar/calendar_event.dart';
+import 'package:mathiflo/src/model/Calendar/calendar_network.dart';
 import 'package:state_extended/state_extended.dart';
 
 class CalendarController extends StateXController {
@@ -10,10 +12,11 @@ class CalendarController extends StateXController {
   // Model
   static CalendarController? _this;
 
-  final firstDate = DateTime.utc(2023, 05);
+  final firstDate = DateTime.utc(2023, 06);
   final lastDate = DateTime.utc(2025, 12, 31);
 
   final events = <Event>[];
+  final _loadedMonths = <int>[];
   DateTime _selectedDay = DateTime.now();
 
   DateTime get selectedDay => _selectedDay;
@@ -41,6 +44,29 @@ class CalendarController extends StateXController {
               event.endTimestamp > startDateTimestamp,
         )
         .toList();
+  }
+
+  Future<String> loadEvents() async {
+    final firstDay = DateTime(_selectedDay.year, _selectedDay.month);
+    final lastDay = DateTime(_selectedDay.year, _selectedDay.month + 1);
+
+    if (_loadedMonths.contains(firstDay.millisecondsSinceEpoch)) return "";
+
+    pendingAPI.value = true;
+    final loadedEvents = await getNetworkEvents(
+      firstDay.millisecondsSinceEpoch,
+      lastDay.millisecondsSinceEpoch,
+    );
+    pendingAPI.value = false;
+
+    if (loadedEvents != null) {
+      _loadedMonths.add(firstDay.millisecondsSinceEpoch);
+      setState(() {
+        events.addAll(loadedEvents);
+      });
+      return "";
+    }
+    return "Une erreur inconnue est survenue durant le chargement des événements...";
   }
 
   void onDaySelected(DateTime newSelectedDay) {

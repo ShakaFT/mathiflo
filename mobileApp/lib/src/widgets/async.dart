@@ -41,5 +41,6 @@ Widget _lockScreen() => const Opacity(
       opacity: 0.2,
       child: ModalBarrier(
         color: Colors.black,
+        dismissible: false,
       ),
     );

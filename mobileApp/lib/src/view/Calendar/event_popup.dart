@@ -87,6 +87,7 @@ class _EventPopupState extends StateX<EventPopup> {
                                 ),
                               ),
                             );
+                            print(result);
                             if (result == null) return;
                             if (result["action"] == "update") {
                               popupController.updateEvent(
@@ -137,9 +138,9 @@ class _EventPopupState extends StateX<EventPopup> {
     for (var _ = 0; _ < users.length - event.users.length; _++) {
       result.add(_avatar("", {"color": Colors.white}));
     }
-    event.users.forEach((name, info) {
-      result.add(_avatar(name, info));
-    });
+    for (final username in event.users) {
+      result.add(_avatar(username, users[username]!));
+    }
     return result;
   }
 
