@@ -61,9 +61,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                           title: "Supprimer l'événement",
                           message:
                               "Voulez-vous vraiment supprimer cet événement ?",
-                          confirmation: () async {
-                            await _controller.deleteEvent();
-                          },
+                          confirmation: () async => _controller.deleteEvent(),
                           popCurrentWidget: true,
                           popParameters: const {"action": "delete"},
                         ),
@@ -84,6 +82,9 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                         "event": _controller.event
                       });
                       return;
+                    }
+                    if (context.mounted) {
+                      snackbar(context, unknownError, error: true);
                     }
                   },
                 )

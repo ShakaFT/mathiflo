@@ -27,7 +27,7 @@ class _CalendarViewState extends StateX<CalendarView> {
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    await _controller.loadEvents();
+    await _loadEvents();
   }
 
   @override
@@ -91,7 +91,7 @@ class _CalendarViewState extends StateX<CalendarView> {
               locale: 'fr_FR',
               onPageChanged: (focusedDay) async {
                 _controller.onDaySelected(focusedDay.midnight);
-                await _controller.loadEvents();
+                await _loadEvents();
               },
               selectedDayPredicate: (day) =>
                   isSameDay(_controller.selectedDay, day.midnight),

@@ -92,19 +92,19 @@ class GroceriesController extends StateXController {
     return error;
   }
 
-  Future<String> resetGroceries() async {
+  Future<bool> resetGroceries() async {
     // Remove all checked items
     pendingAPI.value = true;
-    var error = "";
+    var worked = true;
 
     if (await deleteNetworkGroceriesItems(await getCheckedItems())) {
       await _groceriesList.refresh();
     } else {
-      error = unknownError;
+      worked = false;
     }
 
     pendingAPI.value = false;
-    return error;
+    return worked;
   }
 
   Future<void> _udateCheckItem(int index, {required bool checked}) async {

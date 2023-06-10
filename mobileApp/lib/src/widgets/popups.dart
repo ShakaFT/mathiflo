@@ -18,7 +18,7 @@ class AlertPopup extends StatelessWidget {
 
   final String title;
   final String message;
-  final Future<void> Function()? confirmation;
+  final Future<dynamic> Function()? confirmation;
   final bool popCurrentWidget;
   final dynamic popParameters;
 
@@ -48,7 +48,7 @@ class AlertPopup extends StatelessWidget {
   _actionButton(
     BuildContext context,
     String title, {
-    Future<void> Function()? action,
+    Future<dynamic> Function()? action,
   }) =>
       Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -65,14 +65,17 @@ class AlertPopup extends StatelessWidget {
                   if (pendingAPI.value) {
                     return;
                   }
-                  await action();
-                  try {
-                    Navigator.pop(context); // close popup
-                  } finally {
-                    if (popCurrentWidget) {
-                      // close current widget
-                      Navigator.pop(context, popParameters);
-                    }
+                  final worked = await action();
+                  Navigator.pop(context); // close popup
+
+                  if (!worked && context.mounted) {
+                    snackbar(context, unknownError, error: true);
+                    return;
+                  }
+
+                  if (popCurrentWidget) {
+                    // close current widget
+                    Navigator.pop(context, popParameters);
                   }
                 },
         ),

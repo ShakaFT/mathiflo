@@ -94,10 +94,7 @@ class _GroceriesViewState extends StateX<GroceriesView> {
         builder: (context) => AlertPopup(
           title: "Supprimer les articles",
           message: "Voulez-vous vraiment supprimer les articles sélectionnés ?",
-          confirmation: () async {
-            final error = await _controller.resetGroceries();
-            if (error.isNotEmpty) {}
-          },
+          confirmation: () async => _controller.resetGroceries(),
         ),
       );
     }
