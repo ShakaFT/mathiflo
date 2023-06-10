@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,25 +18,28 @@ class AlertPopup extends StatelessWidget {
 
   final String title;
   final String message;
-  final void Function()? confirmation;
+  final Future<void> Function()? confirmation;
   final bool popCurrentWidget;
   final dynamic popParameters;
 
   @override
-  Widget build(BuildContext context) => AlertDialog(
-        title: Text(title, style: TextStyle(color: popupColor)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(message),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _actionButton(context, "Annuler"),
-                _actionButton(context, "Confirmer", action: confirmation),
-              ],
-            ),
-          ],
+  Widget build(BuildContext context) => WillPopScope(
+        onWillPop: () async => !pendingAPI.value,
+        child: AlertDialog(
+          title: Text(title, style: TextStyle(color: popupColor)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(message),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _actionButton(context, "Annuler"),
+                  _actionButton(context, "Confirmer", action: confirmation),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 
@@ -42,7 +48,7 @@ class AlertPopup extends StatelessWidget {
   _actionButton(
     BuildContext context,
     String title, {
-    void Function()? action,
+    Future<void> Function()? action,
   }) =>
       Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -50,15 +56,23 @@ class AlertPopup extends StatelessWidget {
           title,
           action == null
               ? () {
+                  if (pendingAPI.value) {
+                    return;
+                  }
                   Navigator.pop(context);
                 } // close popup
-              : () {
-                  action();
-                  Navigator.pop(context); // close popup
-
-                  if (popCurrentWidget) {
-                    // close current widget
-                    Navigator.pop(context, popParameters);
+              : () async {
+                  if (pendingAPI.value) {
+                    return;
+                  }
+                  await action();
+                  try {
+                    Navigator.pop(context); // close popup
+                  } finally {
+                    if (popCurrentWidget) {
+                      // close current widget
+                      Navigator.pop(context, popParameters);
+                    }
                   }
                 },
         ),

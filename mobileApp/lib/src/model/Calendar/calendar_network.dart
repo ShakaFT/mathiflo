@@ -53,7 +53,6 @@ Future<bool> updateNetworkEvent(Event event) async {
 Future<bool> deleteNetworkEvent(Event event) async {
   try {
     await dio.delete("/event/${event.id}");
-    await Future.delayed(const Duration(milliseconds: 5000));
     return true;
   } catch (e) {
     return false;
