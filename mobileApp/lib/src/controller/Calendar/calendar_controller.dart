@@ -80,6 +80,13 @@ class CalendarController extends StateXController {
       });
 
   void updateEvent(Event oldEvent, Event newEvent) => setState(() {
+        // fix unknown bug
+        print(newEvent.endTimestamp);
+        if (newEvent.isAllDay) {
+          newEvent.endTimestamp -= 24 * 3600 * 1000;
+        }
+        print(newEvent.endTimestamp);
+        // -------------------
         events
           ..remove(oldEvent)
           ..add(newEvent);

@@ -16,6 +16,7 @@ class Event {
   List<String> users;
 
   DateTime get endDate => DateTime.fromMillisecondsSinceEpoch(endTimestamp);
+
   DateTime get startDate => DateTime.fromMillisecondsSinceEpoch(startTimestamp);
 
   bool get isAllDay =>
