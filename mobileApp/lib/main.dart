@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:mathiflo/config.dart';
 import 'package:mathiflo/constants.dart';
 import 'package:mathiflo/src/controller/Mathiflo/mathiflo_controller.dart';
@@ -17,7 +16,6 @@ void main() async {
 
   final controller = MathifloController();
   await controller.initialize();
-  await initializeDateFormatting();
 
   runApp(
     MaterialApp(
