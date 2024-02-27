@@ -1,12 +1,12 @@
 {
     "editor.codeActionsOnSave": {
-        "source.fixAll": true
+        "source.fixAll": "explicit"
     },
     "files.exclude": {
-        "**/.*": true,
         "**/__pycache__": true,
+        "**/.dart_tool": true,
         "**/*.iml": true,
-        "**/*.lock": true,
+        "**/.venv": true,
         "build": true,
         "linux/": true,
         "macos/": true,
