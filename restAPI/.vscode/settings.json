@@ -1,13 +1,7 @@
 {
     "files.exclude": {
-        ".venv/": true,
-        ".pylintrc": true,
-        ".python-version": true,
+        ".venv/": true, 
         "**/__pycache__": true
     },
-    "python.analysis.typeCheckingMode": "basic",
-    "python.formatting.provider": "black",
-    "python.linting.enabled": true,
-    "python.linting.lintOnSave" : true,
-    "python.linting.pylintEnabled": true
+    "python.analysis.typeCheckingMode": "basic"
 }
