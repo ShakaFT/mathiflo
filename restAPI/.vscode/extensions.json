@@ -1,6 +1,5 @@
 {
 	"recommendations": [
-		"sourcery.sourcery",
 		"ms-python.pylint",
 		"ms-python.vscode-pylance",
 		"codeavecjonathan.importmagic",

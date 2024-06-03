@@ -1,8 +1,5 @@
 # This file contains dependencies used by Python scripts.
-black==23.3.0
-pick==2.2.0
-rich==13.3.4
-pylint==2.17.2
-PyYAML==6.0
-requests==2.29.0
-sourcery==1.2.0
+pick==2.3.2
+rich==13.7.1
+PyYAML==6.0.1
+requests==2.32.3
