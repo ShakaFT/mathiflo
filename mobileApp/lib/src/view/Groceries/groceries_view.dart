@@ -17,7 +17,7 @@ class GroceriesView extends StatefulWidget {
 }
 
 class _GroceriesViewState extends StateX<GroceriesView> {
-  _GroceriesViewState() : super(GroceriesController()) {
+  _GroceriesViewState() : super(controller: GroceriesController()) {
     _controller = controller! as GroceriesController;
   }
   late GroceriesController _controller;

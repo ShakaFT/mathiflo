@@ -19,7 +19,7 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends StateX<CalendarView> {
-  _CalendarViewState() : super(CalendarController()) {
+  _CalendarViewState() : super(controller: CalendarController()) {
     _controller = controller! as CalendarController;
   }
   late CalendarController _controller;
@@ -151,9 +151,9 @@ class _CalendarViewState extends StateX<CalendarView> {
                   calendarController: _controller,
                   date: day,
                 ),
-              )
+              ),
             },
-          _controller.onDaySelected(day)
+          _controller.onDaySelected(day),
         },
         onLongPress: () async {
           await showDialog(

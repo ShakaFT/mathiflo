@@ -16,7 +16,7 @@ class CuddlyToysView extends StatefulWidget {
 }
 
 class _CuddlyToysViewState extends StateX<CuddlyToysView> {
-  _CuddlyToysViewState() : super(CuddlyToysController()) {
+  _CuddlyToysViewState() : super(controller: CuddlyToysController()) {
     _controller = controller! as CuddlyToysController;
   }
   late CuddlyToysController _controller;

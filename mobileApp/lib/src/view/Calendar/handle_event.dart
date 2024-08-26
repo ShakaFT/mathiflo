@@ -28,7 +28,7 @@ class HandleEventView extends StatefulWidget {
 }
 
 class _HandleEventViewState extends StateX<HandleEventView> {
-  _HandleEventViewState() : super(HandleEventController()) {
+  _HandleEventViewState() : super(controller: HandleEventController()) {
     _controller = controller! as HandleEventController;
   }
   late HandleEventController _controller;
@@ -79,7 +79,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context, {
                         "action": _controller.isUpdate ? "update" : "add",
-                        "event": _controller.event
+                        "event": _controller.event,
                       });
                       return;
                     }
@@ -87,7 +87,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                       snackbar(context, unknownError, error: true);
                     }
                   },
-                )
+                ),
               ],
             ),
             body: Padding(
@@ -114,7 +114,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                         activeColor: mainColor,
                         value: _controller.allDay,
                         onChanged: (_) => _controller.updateAllDay(),
-                      )
+                      ),
                     ],
                   ),
                   _row(
@@ -132,7 +132,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                       Visibility(
                         visible: !_controller.allDay,
                         child: Text(_controller.startTimeFormatted),
-                      )
+                      ),
                     ],
                   ),
                   _row(
@@ -149,14 +149,14 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                       Visibility(
                         visible: !_controller.allDay,
                         child: Text(_controller.endTimeFormatted),
-                      )
+                      ),
                     ],
                   ),
                   _row(
                     icon: Icons.people_alt,
                     onTap: () async => {await _userPopup()},
                     children: _userAvatars(_controller.assignedUsers),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -224,7 +224,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
               const SizedBox(
                 width: 20,
               ),
-              ...children
+              ...children,
             ],
           ),
         ),
@@ -269,7 +269,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
               value: _controller.assignedUsers.contains(name),
               onChanged: (_) =>
                   setState(() => _controller.updateAssignedUsers(name)),
-            )
+            ),
           ],
         ),
       );
@@ -297,7 +297,7 @@ class _HandleEventViewState extends StateX<HandleEventView> {
                           onChanged: (_) => setState(
                             () => _controller.updateAssignedUsers(user.key),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

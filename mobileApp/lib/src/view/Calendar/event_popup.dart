@@ -24,7 +24,7 @@ class EventPopup extends StatefulWidget {
 }
 
 class _EventPopupState extends StateX<EventPopup> {
-  _EventPopupState() : super(EventPopupController()) {
+  _EventPopupState() : super(controller: EventPopupController()) {
     popupController = controller! as EventPopupController;
   }
   late EventPopupController popupController;
@@ -62,7 +62,7 @@ class _EventPopupState extends StateX<EventPopup> {
                 if (result["action"] == "add") {
                   popupController.addEvent(result["event"]);
                 }
-              })
+              }),
             ],
           ),
           content: popupController.events.isEmpty
@@ -121,7 +121,7 @@ class _EventPopupState extends StateX<EventPopup> {
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
-                              ..._userAvatars(popupController.events[index])
+                              ..._userAvatars(popupController.events[index]),
                             ],
                           ),
                         ),
